@@ -2,10 +2,10 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://yoursite.com
-title: My Octopress Blog
-subtitle: A blogging framework for hackers.
-author: Your Name
+url: http://web-k.github.com
+title: チームweb-kブログ
+subtitle: 技術情報とか乗せていきます。おもにRubyとかWebとか
+author: Team web-k
 simple_search: http://google.com/search
 description:
 
