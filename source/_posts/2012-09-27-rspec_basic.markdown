@@ -16,36 +16,36 @@ RSpecで使う基本メソッド(describe/context/it/before/after/let)とMock(do
 
 ### 基本メソッド
 
-* describe/context - テスト名。テスト対象自身のオブジェクト(subject代わり)でもOK
-* before - 事前条件。example(it)の前に実行される。before :each はexample毎、before :all はdescribe毎
-* after - 事後処理
-* subject - 評価対象。shouldの前のオブジェクトを指定することでit内のオブジェクトを省略できる
-* it - テスト仕様。マッチャーを使って評価する
+* **describe/context** - テスト名。テスト対象自身のオブジェクト(subject代わり)でもOK
+* **before** - 事前条件。example(it)の前に実行される。*before :each* はexample毎、*before :all* はdescribe毎に呼ばれる
+* **after** - 事後処理。以後のテストに影響が出ないように後始末が必要な時に記述する
+* **subject** - 評価対象。shouldの前のオブジェクトを指定することでit内のオブジェクトを省略できる
+* **it** - テスト仕様。マッチャーを使って評価する
 
 {% codeblock lang:ruby %}
+# 一番上のdescribeはテスト対象にしておくといい。subjectにもなる
 describe Controller do
-  # 一番上のdescribeはテスト対象にしておくといい。subjectにもなる
 
+  # contextはdescribeのalias。テスト対象にgetのときとか事前条件変えるときはこっちの方が読みやすいかも
   context "handling AccessDenied exceptions" do
-    # contextはdescribeのalias。テスト対象にgetのときとか事前条件変えるときはこっちの方が読みやすいかも
 
+    # デフォルトはbefore :each
+    # 事前条件はitにも書けるけど、なるべく分けるように
     before { get :index } # 1行になるべく書く
-      # デフォルトはbefore :each
-      # 事前条件はitにも書けるけど、なるべく分けるように
 
-    subject { response } # itのテスト対象。shouldの前を省ける
+    # itのテスト対象。shouldの前を省ける
+    subject { response }
 
-    it { should redirect_to("/401.html") } # itの後に概要書けるけど、マッチャーだけで意味通るなら省略する
+    # itの後に概要書けるけど、マッチャーだけで意味通るなら省略する
+    it { should redirect_to("/401.html") }
 
   end
 end
 {% endcodeblock %}
 
-* it(context, tags) - タグが付けられる
+* **it(context, tags)** - タグが付けられる
 
-{% codeblock lang:sh %}
-rspec --tag ruby:1.8
-{% endcodeblock %}
+<pre>$ rspec --tag ruby:1.8</pre>
 
 {% codeblock lang:ruby %}
 describe "Something" do
@@ -59,7 +59,7 @@ describe "Something" do
 end
 {% endcodeblock %}
 
-* its - subjectのメソッドが呼べる
+* **its(method)** - subjectのメソッドが呼べる
 
 {% codeblock lang:ruby %}
 describe [1, 2, 3, 3] do
