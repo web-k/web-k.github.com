@@ -18,6 +18,8 @@ $header-font-size: 1em !default;
 $header-padding-top: 1.5em !default;
 $header-padding-bottom: 1.5em !default;
 
+body { font-size: 16px; }
+
 .group { @include pie-clearfix; }
 
 @mixin collapse-sidebar {
