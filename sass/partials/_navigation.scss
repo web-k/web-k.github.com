@@ -40,7 +40,6 @@ body > nav {
     font-size: .9em;
     ul {
       @include horizontal-list(0);
-      float: left;
       display: block;
       padding-top: .15em;
     }
@@ -48,6 +47,10 @@ body > nav {
       margin-left: .8em;
       float: right;
       li:last-child a { padding-right: 0; }
+      li a span.text {
+        position: relative;
+        left: 9999px;
+      }
     }
     ul li {
       margin: 0;
@@ -56,7 +59,6 @@ body > nav {
       @include link-colors($nav-color, $nav-color-hover, $visited: $nav-color);
       font-family: $sans;
       text-shadow: lighten($nav-bg, 12) 0 1px;
-      float: left;
       text-decoration: none;
       font-size: 1.1em;
       padding: .1em 0;
@@ -131,7 +133,10 @@ body > nav {
     }
   }
   ul.subscription { position: relative; top: .2em; li, a { border: 0; padding: 0; }}
-  a[rel=subscribe-rss]{ @include mask-subscription-nav('rss.png'); }
+  a[rel=subscribe-rss]{
+    @include mask-subscription-nav('rss.png');
+    background-color: transparent;
+  }
   a[rel=subscribe-email]{ @include mask-subscription-nav('email.png'); }
 }
 
