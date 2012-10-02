@@ -9,10 +9,8 @@ RSpecで使う基本メソッド(describe/context/it/its/before/after/subject/le
 
 ### 参考リンク
 
-* [RSpec](http://kerryb.github.com/iprug-rspec-presentation/)
-この記事はここのほぼ抜粋です。よくまとまっています
-* [RSpec を使い始める人が読むべき N 個のドキュメント | Aiming 開発者ブログ](http://developer.aiming-inc.com/rails/rspec-references/)
-参考リンクがいっぱいあります。上の記事もここで見つけた
+* [RSpec](http://kerryb.github.com/iprug-rspec-presentation/) - 本記事はここのほぼ抜粋です。よくまとまっています
+* [RSpec を使い始める人が読むべき N 個のドキュメント | Aiming 開発者ブログ](http://developer.aiming-inc.com/rails/rspec-references/) - 参考リンクがいっぱいあります。上の記事もここで見つけた
 
 ### 基本メソッド
 
@@ -22,7 +20,7 @@ RSpecで使う基本メソッド(describe/context/it/its/before/after/subject/le
 * **subject** - 評価対象。shouldの前のオブジェクトを指定することでit内のオブジェクトを省略できる
 * **it** - テスト仕様。マッチャーを使って評価する
 
-{% codeblock lang:ruby %}
+``` ruby
 # 一番上のdescribeはテスト対象にしておくといい。subjectにもなる
 describe Controller do
   # contextはdescribeのalias。テスト対象にgetのときとか事前条件変えるときはこっちの方が読みやすいかも
@@ -38,13 +36,13 @@ describe Controller do
     it { should redirect_to("/401.html") }
   end
 end
-{% endcodeblock %}
+```
 
 * **it(context, tags)** - タグが付けられる
 
 <pre>$ rspec --tag ruby:1.8</pre>
 
-{% codeblock lang:ruby %}
+``` ruby
 describe "Something" do
   # ruby:1.8
   it "behaves one way in Ruby 1.8", :ruby => "1.8" do
@@ -56,11 +54,11 @@ describe "Something" do
     ...
   end
 end
-{% endcodeblock %}
+```
 
 * **its(method)** - subjectのメソッドが呼べる
 
-{% codeblock lang:ruby %}
+``` ruby
 describe [1, 2, 3, 3] do
   # [1,2,3,3].size.should == 4
   its(:size) { should == 4 }
@@ -68,13 +66,13 @@ describe [1, 2, 3, 3] do
   # [1,2,3,3].uniq.size.should == 3
   its("uniq.size") { should == 3 }
 end
-{% endcodeblock %}
+```
 
 * **let** - example内で同じオブジェクトの使い回し
 
-{% codeblock lang:ruby %}
+``` ruby
 describe BowlingGame do
-　# example毎に呼ばれる。でも遅延評価。使わなかったら呼ばれない
+  # example毎に呼ばれる。でも遅延評価。使わなかったら呼ばれない
   let(:game) { BowlingGame.new }
  
   it "scores all gutters with 0" do
@@ -87,11 +85,11 @@ describe BowlingGame do
     game.score.should == 20
   end
 end
-{% endcodeblock %}
+```
 
 * **shared_examples_for** - exampleの共通化
 
-{% codeblock lang:ruby %}
+``` ruby
 shared_examples_for "a single-element array" do
   # letやbeforeやafterも書ける。要はなんでも共通化
   let(:xxx) { Obj.new }
@@ -110,6 +108,33 @@ end
 describe [42] do
   it_behaves_like "a single-element array"
 end
-{% endcodeblock %}
+```
+
+* **shared_context** - 事前条件の共通化
+
+``` ruby
+shared_context '要素がふたつpushされている' do
+  let(:latest_value) { 'value2' }
+  before do
+    @stack = Stack.new
+    @stack.push 'value1'
+    @stack.push latest_value
+  end
+end
+
+describe Stack do
+  describe '#size' do
+    include_context '要素がふたつpushされている'
+    subject { @stack.size }
+    it { should eq 2 }
+  end
+
+  describe '#pop' do
+    include_context '要素がふたつpushされている'
+    subject { @stack.pop }
+    it { should eq latest_value }
+  end
+end
+```
 
 次回はMockについてまとめてみます。
