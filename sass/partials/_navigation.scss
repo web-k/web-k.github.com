@@ -132,7 +132,7 @@ body > nav {
       }
     }
   }
-  ul.subscription { position: relative; top: .2em; li, a { border: 0; padding: 0; }}
+  ul.subscription { position: relative; li, a { border: 0; padding: 0; }}
   a[rel=subscribe-rss]{
     @include mask-subscription-nav('rss.png');
     background-color: transparent;
