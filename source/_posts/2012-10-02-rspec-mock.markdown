@@ -76,6 +76,8 @@ doubleもstubもmockもSpec::Mocks::Mockのインスタンスを作成します�
 ``` ruby
 # 評価対象はUser
 user = mock_model(User)
+# User.find_by_idが呼ばれた時にmockを返しておく
+User.stub(find_by_id: user)
 # user.saveが呼ばれることを期待
 user.should_receive(:save).and_return(true)
 # 期待通りに振る舞うかリクエスト
