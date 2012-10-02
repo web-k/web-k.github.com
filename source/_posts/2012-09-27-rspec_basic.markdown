@@ -1,11 +1,11 @@
 ---
 layout: post
-title: "RSpecまとめ～基本メソッド/Mock～"
+title: "RSpecまとめ(1)～基本メソッド～"
 date: 2012-09-27 01:53
 comments: true
 categories: [Ruby,RSpec]
 ---
-RSpecで使う基本メソッド(describe/context/it/before/after/let)とMock(double/stub/mock)辺りをまとめてみる。
+RSpecで使う基本メソッド(describe/context/it/its/before/after/subject/let/shared_examples_for)をまとめてみる。
 
 ### 参考リンク
 
@@ -25,10 +25,8 @@ RSpecで使う基本メソッド(describe/context/it/before/after/let)とMock(do
 {% codeblock lang:ruby %}
 # 一番上のdescribeはテスト対象にしておくといい。subjectにもなる
 describe Controller do
-
   # contextはdescribeのalias。テスト対象にgetのときとか事前条件変えるときはこっちの方が読みやすいかも
   context "handling AccessDenied exceptions" do
-
     # デフォルトはbefore :each
     # 事前条件はitにも書けるけど、なるべく分けるように
     before { get :index } # 1行になるべく書く
@@ -38,7 +36,6 @@ describe Controller do
 
     # itの後に概要書けるけど、マッチャーだけで意味通るなら省略する
     it { should redirect_to("/401.html") }
-
   end
 end
 {% endcodeblock %}
@@ -49,10 +46,12 @@ end
 
 {% codeblock lang:ruby %}
 describe "Something" do
+  # ruby:1.8
   it "behaves one way in Ruby 1.8", :ruby => "1.8" do
     ...
   end
- 
+
+  # ruby:1.9
   it "behaves another way in Ruby 1.9", :ruby => "1.9" do
     ...
   end
@@ -63,7 +62,54 @@ end
 
 {% codeblock lang:ruby %}
 describe [1, 2, 3, 3] do
+  # [1,2,3,3].size.should == 4
   its(:size) { should == 4 }
+
+  # [1,2,3,3].uniq.size.should == 3
   its("uniq.size") { should == 3 }
 end
 {% endcodeblock %}
+
+* **let** - example内で同じオブジェクトの使い回し
+
+{% codeblock lang:ruby %}
+describe BowlingGame do
+　# example毎に呼ばれる。でも遅延評価。使わなかったら呼ばれない
+  let(:game) { BowlingGame.new }
+ 
+  it "scores all gutters with 0" do
+    20.times { game.roll(0) }
+    game.score.should == 0
+  end
+ 
+  it "scores all 1s with 20" do
+    20.times { game.roll(1) }
+    game.score.should == 20
+  end
+end
+{% endcodeblock %}
+
+* **shared_examples_for** - exampleの共通化
+
+{% codeblock lang:ruby %}
+shared_examples_for "a single-element array" do
+  # letやbeforeやafterも書ける。要はなんでも共通化
+  let(:xxx) { Obj.new }
+  before { puts 'before' }
+  after { puts 'after' }
+
+  # subjectやletを渡せる
+  it { should_not be_empty }
+  it { should have(1).element }
+end
+ 
+describe ["foo"] do
+  it_behaves_like "a single-element array"
+end
+ 
+describe [42] do
+  it_behaves_like "a single-element array"
+end
+{% endcodeblock %}
+
+次回はMockについてまとめてみます。
