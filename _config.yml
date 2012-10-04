@@ -3,11 +3,11 @@
 # ----------------------- #
 
 url: http://web-k.github.com
-title: チームweb-kブログ
-subtitle: 技術情報とか乗せていきます。おもにRubyとかWebとか
+title: web-k.log
+subtitle: RubyやWebをメインに技術情報をのせていきます
 author: Team web-k
 simple_search: http://google.com/search
-description:
+description: RubyやWebをメインに技術情報をのせていきます
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
 # You can customize the format as defined in
