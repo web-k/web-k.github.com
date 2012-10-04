@@ -16,8 +16,8 @@ RSpecのマッチャには、「演算子マッチャ」と「ビルトインマ
 
 使うときは以下のようにして記載します。
 ``` ruby
-(1 + 1).should == 2
-10.should < 11
+(1 + 2).should == 3
+1.should < 2
 "apple".should_not =~ /orange/
 ```
 なお、「!=」や「!~」などの否定演算子は**サポートされていません**。「なんとかではないこと」を記載するときはshouldの代わりにshould_notを使います。
@@ -52,9 +52,9 @@ RSpecのマッチャには、「演算子マッチャ」と「ビルトインマ
 
 使うときは以下のようにして記載します。
 ``` ruby
-"a string".should be_an_instance_of(String)
-3.should be_a_kind_of(Numeric)
-3.should_not be_an_instance_of(String)
+"string".should be_an_instance_of(String)
+1.should be_a_kind_of(Numeric)
+1.should_not be_an_instance_of(String)
 ```
 また、マッチャを独自定義して使用することも可能です。
 次のように書きます。（[公式ドキュメント](http://rspec.rubyforge.org/rspec/1.2.9/classes/Spec/Matchers.html)から引用）
@@ -108,14 +108,14 @@ Capybaraのマッチャは、オブジェクト対してメソッドの様に記
 使うときは以下のようにして記載します。
 ``` ruby
 page.has_xpath?('//table/tr')
-page.has_css?('table tr.foo')
-page.has_no_content?('foo')
+page.has_css?('table tr.hoge')
+page.has_no_content?('hoge')
 ```
 また、RSpecのマッチャの様に記載するときは「has_XXX?」を「have_XXX」に直して以下のようにします。
 ``` ruby
 page.should have_xpath('//table/tr')
-page.should have_css('table tr.foo')
-page.should have_no_content('foo')
+page.should have_css('table tr.hoge')
+page.should have_no_content('hoge')
 ```
 このとき、page.**should** have_no_XXX('value')をpage.**should_not** have_XXX('value')とは書かないほうがよいです。
 理由はAjaxの待ち時間を考慮するためです。
