@@ -110,6 +110,9 @@ Capybaraのマッチャは、オブジェクト対してメソッドの様に記
 page.has_xpath?('//table/tr')
 page.has_css?('table tr.hoge')
 page.has_no_content?('hoge')
+# page.has_XXX? は true/false を返すだけなので、テスト結果を得たいときは、
+# assert page.has_xpath?('//table/tr')
+# というようにassertを付けて記載します。
 ```
 また、RSpecのマッチャの様に記載するときは「has_XXX?」を「have_XXX」に直して以下のようにします。
 ``` ruby
