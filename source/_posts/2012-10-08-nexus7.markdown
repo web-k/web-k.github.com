@@ -1,0 +1,47 @@
+---
+layout: post
+title: Nexus 7(Jelly Bean)のUser AgentとCSS 3D Transforms対応状況を調べてみた
+date: 2012-10-08 09:05
+comments: true
+categories: Android CSS3 HTML5
+---
+今週末10/6にNexus 7が届いて楽しくいじり倒していたのだが、ブラウザでの以下の2点の大きな変更が気になっていた。
+
+* Android 4.1 Jelly BeansからFlash Playerが未サポートになってGoogle Playから新規インストール出来なくなった。
+* 標準ブラウザがChromeに変わった
+
+Flashが使えなくなったことでHTML5で対応する必要がでてくる(ていうかHTML5で対応出来ないと詰む)ことが多くなる。なので、各ブラウザアプリUser AgentとCSS 3D Transformsの挙動を実際に試してみる。
+
+### User Agent
+
+ブラウザ | User Agent
+---------|------------
+Chrome | Mozilla/5.0 (Linux; Android 4.1.1; Nexus 7 Build/JRO03S) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Safari/535.19
+Dolphin | Mozilla/5.0 (Linux; U; Android 4.1.1; ja-jp; Nexus 7 Build/JRO03S) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Safari/534.30
+Firefox | Mozilla/5.0 (Android; Tablet; rv:15.0) Gecko/15.0 Firefox/15.0.1
+Sleipnir | Mozilla/5.0 (Linux; U; Android 4.1.1; ja-jp; Nexus 7 Build/JRO03S) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Safari/534.30
+OperaMobile | Opera/9.80 (Android 4.1.1; Linux; Opera Tablet/ADR-1207201819; U; ja) Presto/2.10.254 Version/12.00
+
+ICSの標準ブラウザでのUser Agentは後半が「AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30」になっているのでDolphinとSleipnirはJelly Beanになっても以前の標準ブラウザと同一エンジンで同じ挙動を示しそうな感じだ。
+
+Firefoxはバージョン番号が含まれてないのでJelly Beanかどうか判断出来ないという結果に。Flash未サポートかどうかUser Agentで簡単に振り分けられなくなっちゃうので、出来ればバージョン番号も付加して改善して欲しいところ。
+
+次にCSS 3D Transformsの挙動を見てCSS3の対応状況を見てみる。
+
+### CSS 3D Transforms
+
+挙動の確認は6枚の画像をサイコロ風に並べたCube型に配置してFPSの様な視点を作ってグリグリ回して確かめた。結果は以下の通り
+
+ブラウザ | 対応状況 | 挙動
+-------------|--------------|---------
+Chrome | △ |  CSSは認識しているがグリグリ動かすと画像落ちする
+Dolphin | ◎ | FPSの視点でグリグリOK
+Firefox | △ | 描写は出来て、画像落ちはしないが、使い物にならないくらい激重
+Sleipnir | ◎ | Dolphinと同じでOK
+OperaMobile | × | CSS/3D is not supported. と出る。3D表示出来ない
+
+ちなみにPCではFirefoxとChromeはWin/Mac共PCにGPU搭載されていればHWアクセラレーションがきちんと動作して問題なく動作する。
+
+### 結果
+
+△は(アニメーションしないならもしかしたら使える時もあるかもしれないが)実用不可なのでDolphinとSleipnirくらいしかまともに動かない。ICS標準ブラウザでは動作していたのにJelly BeanでChrome for Androidに変わったことでCSS 3D Transformsに関しては退化してしまったことになる。早急の改善をChrome for Androidにお願いしたい。
