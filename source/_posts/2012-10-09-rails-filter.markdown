@@ -33,3 +33,5 @@ true/falseだからといって特に何も起こらなかった。falseでも�
 before_filterやafter_filterはメソッドを優先して実行するかどうかを決めているだけであり、メソッドの返り値を受け取ってどうこうするというモノではないようだ。
 
 ただし、before_filterで呼んだメソッドの中にrenderやredirect_to、raiseなどがあると、その後に控えている他のbefore_filterや以降のコントローラのメソッドは実行されない。
+
+なお、[rails:3168](http://www.fdiary.net/ml/rails/msg/3168)によると、rails 1.xではfilterにfalseが返ると、そこで処理が止まっていたようです。
