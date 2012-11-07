@@ -1,114 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
 
-<!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <title>web-k.log</title>
-  <meta name="author" content="Team web-k">
-
-  
-  <meta name="description" content="Capybaraは通常Rack:Testと呼ばれるブラウザエンジンを用い、仮想的に画面操作をしています。そのためJavascriptを考慮したテストはできません。
-この場合、CapybaraのエンジンをJavascriptが動作する、capybara- &hellip;">
-  
-
-  <!-- http://t.co/dKP3o1e -->
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
-  <link rel="canonical" href="http://web-k.github.com/">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="/javascripts/ender.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <link href="/atom.xml" rel="alternate" title="web-k.log" type="application/atom+xml">
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-
-  
-  <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-35251356-1']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
-
-
-</head>
-
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">web-k.log</a></h1>
-  
-    <h2>RubyやWebをメインに技術情報をのせていきます</h2>
-  
-</hgroup>
-
-</header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS"><span class="text">RSS</span></a></li>
-  
-</ul>
-  
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:web-k.github.com" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-</ul>
-
-</nav>
-  <div id="main">
-    <div id="content">
-      <div class="blog-index">
-  
-  
-  
-    <article>
-      
-  <header>
+  <title><![CDATA[web-k.log]]></title>
+  <link href="http://web-k.github.com/atom.xml" rel="self"/>
+  <link href="http://web-k.github.com/"/>
+  <updated>2012-11-07T17:32:32+09:00</updated>
+  <id>http://web-k.github.com/</id>
+  <author>
+    <name><![CDATA[Team web-k]]></name>
     
-      <h1 class="entry-title"><a href="/blog/2012/11/07/capybara-driver/">Capybaraのブラウザエンジン</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
 
   
-
-
-<time datetime="2012-11-07T16:37:00+09:00" pubdate data-updated="true">Nov 7<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/11/07/capybara-driver/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Capybaraは通常Rack:Testと呼ばれるブラウザエンジンを用い、仮想的に画面操作をしています。そのためJavascriptを考慮したテストはできません。
+  <entry>
+    <title type="html"><![CDATA[Capybaraのブラウザエンジン]]></title>
+    <link href="http://web-k.github.com/blog/2012/11/07/capybara-driver/"/>
+    <updated>2012-11-07T16:37:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2012/11/07/capybara-driver</id>
+    <content type="html"><![CDATA[<p>Capybaraは通常Rack:Testと呼ばれるブラウザエンジンを用い、仮想的に画面操作をしています。そのためJavascriptを考慮したテストはできません。
 この場合、CapybaraのエンジンをJavascriptが動作する、capybara-webkitやSeleniumというブラウザエンジンに切り替えてテストを行います。
 capybara_webkitを使うにはGemfileにcapybara-webkitを追記します。</p>
 
@@ -210,44 +120,15 @@ RSpecのフィルタで切り替える方法を載せます。この方法は特
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/22/internationalization-i18n/">i18n(Internationalization)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-22T13:03:00+09:00" pubdate data-updated="true">Oct 22<span>nd</span>, 2012</time>
-        
-         | <a href="/blog/2012/10/22/internationalization-i18n/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Railsでi18nを使った多言語対応について調べたので、それについてまとめる。
+  <entry>
+    <title type="html"><![CDATA[i18n(Internationalization)]]></title>
+    <link href="http://web-k.github.com/blog/2012/10/22/internationalization-i18n/"/>
+    <updated>2012-10-22T13:03:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2012/10/22/internationalization-i18n</id>
+    <content type="html"><![CDATA[<p>Railsでi18nを使った多言語対応について調べたので、それについてまとめる。
 今回は多言語対応の一般的な話をまとめる。</p>
 
 <h3>多言語対応について</h3>
@@ -280,44 +161,15 @@ i18nに対応すると次に各言語においての対応を実装していく�
 <li><a href="http://guides.rubyonrails.org/i18n.html">Ruby on Rails Guides: Rails Internationalization (I18n) API</a></li>
 </ul>
 
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/09/rails-filter/">Railsのbefore_filterとメソッド返り値</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-09T16:54:00+09:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/10/09/rails-filter/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>before_filterで実行したメソッドがfalseをreturnしたらどうなるか、気になったのでメモ。</p>
+  <entry>
+    <title type="html"><![CDATA[Railsのbefore_filterとメソッド返り値]]></title>
+    <link href="http://web-k.github.com/blog/2012/10/09/rails-filter/"/>
+    <updated>2012-10-09T16:54:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2012/10/09/rails-filter</id>
+    <content type="html"><![CDATA[<p>before_filterで実行したメソッドがfalseをreturnしたらどうなるか、気になったのでメモ。</p>
 
 <p>確認した環境はRuby 1.9.3p194, Rails 3.2.8。</p>
 
@@ -365,44 +217,15 @@ i18nに対応すると次に各言語においての対応を実装していく�
 <p>ただし、before_filterで呼んだメソッドの中にrenderやredirect_to、raiseなどがあると、その後に控えている他のbefore_filterや以降のコントローラのメソッドは実行されない。</p>
 
 <p>なお、<a href="http://www.fdiary.net/ml/rails/msg/3168">rails:3168</a>によると、rails 1.xではfilterにfalseが返ると、そこで処理が止まっていたようです。</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/08/nexus7/">Nexus 7(Jelly Bean)のUser AgentとCSS 3D Transforms対応状況を調べてみた</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-08T09:05:00+09:00" pubdate data-updated="true">Oct 8<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/10/08/nexus7/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>今週末10/6にNexus 7が届いて楽しくいじり倒していたのだが、ブラウザでの以下の2点の大きな変更が気になっていた。</p>
+  <entry>
+    <title type="html"><![CDATA[Nexus 7(Jelly Bean)のUser AgentとCSS 3D Transforms対応状況を調べてみた]]></title>
+    <link href="http://web-k.github.com/blog/2012/10/08/nexus7/"/>
+    <updated>2012-10-08T09:05:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2012/10/08/nexus7</id>
+    <content type="html"><![CDATA[<p>今週末10/6にNexus 7が届いて楽しくいじり倒していたのだが、ブラウザでの以下の2点の大きな変更が気になっていた。</p>
 
 <ul>
 <li>Android 4.1 Jelly BeansからFlash Playerが未サポートになってGoogle Playから新規インストール出来なくなった。</li>
@@ -499,44 +322,15 @@ i18nに対応すると次に各言語においての対応を実装していく�
 <h3>結果</h3>
 
 <p>△は(アニメーションしないならもしかしたら使える時もあるかもしれないが)実用不可なのでDolphinとSleipnirくらいしかまともに動かない。ICS標準ブラウザでは動作していたのにJelly BeanでChrome for Androidに変わったことでCSS 3D Transformsに関しては退化してしまったことになる。早急の改善をChrome for Androidにお願いしたい。</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/05/fabrication-cucumber/">FabricationとCucumberの連携</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-05T10:13:00+09:00" pubdate data-updated="true">Oct 5<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/10/05/fabrication-cucumber/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>前回Fabricationの続きで、Cucumberと連携する方法についてここに記載します。</p>
+  <entry>
+    <title type="html"><![CDATA[FabricationとCucumberの連携]]></title>
+    <link href="http://web-k.github.com/blog/2012/10/05/fabrication-cucumber/"/>
+    <updated>2012-10-05T10:13:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2012/10/05/fabrication-cucumber</id>
+    <content type="html"><![CDATA[<p>前回Fabricationの続きで、Cucumberと連携する方法についてここに記載します。</p>
 
 <h2>Cucumber</h2>
 
@@ -701,44 +495,15 @@ spec/fabricatorsフォルダにおいておけば、何とでも設定してお�
 
 
 
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/04/fabrication/">Fabrication</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-04T12:02:00+09:00" pubdate data-updated="true">Oct 4<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/10/04/fabrication/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>ここでは、<a href="http://www.fabricationgem.org/">Fabrication</a> のサイトを日本語に直して、自己解釈して補完しながら説明していきます。</p>
+  <entry>
+    <title type="html"><![CDATA[Fabrication]]></title>
+    <link href="http://web-k.github.com/blog/2012/10/04/fabrication/"/>
+    <updated>2012-10-04T12:02:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2012/10/04/fabrication</id>
+    <content type="html"><![CDATA[<p>ここでは、<a href="http://www.fabricationgem.org/">Fabrication</a> のサイトを日本語に直して、自己解釈して補完しながら説明していきます。</p>
 
 <h2>Fabricationとは</h2>
 
@@ -1202,44 +967,15 @@ Sequencesは指定がなければ、0からはじまる。</p>
 <li><a href="http://www.slideshare.net/KenichiTachibana/fabrication-10499288">Fabrication:SlideShare</a></li>
 </ul>
 
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/03/compare-matchers/">RSpecとCapybaraのマッチャ比較</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-03T14:36:00+09:00" pubdate data-updated="true">Oct 3<span>rd</span>, 2012</time>
-        
-         | <a href="/blog/2012/10/03/compare-matchers/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Ruby on RailsでSpecを書く時に、RSpecのマッチャなのかCapybaraのマッチャなのか分からなくなったのでメモ</p>
+  <entry>
+    <title type="html"><![CDATA[RSpecとCapybaraのマッチャ比較]]></title>
+    <link href="http://web-k.github.com/blog/2012/10/03/compare-matchers/"/>
+    <updated>2012-10-03T14:36:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2012/10/03/compare-matchers</id>
+    <content type="html"><![CDATA[<p>Ruby on RailsでSpecを書く時に、RSpecのマッチャなのかCapybaraのマッチャなのか分からなくなったのでメモ</p>
 
 <h3>RSpecのマッチャ</h3>
 
@@ -1422,44 +1158,15 @@ shouldを用いたときにその振る舞いは発揮されますが、should_n
 <li><a href="http://d.hatena.ne.jp/willnet/20110704/1309782442">Capybara の README 意訳 - おもしろWEBサービス開発日記</a></li>
 </ul>
 
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/02/rspec-mock/">RSpecまとめ(2)～Mock(double/stub/mock)～</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-02T13:59:00+09:00" pubdate data-updated="true">Oct 2<span>nd</span>, 2012</time>
-        
-         | <a href="/blog/2012/10/02/rspec-mock/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><a href="/blog/2012/09/27/rspec_basic/">前回</a>はRSpecの基本メソッドについてまとめました。今回はMockについてまとめます。</p>
+  <entry>
+    <title type="html"><![CDATA[RSpecまとめ(2)～Mock(double/stub/mock)～]]></title>
+    <link href="http://web-k.github.com/blog/2012/10/02/rspec-mock/"/>
+    <updated>2012-10-02T13:59:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2012/10/02/rspec-mock</id>
+    <content type="html"><![CDATA[<p><a href="http://web-k.github.com/blog/2012/09/27/rspec_basic/">前回</a>はRSpecの基本メソッドについてまとめました。今回はMockについてまとめます。</p>
 
 <h3>テストダブルとは</h3>
 
@@ -1635,44 +1342,15 @@ shouldを用いたときにその振る舞いは発揮されますが、should_n
 <li><a href="http://blogs.ricollab.jp/webtech/2009/09/mock_and_stub/">ricollab Web Tech Blog » Blog Archive » Mock と Stub について</a></li>
 </ul>
 
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/27/rspec_basic/">RSpecまとめ(1)～基本メソッド～</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-27T01:53:00+09:00" pubdate data-updated="true">Sep 27<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/09/27/rspec_basic/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>RSpecで使う基本メソッド(describe/context/it/its/before/after/subject/let/shared_examples_for)をまとめてみる。</p>
+  <entry>
+    <title type="html"><![CDATA[RSpecまとめ(1)～基本メソッド～]]></title>
+    <link href="http://web-k.github.com/blog/2012/09/27/rspec_basic/"/>
+    <updated>2012-09-27T01:53:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2012/09/27/rspec_basic</id>
+    <content type="html"><![CDATA[<p>RSpecで使う基本メソッド(describe/context/it/its/before/after/subject/let/shared_examples_for)をまとめてみる。</p>
 
 <h3>参考リンク</h3>
 
@@ -1916,122 +1594,7 @@ shouldを用いたときにその振る舞いは発揮されますが、should_n
 
 
 <p>次回はMockについてまとめてみます。</p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
-<aside class="sidebar">
-  
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2012/11/07/capybara-driver/">Capybaraのブラウザエンジン</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/22/internationalization-i18n/">i18n(Internationalization)</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/09/rails-filter/">Railsのbefore_filterとメソッド返り値</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/08/nexus7/">Nexus 7(Jelly Bean)のUser AgentとCSS 3D Transforms対応状況を調べてみた</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/05/fabrication-cucumber/">FabricationとCucumberの連携</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/04/fabrication/">Fabrication</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/03/compare-matchers/">RSpecとCapybaraのマッチャ比較</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/02/rspec-mock/">RSpecまとめ(2)～Mock(double/stub/mock)～</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/09/27/rspec_basic/">RSpecまとめ(1)～基本メソッド～</a>
-      </li>
-    
-  </ul>
-</section>
-<section>
-  <h1>Categories</h1>
-    <ul id="category-list"><li><a href='/blog/categories/android'>Android (1)</a></li><li><a href='/blog/categories/capybara'>capybara (1)</a></li><li><a href='/blog/categories/capybara-webkit'>capybara-webkit (1)</a></li><li><a href='/blog/categories/css3'>CSS3 (1)</a></li><li><a href='/blog/categories/cucumber'>Cucumber (1)</a></li><li><a href='/blog/categories/fabrication'>Fabrication (2)</a></li><li><a href='/blog/categories/html5'>HTML5 (1)</a></li><li><a href='/blog/categories/i18n'>i18n (1)</a></li><li><a href='/blog/categories/rspec'>RSpec (3)</a></li><li><a href='/blog/categories/ruby'>Ruby (5)</a></li></ul>
-</section>
-
-  
-</aside>
-
-    </div>
-  </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2012 - Team web-k -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
-
-</footer>
-  
-
-<script type="text/javascript">
-      var disqus_shortname = 'web-k';
-      
-        
-        var disqus_script = 'count.js';
-      
-    (function () {
-      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
-
-
-
-<div id="fb-root"></div>
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) {return;}
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
-
-
-
-
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
-
-
-
-
-
-</body>
-</html>
+</feed>

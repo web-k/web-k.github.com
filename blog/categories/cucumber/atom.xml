@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Cucumber | web-k.log]]></title>
+  <link href="http://web-k.github.com/blog/categories/cucumber/atom.xml" rel="self"/>
+  <link href="http://web-k.github.com/"/>
+  <updated>2012-11-07T17:32:32+09:00</updated>
+  <id>http://web-k.github.com/</id>
+  <author>
+    <name><![CDATA[Team web-k]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[FabricationとCucumberの連携]]></title>
+    <link href="http://web-k.github.com/blog/2012/10/05/fabrication-cucumber/"/>
+    <updated>2012-10-05T10:13:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2012/10/05/fabrication-cucumber</id>
+    <content type="html"><![CDATA[<p>前回Fabricationの続きで、Cucumberと連携する方法についてここに記載します。</p>
+
+<h2>Cucumber</h2>
+
+<h3>インストール</h3>
+
+<p>step_definitionsフォルダに便利な cucumber_steps を生成してくれるツールがgemの中にパッケージ化されている。
+Gemfileのdevelopment環境にcucumber系を含めている必要がある。
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="err">$</span> <span class="n">rails</span> <span class="n">generate</span> <span class="n">fabrication</span><span class="ss">:cucumber_steps</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;h1&gt;=&gt; create  features/s</span><span class="n">tep_definitions</span><span class="o">/</span><span class="n">fabrication_steps</span><span class="o">.</span><span class="n">rb</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>Step Definitions</h3>
+
+<p>WidgetモデルのFabricatorが定義されていれば、下記のように書くだけでFabricateできる。
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">Given </span><span class="s">1</span><span class="nf"> widget</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+Widgetモデルの属性を指定してFabricateすることもできる。
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">Given </span><span class="nf">the following widget:</span>
+</span><span class='line'><span class="k">  |</span><span class="s"> name</span><span class="k">      |</span><span class="s"> widget_1</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="k">  |</span><span class="s"> color</span><span class="k">     |</span><span class="s"> red</span><span class="k">      |</span><span class="nf"></span>
+</span><span class='line'><span class="k">  |</span><span class="s"> adjective</span><span class="k"> |</span><span class="s"> awesome</span><span class="k">  |</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+複数も可
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">Given </span><span class="s">10</span><span class="nf"> widgets</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+属性付きで複数Fabricateする。
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">Given </span><span class="nf">the following widgets:</span>
+</span><span class='line'><span class="k">  |</span><span class="s"> name</span><span class="k">     |</span><span class="s"> color</span><span class="k"> |</span><span class="s"> adjective</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="k">  |</span><span class="s"> widget_1</span><span class="k"> |</span><span class="s"> red</span><span class="k">   |</span><span class="s"> awesome</span><span class="k">   |</span><span class="nf"></span>
+</span><span class='line'><span class="k">  |</span><span class="s"> widget_2</span><span class="k"> |</span><span class="s"> blue</span><span class="k">  |</span><span class="s"> fantastic</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="nf">  ...</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+既にFabricateされた"widget"に"wockets"を所属させる。
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">And </span><span class="nf">that widget has </span><span class="s">10</span><span class="nf"> wockets</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+既にFabricateされた"widget"に"wockets"を属性を与えて所属させる。
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">And </span><span class="nf">that widget has the following wocket</span>
+</span><span class='line'><span class="k">  |</span><span class="s"> title</span><span class="k">    |</span><span class="s"> Amazing</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="k">  |</span><span class="s"> category</span><span class="k"> |</span><span class="s"> fancy</span><span class="k">   |</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+既にFabricateされた"widget"と"wockets"を関連付ける。
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">And </span><span class="nf">that wocket belongs to that widget</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+データベースにいくつのオブジェクトが保持されているか検証する。
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">Then </span><span class="nf">I should see </span><span class="s">1</span><span class="nf"> widget in the database</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+オブジェクトの中身も検証できる。
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">Then </span><span class="nf">I should see the following widget in the database</span>
+</span><span class='line'><span class="k">  |</span><span class="s"> name</span><span class="k">  |</span><span class="s"> Sprocket</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="k">  |</span><span class="s"> gears</span><span class="k"> |</span><span class="s"> 4</span><span class="k">        |</span><span class="nf"></span>
+</span><span class='line'><span class="k">  |</span><span class="s"> color</span><span class="k"> |</span><span class="s"> green</span><span class="k">    |</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>Transforms</h3>
+
+<p>cucumberのステップでテーブルを変換できる。縦横のテーブルでカラムの値を再配置できる。
+spec/fabricatorsフォルダにおいておけば、何とでも設定しておける。</p>
+
+<p>例として、全てのフィールドの"company"に変換の定義をする。lambda には返り値の属性をセットしたい文字列を置く。
+その結果、"company"のインスタンスオブジェクトが生成される。
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabrication</span><span class="o">::</span><span class="no">Transform</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="ss">:company</span><span class="p">,</span> <span class="nb">lambda</span><span class="p">{</span> <span class="o">|</span><span class="n">company_name</span><span class="o">|</span> <span class="no">Company</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="n">company_name</span><span class="p">)</span><span class="o">.</span><span class="n">first</span> <span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">Scenario:</span><span class="nf"> a single object with transform to apply</span>
+</span><span class='line'><span class="k">  Given </span><span class="nf">the following company:</span><span class="nv">&lt;/p&gt;</span><span class="nf"></span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">&lt;pre&gt;&lt;code&gt;</span><span class="nf">| name</span><span class="k"> |</span><span class="s"> Widgets Inc</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="nv">&lt;/code&gt;&lt;/pre&gt;</span><span class="nf"></span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">&lt;p&gt;</span><span class="nf">  Given the following division:</span><span class="nv">&lt;/p&gt;</span><span class="nf"></span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">&lt;pre&gt;&lt;code&gt;</span><span class="nf">| name</span><span class="k">    |</span><span class="s"> Southwest</span><span class="k">   |</span><span class="nf"></span>
+</span><span class='line'><span class="nf">| company</span><span class="k"> |</span><span class="s"> Widgets Inc</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="nv">&lt;/code&gt;&lt;/pre&gt;</span><span class="nf"></span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">&lt;p&gt;</span><span class="nf">  Then that division should reference that company</span><span class="nv">&lt;/p&gt;</span><span class="nf"></span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">&lt;p&gt;</span><span class="nf">Scenario: multiple objects with transform to apply</span>
+</span><span class='line'><span class="nf">  </span><span class="k">Given </span><span class="nf">the following company:</span><span class="nv">&lt;/p&gt;</span><span class="nf"></span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">&lt;pre&gt;&lt;code&gt;</span><span class="nf">| name</span><span class="k"> |</span><span class="s"> Widgets Inc</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="nv">&lt;/code&gt;&lt;/pre&gt;</span><span class="nf"></span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">&lt;p&gt;</span><span class="nf">  Given the following divisions:</span><span class="nv">&lt;/p&gt;</span><span class="nf"></span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">&lt;pre&gt;&lt;code&gt;</span><span class="nf">| name</span><span class="k">      |</span><span class="s"> company</span><span class="k">     |</span><span class="nf"></span>
+</span><span class='line'><span class="nf">| Southwest</span><span class="k"> |</span><span class="s"> Widgets Inc</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="nf">| North</span><span class="k">     |</span><span class="s"> Widgets Inc</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="nv">&lt;/code&gt;&lt;/pre&gt;</span><span class="nf"></span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">&lt;p&gt;</span><span class="nf">  Then they should reference that company</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+divisions を生成したときに、lambdaによって"company"オブジェクトに渡されている。</p>
+
+<p>特定のモデルのスコープにだけ適用したい場合は、<strong>only_for</strong>を使う。
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabrication</span><span class="o">::</span><span class="no">Transform</span><span class="o">.</span><span class="n">only_for</span><span class="p">(</span><span class="ss">:division</span><span class="p">,</span> <span class="ss">:company</span><span class="p">,</span> <span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">company_name</span><span class="o">|</span> <span class="no">Company</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="n">company_name</span><span class="p">)</span><span class="o">.</span><span class="n">first</span> <span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+]]></content>
+  </entry>
+  
+</feed>

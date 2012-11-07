@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: RSpec | web-k.log]]></title>
+  <link href="http://web-k.github.com/blog/categories/rspec/atom.xml" rel="self"/>
+  <link href="http://web-k.github.com/"/>
+  <updated>2012-11-07T17:32:32+09:00</updated>
+  <id>http://web-k.github.com/</id>
+  <author>
+    <name><![CDATA[Team web-k]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[RSpecとCapybaraのマッチャ比較]]></title>
+    <link href="http://web-k.github.com/blog/2012/10/03/compare-matchers/"/>
+    <updated>2012-10-03T14:36:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2012/10/03/compare-matchers</id>
+    <content type="html"><![CDATA[<p>Ruby on RailsでSpecを書く時に、RSpecのマッチャなのかCapybaraのマッチャなのか分からなくなったのでメモ</p>
+
+<h3>RSpecのマッチャ</h3>
+
+<p>RSpecのマッチャには、「演算子マッチャ」と「ビルトインマッチャ」があり、「should」や「should_not」と組み合わせて使用します。
+(shouldとshould_notはRSpecがObjectを拡張して作ったメソッド)</p>
+
+<p>マッチャとして使用できる演算子は、「&lt;」、「&lt;=」、「==」、「===」、「=~」、「>」、「>=」の７種類。</p>
+
+<p>使うときは以下のようにして記載します。
+<code>ruby
+(1 + 2).should == 3
+1.should &lt; 2
+"apple".should_not =~ /orange/
+</code>
+なお、「!=」や「!~」などの否定演算子は<strong>サポートされていません</strong>。「なんとかではないこと」を記載するときはshouldの代わりにshould_notを使います。</p>
+
+<p>ビルトインマッチャは</p>
+
+<ul>
+<li>be</li>
+<li>be_a</li>
+<li>be_a_kind_of</li>
+<li>be_an_instance_of</li>
+<li>be_close</li>
+<li>be_within</li>
+<li>change</li>
+<li>eq</li>
+<li>eql</li>
+<li>equal</li>
+<li>exist</li>
+<li>expect</li>
+<li>have</li>
+<li>have_at_least</li>
+<li>have_at_most</li>
+<li>include</li>
+<li>match</li>
+<li>raise_error</li>
+<li>respond_to</li>
+<li>satisfy</li>
+<li>throw_symbol</li>
+</ul>
+
+
+<p>って感じでたくさんあります。
+「be_XXX」マッチャは「be_a_XXX」、「be_an_XXX」と記載しても同じ動作になります。
+「have_XXX」マッチャは、RSpec の実行時には 「has_XXX?」メソッドの呼び出しとして解釈されます。これは、should と並べ たときの字面を (英語として) 自然な記述するための措置です。</p>
+
+<p>使うときは以下のようにして記載します。
+<code>ruby
+"string".should be_an_instance_of(String)
+1.should be_a_kind_of(Numeric)
+1.should_not be_an_instance_of(String)
+</code>
+また、マッチャを独自定義して使用することも可能です。
+次のように書きます。（<a href="http://rspec.rubyforge.org/rspec/1.2.9/classes/Spec/Matchers.html">公式ドキュメント</a>から引用）
+``` ruby
+Spec::Matchers.define :be_in_zone do |zone|
+  match do |player|</p>
+
+<pre><code>player.in_zone?(zone)
+</code></pre>
+
+<p>  end
+end
+```
+Railsで使う場合は、spec/フォルダ直下にcustom_matchers.rbを作り、</p>
+
+<p>custom_matchers.rb
+``` ruby
+module CustomMatcher
+  def custom_matcher</p>
+
+<pre><code>#マッチャの処理を記述 
+</code></pre>
+
+<p>  end
+end
+<code>
+spec/spec_helper.rbを編集
+</code> ruby
+require File.dirname(<strong>FILE</strong>) + "/custom_matchers"</p>
+
+<p>RSpec.configure do |config|
+  config.include(CustomMatcher)
+```
+これでマッチャとしてcustom_matcherが使えるようになります。</p>
+
+<h3>Capybaraのマッチャ</h3>
+
+<p>Capybaraのマッチャは、オブジェクト対してメソッドの様に記載したり、RSpecのマッチャの様に記載することができます。
+形式は「has_xxx?」の形をしているものがほとんど。</p>
+
+<ul>
+<li>assert_selector</li>
+<li>has_button? / has_no_button?</li>
+<li>has_checked_field? / has_no_checked_field?</li>
+<li>has_content? / has_no_content?</li>
+<li>has_css? / has_no_css?</li>
+<li>has_field? / has_no_field?</li>
+<li>has_link? / has_no_link?</li>
+<li>has_select? / has_no_select?</li>
+<li>has_selector? / has_no_selector?</li>
+<li>has_table? / has_no_table?</li>
+<li>has_text? / has_no_text?</li>
+<li>has_unchecked_field? / has_no_unchecked_field?</li>
+<li>has_xpath? / has_no_xpath?</li>
+</ul>
+
+
+<p>って感じでこちらもたくさんあります。</p>
+
+<p>使うときは以下のようにして記載します。
+``` ruby
+page.has_xpath?('//table/tr')
+page.has_css?('table tr.hoge')
+page.has_no_content?('hoge')</p>
+
+<h1>page.has_XXX? は true/false を返すだけなので、テスト結果を得たいときは、</h1>
+
+<h1>assert page.has_xpath?('//table/tr')</h1>
+
+<h1>というようにassertを付けて記載します。</h1>
+
+<p><code>
+また、RSpecのマッチャの様に記載するときは「has_XXX?」を「have_XXX」に直して以下のようにします。
+</code> ruby
+page.should have_xpath('//table/tr')
+page.should have_css('table tr.hoge')
+page.should have_no_content('hoge')
+<code>
+このとき、page.**should** have_no_XXX('value')をpage.**should_not** have_XXX('value')とは書かないほうがよいです。
+理由はAjaxの待ち時間を考慮するためです。
+Capybaraには非同期のJavascriptを扱う時に、まだページに存在していないされていないDOM要素を一定の待ち時間が経過したら再度探すという振る舞いがあります。
+shouldを用いたときにその振る舞いは発揮されますが、should_notを用いたときはその振る舞いは発揮されず１回目の捜査で終了します。
+待ち時間は次のように変更することができます。（デフォルトは2秒です。）
+</code> ruby
+Capybara.default_wait_time = 3
+```</p>
+
+<h3>参考リンク</h3>
+
+<ul>
+<li><a href="http://jp.rubyist.net/magazine/?0021-Rspec">Rubyist Magazine - スはスペックのス 【第 1 回】 RSpec の概要と、RSpec on Rails (モデル編)</a></li>
+<li><a href="http://blog.digital-squad.net/article/194513209.html">rspecでカスタムマッチャの設定｜WEBデザイン Tips</a></li>
+<li><a href="http://d.hatena.ne.jp/willnet/20110704/1309782442">Capybara の README 意訳 - おもしろWEBサービス開発日記</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[RSpecまとめ(2)～Mock(double/stub/mock)～]]></title>
+    <link href="http://web-k.github.com/blog/2012/10/02/rspec-mock/"/>
+    <updated>2012-10-02T13:59:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2012/10/02/rspec-mock</id>
+    <content type="html"><![CDATA[<p><a href="/blog/2012/09/27/rspec_basic/">前回</a>はRSpecの基本メソッドについてまとめました。今回はMockについてまとめます。</p>
+
+<h3>テストダブルとは</h3>
+
+<p>テスト対象が依存しているモジュールやリソースの代役のこと。結合テストのような複雑な環境を事前に用意せずとも目的の機能をテスト可能となるように振る舞いをシミュレートする。</p>
+
+<p>irb,pry等でMockを試したい時、
+<code>ruby
+require 'rspec/mocks/standalone'
+</code>
+をrequireすると試せるのでやってみると良い</p>
+
+<h3>double/stub/mock/stub_chain</h3>
+
+<p>おすすめの使い方で説明。他にも色々出来るとは思う</p>
+
+<ul>
+<li><strong>double</strong> - ダミーオブジェクト作成
+``` ruby
+
+<h1>ダミーオブジェクト作る。第1引数省略可能だが、なんかエラーとか出たら表示されるので入れておくと良い</h1>
+
+book = double("book")
+
+<h1>book.title呼んだら"The RSpec Book"と返ってくるダミーオブジェクト</h1>
+
+<p>book = double("book", :title => "The RSpec Book")
+```</p></li>
+<li><strong>stub</strong> - ダミーメソッド作成
+``` ruby
+
+<h1>全部同じ。book.title呼んだら"The RSpec Book"と返ってくるダミーオブジェクト</h1>
+
+book.stub(:title) { "The RSpec Book" }
+book.stub(:title => "The RSpec Book")
+book.stub(:title).and_return("The RSpec Book")
+
+<h1>doubleで作ったダミーオブジェクトでなくてもダミーメソッドを定義できる</h1>
+
+<p>String.stub(:test).and_return('test')
+```</p></li>
+<li><strong>mock</strong> - メソッドの振る舞いを評価するためのダミーオブジェクト作成
+``` ruby
+
+<h1>logger.log('... Statement generated for Aslak ...') が呼ばれることを確認したい</h1>
+
+it "logs a message on generate()" do
+
+<h1>テストの為にcustomer.nameで'Aslak'を返しておきたいのでdouble/stub</h1>
+
+customer = double('customer')
+customer.stub(:name).and_return('Aslak')
+
+<h1>今回の評価対象なのでmock</h1>
+
+logger = mock('logger')
+statement = Statement.new(customer, logger)
+
+<h1>logger.log('... Statement generated for Aslak ...') が呼ばれることを期待</h1>
+
+logger.should_receive(:log).with(/Statement generated for Aslak/)
+
+<h1>テスト対象を実行して期待通りかテスト</h1>
+
+<p>statement.generate
+end
+```</p></li>
+<li><strong>stub_chain</strong> - メソッドチェインの簡単な作成
+<code>ruby
+Article.recent.published.authored_by(params[:author_id])
+</code>
+上記のメソッドチェインをまとめてstub化できる:
+<code>ruby
+article = double()
+Article.stub_chain(:recent, :published, :authored_by).and_return(article)
+</code></li>
+</ul>
+
+
+<h3>stubとmockの違い</h3>
+
+<p>doubleもstubもmockもSpec::Mocks::Mockのインスタンスを作成します。テスト用途によって利用方法を振り分けます。</p>
+
+<ul>
+<li><strong>stub</strong> - 呼び出しに対して決められた値を返します。結合すると環境構築が面倒だったり外部のサーバ状況に依っては失敗してしまうようなモジュール境界、ランダム値が返るオブジェクト等でダミーで返したい時に利用</li>
+<li><strong>mock</strong> - どのように呼び出しされるか、そのダミーオブジェクトの振る舞い自体を評価したい場合に使用</li>
+</ul>
+
+
+<h3>rspec-railsでのMock拡張</h3>
+
+<ul>
+<li><strong>mock_model</strong> - ダミーのmodelオブジェクトを作成します。ActiveRecordオブジェクトではなく、最低限のメソッドのみ対応しています。Controllerテストの様に正しくモデルを呼び出されているかチェックする時に利用します
+``` ruby
+
+<h1>評価対象はUser</h1>
+
+user = mock_model(User)
+
+<h1>User.find_by_idが呼ばれた時にmockを返しておく</h1>
+
+User.stub(find_by_id: user)
+
+<h1>user.saveが呼ばれることを期待</h1>
+
+user.should_receive(:save).and_return(true)
+
+<h1>期待通りに振る舞うかリクエスト</h1>
+
+put '/users/1', login: 'zdenis'
+<code>
+</code> ruby
+
+<h1>保存前のダミーモデルオブジェクトとして振る舞う</h1>
+
+<p>new_user = mock_model(User).as_new_record
+```</p></li>
+<li><strong>stub_model</strong> - ActiveRecordオブジェクト本物をダミーとして作成します。Viewテストの様にModelを操作することが重要ではなく、値を参照して処理した結果、意図通りの生成結果となったかチェックする時に利用します
+``` ruby
+
+<h1>@userに@user.loginが'zdennis'、@user.emailが'zdennis@example.com'のUserオブジェクトを登録</h1>
+
+<p>assign(:user, stub_model(User, login: 'zdennis', email: 'zdennis@example.com'))
+render
+renderd.should have_selector(...)
+```</p></li>
+</ul>
+
+
+<h3>参考リンク</h3>
+
+<ul>
+<li>【書籍】<a href="http://www.amazon.co.jp/RSpec-Book-Professional-Ruby-Series/dp/4798121932/ref=sr_1_1?ie=UTF8&amp;qid=1349182365&amp;sr=8-1">The RSpec Book</a> - RSpecの仕様書に留まらず、なぜBDDなのかが深く理解出来る良書になっています</li>
+<li><a href="https://github.com/rspec/rspec">rspec/rspec-mocks</a> - 本家</li>
+<li><a href="http://d.hatena.ne.jp/maeshima/20100620/1277051360">Chapter 14 Spec::Mocks - maeshimaの日記</a></li>
+<li><a href="http://blogs.ricollab.jp/webtech/2009/09/mock_and_stub/">ricollab Web Tech Blog » Blog Archive » Mock と Stub について</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[RSpecまとめ(1)～基本メソッド～]]></title>
+    <link href="http://web-k.github.com/blog/2012/09/27/rspec_basic/"/>
+    <updated>2012-09-27T01:53:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2012/09/27/rspec_basic</id>
+    <content type="html"><![CDATA[<p>RSpecで使う基本メソッド(describe/context/it/its/before/after/subject/let/shared_examples_for)をまとめてみる。</p>
+
+<h3>参考リンク</h3>
+
+<ul>
+<li><a href="http://kerryb.github.com/iprug-rspec-presentation/">RSpec</a> - 本記事はここのほぼ抜粋です。よくまとまっています</li>
+<li><a href="http://developer.aiming-inc.com/rails/rspec-references/">RSpec を使い始める人が読むべき N 個のドキュメント | Aiming 開発者ブログ</a> - 参考リンクがいっぱいあります。上の記事もここで見つけた</li>
+</ul>
+
+
+<h3>基本メソッド</h3>
+
+<ul>
+<li><strong>describe/context</strong> - テスト名。テスト対象自身のオブジェクト(subject代わり)でもOK</li>
+<li><strong>before</strong> - 事前条件。example(it)の前に実行される。<em>before :each</em> はexample毎、<em>before :all</em> はdescribe毎に呼ばれる</li>
+<li><strong>after</strong> - 事後処理。以後のテストに影響が出ないように後始末が必要な時に記述する</li>
+<li><strong>subject</strong> - 評価対象。shouldの前のオブジェクトを指定することでit内のオブジェクトを省略できる</li>
+<li><strong>it</strong> - テスト仕様。マッチャーを使って評価する</li>
+</ul>
+
+
+<p>``` ruby</p>
+
+<h1>一番上のdescribeはテスト対象にしておくといい。subjectにもなる</h1>
+
+<p>describe Controller do
+  # contextはdescribeのalias。テスト対象にgetのときとか事前条件変えるときはこっちの方が読みやすいかも
+  context "handling AccessDenied exceptions" do</p>
+
+<pre><code># デフォルトはbefore :each
+# 事前条件はitにも書けるけど、なるべく分けるように
+before { get :index } # 1行になるべく書く
+
+# itのテスト対象。shouldの前を省ける
+subject { response }
+
+# itの後に概要書けるけど、マッチャーだけで意味通るなら省略する
+it { should redirect_to("/401.html") }
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<ul>
+<li><strong>it(context, tags)</strong> - タグが付けられる</li>
+</ul>
+
+
+<pre>$ rspec --tag ruby:1.8</pre>
+
+
+<p>``` ruby
+describe "Something" do
+  # ruby:1.8
+  it "behaves one way in Ruby 1.8", :ruby => "1.8" do</p>
+
+<pre><code>...
+</code></pre>
+
+<p>  end</p>
+
+<p>  # ruby:1.9
+  it "behaves another way in Ruby 1.9", :ruby => "1.9" do</p>
+
+<pre><code>...
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<ul>
+<li><strong>its(method)</strong> - subjectのメソッドが呼べる</li>
+</ul>
+
+
+<p>``` ruby
+describe [1, 2, 3, 3] do
+  # [1,2,3,3].size.should == 4
+  its(:size) { should == 4 }</p>
+
+<p>  # [1,2,3,3].uniq.size.should == 3
+  its("uniq.size") { should == 3 }
+end
+```</p>
+
+<ul>
+<li><strong>let</strong> - example内で同じオブジェクトの使い回し</li>
+</ul>
+
+
+<p>``` ruby
+describe BowlingGame do
+  # example毎に呼ばれる。でも遅延評価。使わなかったら呼ばれない
+  let(:game) { BowlingGame.new }</p>
+
+<p>  it "scores all gutters with 0" do</p>
+
+<pre><code>20.times { game.roll(0) }
+game.score.should == 0
+</code></pre>
+
+<p>  end</p>
+
+<p>  it "scores all 1s with 20" do</p>
+
+<pre><code>20.times { game.roll(1) }
+game.score.should == 20
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<ul>
+<li><strong>shared_examples_for</strong> - exampleの共通化</li>
+</ul>
+
+
+<p>``` ruby
+shared_examples_for "a single-element array" do
+  # letやbeforeやafterも書ける。要はなんでも共通化
+  let(:xxx) { Obj.new }
+  before { puts 'before' }
+  after { puts 'after' }</p>
+
+<p>  # subjectやletを渡せる
+  it { should_not be_empty }
+  it { should have(1).element }
+end</p>
+
+<p>describe ["foo"] do
+  it_behaves_like "a single-element array"
+end</p>
+
+<p>describe [42] do
+  it_behaves_like "a single-element array"
+end
+```</p>
+
+<ul>
+<li><strong>shared_context</strong> - 事前条件の共通化</li>
+</ul>
+
+
+<p>``` ruby
+shared_context '要素がふたつpushされている' do
+  let(:latest_value) { 'value2' }
+  before do</p>
+
+<pre><code>@stack = Stack.new
+@stack.push 'value1'
+@stack.push latest_value
+</code></pre>
+
+<p>  end
+end</p>
+
+<p>describe Stack do
+  describe '#size' do</p>
+
+<pre><code>include_context '要素がふたつpushされている'
+subject { @stack.size }
+it { should eq 2 }
+</code></pre>
+
+<p>  end</p>
+
+<p>  describe '#pop' do</p>
+
+<pre><code>include_context '要素がふたつpushされている'
+subject { @stack.pop }
+it { should eq latest_value }
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>次回はMockについてまとめてみます。</p>
+]]></content>
+  </entry>
+  
+</feed>

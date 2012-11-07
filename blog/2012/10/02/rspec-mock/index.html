@@ -1,0 +1,456 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>RSpecまとめ(2)～Mock(double/stub/mock)～ - web-k.log</title>
+  <meta name="author" content="Team web-k">
+
+  
+  <meta name="description" content="前回はRSpecの基本メソッドについてまとめました。今回はMockについてまとめます。 テストダブルとは テスト対象が依存しているモジュールやリソースの代役のこと。結合テストのような複雑な環境を事前に用意せずとも目的の機能をテスト可能となるように振る舞いをシミュレートする。 irb, &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://web-k.github.com/blog/2012/10/02/rspec-mock/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="web-k.log" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35251356-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">web-k.log</a></h1>
+  
+    <h2>RubyやWebをメインに技術情報をのせていきます</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS"><span class="text">RSS</span></a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:web-k.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">RSpecまとめ(2)～Mock(double/stub/mock)～</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-02T13:59:00+09:00" pubdate data-updated="true">Oct 2<span>nd</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><a href="/blog/2012/09/27/rspec_basic/">前回</a>はRSpecの基本メソッドについてまとめました。今回はMockについてまとめます。</p>
+
+<h3>テストダブルとは</h3>
+
+<p>テスト対象が依存しているモジュールやリソースの代役のこと。結合テストのような複雑な環境を事前に用意せずとも目的の機能をテスト可能となるように振る舞いをシミュレートする。</p>
+
+<p>irb,pry等でMockを試したい時、</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;rspec/mocks/standalone&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>をrequireすると試せるのでやってみると良い</p>
+
+<h3>double/stub/mock/stub_chain</h3>
+
+<p>おすすめの使い方で説明。他にも色々出来るとは思う</p>
+
+<ul>
+<li><strong>double</strong> - ダミーオブジェクト作成</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># ダミーオブジェクト作る。第1引数省略可能だが、なんかエラーとか出たら表示されるので入れておくと良い</span>
+</span><span class='line'><span class="n">book</span> <span class="o">=</span> <span class="n">double</span><span class="p">(</span><span class="s2">&quot;book&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="c1"># book.title呼んだら&quot;The RSpec Book&quot;と返ってくるダミーオブジェクト</span>
+</span><span class='line'><span class="n">book</span> <span class="o">=</span> <span class="n">double</span><span class="p">(</span><span class="s2">&quot;book&quot;</span><span class="p">,</span> <span class="ss">:title</span> <span class="o">=&gt;</span> <span class="s2">&quot;The RSpec Book&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>stub</strong> - ダミーメソッド作成</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># 全部同じ。book.title呼んだら&quot;The RSpec Book&quot;と返ってくるダミーオブジェクト</span>
+</span><span class='line'><span class="n">book</span><span class="o">.</span><span class="n">stub</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="p">{</span> <span class="s2">&quot;The RSpec Book&quot;</span> <span class="p">}</span>
+</span><span class='line'><span class="n">book</span><span class="o">.</span><span class="n">stub</span><span class="p">(</span><span class="ss">:title</span> <span class="o">=&gt;</span> <span class="s2">&quot;The RSpec Book&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="n">book</span><span class="o">.</span><span class="n">stub</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span><span class="o">.</span><span class="n">and_return</span><span class="p">(</span><span class="s2">&quot;The RSpec Book&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="c1"># doubleで作ったダミーオブジェクトでなくてもダミーメソッドを定義できる</span>
+</span><span class='line'><span class="nb">String</span><span class="o">.</span><span class="n">stub</span><span class="p">(</span><span class="ss">:test</span><span class="p">)</span><span class="o">.</span><span class="n">and_return</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>mock</strong> - メソッドの振る舞いを評価するためのダミーオブジェクト作成</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># logger.log(&#39;... Statement generated for Aslak ...&#39;) が呼ばれることを確認したい</span>
+</span><span class='line'><span class="n">it</span> <span class="s2">&quot;logs a message on generate()&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="c1"># テストの為にcustomer.nameで&#39;Aslak&#39;を返しておきたいのでdouble/stub</span>
+</span><span class='line'>  <span class="n">customer</span> <span class="o">=</span> <span class="n">double</span><span class="p">(</span><span class="s1">&#39;customer&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">customer</span><span class="o">.</span><span class="n">stub</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span><span class="o">.</span><span class="n">and_return</span><span class="p">(</span><span class="s1">&#39;Aslak&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="c1"># 今回の評価対象なのでmock</span>
+</span><span class='line'>  <span class="n">logger</span> <span class="o">=</span> <span class="n">mock</span><span class="p">(</span><span class="s1">&#39;logger&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">statement</span> <span class="o">=</span> <span class="no">Statement</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">customer</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
+</span><span class='line'>  <span class="c1"># logger.log(&#39;... Statement generated for Aslak ...&#39;) が呼ばれることを期待</span>
+</span><span class='line'>  <span class="n">logger</span><span class="o">.</span><span class="n">should_receive</span><span class="p">(</span><span class="ss">:log</span><span class="p">)</span><span class="o">.</span><span class="n">with</span><span class="p">(</span><span class="sr">/Statement generated for Aslak/</span><span class="p">)</span>
+</span><span class='line'>  <span class="c1"># テスト対象を実行して期待通りかテスト </span>
+</span><span class='line'>  <span class="n">statement</span><span class="o">.</span><span class="n">generate</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>stub_chain</strong> - メソッドチェインの簡単な作成</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Article</span><span class="o">.</span><span class="n">recent</span><span class="o">.</span><span class="n">published</span><span class="o">.</span><span class="n">authored_by</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:author_id</span><span class="o">]</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上記のメソッドチェインをまとめてstub化できる:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">article</span> <span class="o">=</span> <span class="n">double</span><span class="p">()</span>
+</span><span class='line'><span class="no">Article</span><span class="o">.</span><span class="n">stub_chain</span><span class="p">(</span><span class="ss">:recent</span><span class="p">,</span> <span class="ss">:published</span><span class="p">,</span> <span class="ss">:authored_by</span><span class="p">)</span><span class="o">.</span><span class="n">and_return</span><span class="p">(</span><span class="n">article</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>stubとmockの違い</h3>
+
+<p>doubleもstubもmockもSpec::Mocks::Mockのインスタンスを作成します。テスト用途によって利用方法を振り分けます。</p>
+
+<ul>
+<li><strong>stub</strong> - 呼び出しに対して決められた値を返します。結合すると環境構築が面倒だったり外部のサーバ状況に依っては失敗してしまうようなモジュール境界、ランダム値が返るオブジェクト等でダミーで返したい時に利用</li>
+<li><strong>mock</strong> - どのように呼び出しされるか、そのダミーオブジェクトの振る舞い自体を評価したい場合に使用</li>
+</ul>
+
+
+<h3>rspec-railsでのMock拡張</h3>
+
+<ul>
+<li><strong>mock_model</strong> - ダミーのmodelオブジェクトを作成します。ActiveRecordオブジェクトではなく、最低限のメソッドのみ対応しています。Controllerテストの様に正しくモデルを呼び出されているかチェックする時に利用します</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># 評価対象はUser</span>
+</span><span class='line'><span class="n">user</span> <span class="o">=</span> <span class="n">mock_model</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
+</span><span class='line'><span class="c1"># User.find_by_idが呼ばれた時にmockを返しておく</span>
+</span><span class='line'><span class="no">User</span><span class="o">.</span><span class="n">stub</span><span class="p">(</span><span class="n">find_by_id</span><span class="p">:</span> <span class="n">user</span><span class="p">)</span>
+</span><span class='line'><span class="c1"># user.saveが呼ばれることを期待</span>
+</span><span class='line'><span class="n">user</span><span class="o">.</span><span class="n">should_receive</span><span class="p">(</span><span class="ss">:save</span><span class="p">)</span><span class="o">.</span><span class="n">and_return</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+</span><span class='line'><span class="c1"># 期待通りに振る舞うかリクエスト</span>
+</span><span class='line'><span class="n">put</span> <span class="s1">&#39;/users/1&#39;</span><span class="p">,</span> <span class="n">login</span><span class="p">:</span> <span class="s1">&#39;zdenis&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># 保存前のダミーモデルオブジェクトとして振る舞う</span>
+</span><span class='line'><span class="n">new_user</span> <span class="o">=</span> <span class="n">mock_model</span><span class="p">(</span><span class="no">User</span><span class="p">)</span><span class="o">.</span><span class="n">as_new_record</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>stub_model</strong> - ActiveRecordオブジェクト本物をダミーとして作成します。Viewテストの様にModelを操作することが重要ではなく、値を参照して処理した結果、意図通りの生成結果となったかチェックする時に利用します</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># @userに@user.loginが&#39;zdennis&#39;、@user.emailが&#39;zdennis@example.com&#39;のUserオブジェクトを登録</span>
+</span><span class='line'><span class="n">assign</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="n">stub_model</span><span class="p">(</span><span class="no">User</span><span class="p">,</span> <span class="n">login</span><span class="p">:</span> <span class="s1">&#39;zdennis&#39;</span><span class="p">,</span> <span class="n">email</span><span class="p">:</span> <span class="s1">&#39;zdennis@example.com&#39;</span><span class="p">))</span>
+</span><span class='line'><span class="n">render</span>
+</span><span class='line'><span class="n">renderd</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>参考リンク</h3>
+
+<ul>
+<li>【書籍】<a href="http://www.amazon.co.jp/RSpec-Book-Professional-Ruby-Series/dp/4798121932/ref=sr_1_1?ie=UTF8&amp;qid=1349182365&amp;sr=8-1">The RSpec Book</a> - RSpecの仕様書に留まらず、なぜBDDなのかが深く理解出来る良書になっています</li>
+<li><a href="https://github.com/rspec/rspec">rspec/rspec-mocks</a> - 本家</li>
+<li><a href="http://d.hatena.ne.jp/maeshima/20100620/1277051360">Chapter 14 Spec::Mocks - maeshimaの日記</a></li>
+<li><a href="http://blogs.ricollab.jp/webtech/2009/09/mock_and_stub/">ricollab Web Tech Blog » Blog Archive » Mock と Stub について</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Team web-k</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-02T13:59:00+09:00" pubdate data-updated="true">Oct 2<span>nd</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/rspec/'>RSpec</a>, <a class='category' href='/blog/categories/ruby/'>Ruby</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://web-k.github.com/blog/2012/10/02/rspec-mock/" data-via="" data-counturl="http://web-k.github.com/blog/2012/10/02/rspec-mock/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/09/27/rspec_basic/" title="Previous Post: RSpecまとめ(1)～基本メソッド～">&laquo; RSpecまとめ(1)～基本メソッド～</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/10/03/compare-matchers/" title="Next Post: RSpecとCapybaraのマッチャ比較">RSpecとCapybaraのマッチャ比較 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/11/07/capybara-driver/">Capybaraのブラウザエンジン</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/22/internationalization-i18n/">i18n(Internationalization)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/09/rails-filter/">Railsのbefore_filterとメソッド返り値</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/08/nexus7/">Nexus 7(Jelly Bean)のUser AgentとCSS 3D Transforms対応状況を調べてみた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/05/fabrication-cucumber/">FabricationとCucumberの連携</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/04/fabrication/">Fabrication</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/03/compare-matchers/">RSpecとCapybaraのマッチャ比較</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/02/rspec-mock/">RSpecまとめ(2)～Mock(double/stub/mock)～</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/27/rspec_basic/">RSpecまとめ(1)～基本メソッド～</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list"><li><a href='/blog/categories/android'>Android (1)</a></li><li><a href='/blog/categories/capybara'>capybara (1)</a></li><li><a href='/blog/categories/capybara-webkit'>capybara-webkit (1)</a></li><li><a href='/blog/categories/css3'>CSS3 (1)</a></li><li><a href='/blog/categories/cucumber'>Cucumber (1)</a></li><li><a href='/blog/categories/fabrication'>Fabrication (2)</a></li><li><a href='/blog/categories/html5'>HTML5 (1)</a></li><li><a href='/blog/categories/i18n'>i18n (1)</a></li><li><a href='/blog/categories/rspec'>RSpec (3)</a></li><li><a href='/blog/categories/ruby'>Ruby (5)</a></li></ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Team web-k -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'web-k';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://web-k.github.com/blog/2012/10/02/rspec-mock/';
+        var disqus_url = 'http://web-k.github.com/blog/2012/10/02/rspec-mock/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

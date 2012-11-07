@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Railsのbefore_filterとメソッド返り値 - web-k.log</title>
+  <meta name="author" content="Team web-k">
+
+  
+  <meta name="description" content="before_filterで実行したメソッドがfalseをreturnしたらどうなるか、気になったのでメモ。 確認した環境はRuby 1.9.3p194, Rails 3.2.8。 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+class &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://web-k.github.com/blog/2012/10/09/rails-filter/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="web-k.log" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35251356-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">web-k.log</a></h1>
+  
+    <h2>RubyやWebをメインに技術情報をのせていきます</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS"><span class="text">RSS</span></a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:web-k.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Railsのbefore_filterとメソッド返り値</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-09T16:54:00+09:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>before_filterで実行したメソッドがfalseをreturnしたらどうなるか、気になったのでメモ。</p>
+
+<p>確認した環境はRuby 1.9.3p194, Rails 3.2.8。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">before_filter</span> <span class="ss">:false_filter</span>
+</span><span class='line'><span class="c1">#  before_filter :redirect_filter</span>
+</span><span class='line'>  <span class="n">before_filter</span> <span class="ss">:true_filter</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">false_filter</span>
+</span><span class='line'>    <span class="k">return</span> <span class="kp">false</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">redirect_filter</span>
+</span><span class='line'>    <span class="n">redirect_to</span> <span class="n">root_path</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">true_filter</span>
+</span><span class='line'>    <span class="k">return</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>true/falseだからといって特に何も起こらなかった。falseでもそのまま次のbefore_filterが実行されたり、filter後に控えているコントローラのメソッドが実行された。</p>
+
+<p>before_filterやafter_filterはメソッドを優先して実行するかどうかを決めているだけであり、メソッドの返り値を受け取ってどうこうするというモノではないようだ。</p>
+
+<p>ただし、before_filterで呼んだメソッドの中にrenderやredirect_to、raiseなどがあると、その後に控えている他のbefore_filterや以降のコントローラのメソッドは実行されない。</p>
+
+<p>なお、<a href="http://www.fdiary.net/ml/rails/msg/3168">rails:3168</a>によると、rails 1.xではfilterにfalseが返ると、そこで処理が止まっていたようです。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Team web-k</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-09T16:54:00+09:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://web-k.github.com/blog/2012/10/09/rails-filter/" data-via="" data-counturl="http://web-k.github.com/blog/2012/10/09/rails-filter/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/10/08/nexus7/" title="Previous Post: Nexus 7(Jelly Bean)のUser AgentとCSS 3D Transforms対応状況を調べてみた">&laquo; Nexus 7(Jelly Bean)のUser AgentとCSS 3D Transforms対応状況を調べてみた</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/10/22/internationalization-i18n/" title="Next Post: i18n(Internationalization)">i18n(Internationalization) &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/11/07/capybara-driver/">Capybaraのブラウザエンジン</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/22/internationalization-i18n/">i18n(Internationalization)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/09/rails-filter/">Railsのbefore_filterとメソッド返り値</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/08/nexus7/">Nexus 7(Jelly Bean)のUser AgentとCSS 3D Transforms対応状況を調べてみた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/05/fabrication-cucumber/">FabricationとCucumberの連携</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/04/fabrication/">Fabrication</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/03/compare-matchers/">RSpecとCapybaraのマッチャ比較</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/02/rspec-mock/">RSpecまとめ(2)～Mock(double/stub/mock)～</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/27/rspec_basic/">RSpecまとめ(1)～基本メソッド～</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list"><li><a href='/blog/categories/android'>Android (1)</a></li><li><a href='/blog/categories/capybara'>capybara (1)</a></li><li><a href='/blog/categories/capybara-webkit'>capybara-webkit (1)</a></li><li><a href='/blog/categories/css3'>CSS3 (1)</a></li><li><a href='/blog/categories/cucumber'>Cucumber (1)</a></li><li><a href='/blog/categories/fabrication'>Fabrication (2)</a></li><li><a href='/blog/categories/html5'>HTML5 (1)</a></li><li><a href='/blog/categories/i18n'>i18n (1)</a></li><li><a href='/blog/categories/rspec'>RSpec (3)</a></li><li><a href='/blog/categories/ruby'>Ruby (5)</a></li></ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Team web-k -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'web-k';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://web-k.github.com/blog/2012/10/09/rails-filter/';
+        var disqus_url = 'http://web-k.github.com/blog/2012/10/09/rails-filter/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

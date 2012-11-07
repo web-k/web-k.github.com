@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: capybara | web-k.log]]></title>
+  <link href="http://web-k.github.com/blog/categories/capybara/atom.xml" rel="self"/>
+  <link href="http://web-k.github.com/"/>
+  <updated>2012-11-07T17:32:32+09:00</updated>
+  <id>http://web-k.github.com/</id>
+  <author>
+    <name><![CDATA[Team web-k]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[RSpecとCapybaraのマッチャ比較]]></title>
+    <link href="http://web-k.github.com/blog/2012/10/03/compare-matchers/"/>
+    <updated>2012-10-03T14:36:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2012/10/03/compare-matchers</id>
+    <content type="html"><![CDATA[<p>Ruby on RailsでSpecを書く時に、RSpecのマッチャなのかCapybaraのマッチャなのか分からなくなったのでメモ</p>
+
+<h3>RSpecのマッチャ</h3>
+
+<p>RSpecのマッチャには、「演算子マッチャ」と「ビルトインマッチャ」があり、「should」や「should_not」と組み合わせて使用します。
+(shouldとshould_notはRSpecがObjectを拡張して作ったメソッド)</p>
+
+<p>マッチャとして使用できる演算子は、「&lt;」、「&lt;=」、「==」、「===」、「=~」、「>」、「>=」の７種類。</p>
+
+<p>使うときは以下のようにして記載します。
+<code>ruby
+(1 + 2).should == 3
+1.should &lt; 2
+"apple".should_not =~ /orange/
+</code>
+なお、「!=」や「!~」などの否定演算子は<strong>サポートされていません</strong>。「なんとかではないこと」を記載するときはshouldの代わりにshould_notを使います。</p>
+
+<p>ビルトインマッチャは</p>
+
+<ul>
+<li>be</li>
+<li>be_a</li>
+<li>be_a_kind_of</li>
+<li>be_an_instance_of</li>
+<li>be_close</li>
+<li>be_within</li>
+<li>change</li>
+<li>eq</li>
+<li>eql</li>
+<li>equal</li>
+<li>exist</li>
+<li>expect</li>
+<li>have</li>
+<li>have_at_least</li>
+<li>have_at_most</li>
+<li>include</li>
+<li>match</li>
+<li>raise_error</li>
+<li>respond_to</li>
+<li>satisfy</li>
+<li>throw_symbol</li>
+</ul>
+
+
+<p>って感じでたくさんあります。
+「be_XXX」マッチャは「be_a_XXX」、「be_an_XXX」と記載しても同じ動作になります。
+「have_XXX」マッチャは、RSpec の実行時には 「has_XXX?」メソッドの呼び出しとして解釈されます。これは、should と並べ たときの字面を (英語として) 自然な記述するための措置です。</p>
+
+<p>使うときは以下のようにして記載します。
+<code>ruby
+"string".should be_an_instance_of(String)
+1.should be_a_kind_of(Numeric)
+1.should_not be_an_instance_of(String)
+</code>
+また、マッチャを独自定義して使用することも可能です。
+次のように書きます。（<a href="http://rspec.rubyforge.org/rspec/1.2.9/classes/Spec/Matchers.html">公式ドキュメント</a>から引用）
+``` ruby
+Spec::Matchers.define :be_in_zone do |zone|
+  match do |player|</p>
+
+<pre><code>player.in_zone?(zone)
+</code></pre>
+
+<p>  end
+end
+```
+Railsで使う場合は、spec/フォルダ直下にcustom_matchers.rbを作り、</p>
+
+<p>custom_matchers.rb
+``` ruby
+module CustomMatcher
+  def custom_matcher</p>
+
+<pre><code>#マッチャの処理を記述 
+</code></pre>
+
+<p>  end
+end
+<code>
+spec/spec_helper.rbを編集
+</code> ruby
+require File.dirname(<strong>FILE</strong>) + "/custom_matchers"</p>
+
+<p>RSpec.configure do |config|
+  config.include(CustomMatcher)
+```
+これでマッチャとしてcustom_matcherが使えるようになります。</p>
+
+<h3>Capybaraのマッチャ</h3>
+
+<p>Capybaraのマッチャは、オブジェクト対してメソッドの様に記載したり、RSpecのマッチャの様に記載することができます。
+形式は「has_xxx?」の形をしているものがほとんど。</p>
+
+<ul>
+<li>assert_selector</li>
+<li>has_button? / has_no_button?</li>
+<li>has_checked_field? / has_no_checked_field?</li>
+<li>has_content? / has_no_content?</li>
+<li>has_css? / has_no_css?</li>
+<li>has_field? / has_no_field?</li>
+<li>has_link? / has_no_link?</li>
+<li>has_select? / has_no_select?</li>
+<li>has_selector? / has_no_selector?</li>
+<li>has_table? / has_no_table?</li>
+<li>has_text? / has_no_text?</li>
+<li>has_unchecked_field? / has_no_unchecked_field?</li>
+<li>has_xpath? / has_no_xpath?</li>
+</ul>
+
+
+<p>って感じでこちらもたくさんあります。</p>
+
+<p>使うときは以下のようにして記載します。
+``` ruby
+page.has_xpath?('//table/tr')
+page.has_css?('table tr.hoge')
+page.has_no_content?('hoge')</p>
+
+<h1>page.has_XXX? は true/false を返すだけなので、テスト結果を得たいときは、</h1>
+
+<h1>assert page.has_xpath?('//table/tr')</h1>
+
+<h1>というようにassertを付けて記載します。</h1>
+
+<p><code>
+また、RSpecのマッチャの様に記載するときは「has_XXX?」を「have_XXX」に直して以下のようにします。
+</code> ruby
+page.should have_xpath('//table/tr')
+page.should have_css('table tr.hoge')
+page.should have_no_content('hoge')
+<code>
+このとき、page.**should** have_no_XXX('value')をpage.**should_not** have_XXX('value')とは書かないほうがよいです。
+理由はAjaxの待ち時間を考慮するためです。
+Capybaraには非同期のJavascriptを扱う時に、まだページに存在していないされていないDOM要素を一定の待ち時間が経過したら再度探すという振る舞いがあります。
+shouldを用いたときにその振る舞いは発揮されますが、should_notを用いたときはその振る舞いは発揮されず１回目の捜査で終了します。
+待ち時間は次のように変更することができます。（デフォルトは2秒です。）
+</code> ruby
+Capybara.default_wait_time = 3
+```</p>
+
+<h3>参考リンク</h3>
+
+<ul>
+<li><a href="http://jp.rubyist.net/magazine/?0021-Rspec">Rubyist Magazine - スはスペックのス 【第 1 回】 RSpec の概要と、RSpec on Rails (モデル編)</a></li>
+<li><a href="http://blog.digital-squad.net/article/194513209.html">rspecでカスタムマッチャの設定｜WEBデザイン Tips</a></li>
+<li><a href="http://d.hatena.ne.jp/willnet/20110704/1309782442">Capybara の README 意訳 - おもしろWEBサービス開発日記</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: i18n | web-k.log]]></title>
+  <link href="http://web-k.github.com/blog/categories/i18n/atom.xml" rel="self"/>
+  <link href="http://web-k.github.com/"/>
+  <updated>2012-11-07T17:32:32+09:00</updated>
+  <id>http://web-k.github.com/</id>
+  <author>
+    <name><![CDATA[Team web-k]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[i18n(Internationalization)]]></title>
+    <link href="http://web-k.github.com/blog/2012/10/22/internationalization-i18n/"/>
+    <updated>2012-10-22T13:03:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2012/10/22/internationalization-i18n</id>
+    <content type="html"><![CDATA[<p>Railsでi18nを使った多言語対応について調べたので、それについてまとめる。
+今回は多言語対応の一般的な話をまとめる。</p>
+
+<h3>多言語対応について</h3>
+
+<p>ソフトウェアを多言語対応するときの工程として</p>
+
+<ul>
+<li>i18n(Internationalization:国際化)</li>
+<li>l10n(Localization:地域化)</li>
+<li>m17n(Multilingualization:多言語化)</li>
+</ul>
+
+
+<p>の各ステップがある。
+名前の由来は最初と最後の文字と間の文字数からきている。i18nだとInternationalizationの最初のiと最後のn、その間に18文字あることからきている。</p>
+
+<p>「i18n」とは、ソフトウェアに技術的な変更を加えることなく、多言語、多地域に対応させる枠組みを作っておくことである。
+i18nに対応すると次に各言語においての対応を実装していく必要がある。それが「l10n」で、特定の1言語で必要とされる言語特有の機能等を実装し、対応させることである。
+多言語に渡ってl10nの対応をし、利用者の言語に合わせて切り替えて表示できる状態が「m17n」対応となり、多言語対応となる。</p>
+
+<h3>Railsにおける多言語対応</h3>
+
+<p>Railsにはi18nの機能が標準でついており、利用することで多言語対応ができる。
+詳しくは次回以降で記載する。</p>
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://www.atmarkit.co.jp/fxml/rensai/xmlwomanabou11/learning-xml11.html">多言語対応の問題と解決を考える</a></li>
+<li><a href="http://guides.rubyonrails.org/i18n.html">Ruby on Rails Guides: Rails Internationalization (I18n) API</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

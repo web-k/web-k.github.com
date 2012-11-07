@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: capybara-webkit | web-k.log]]></title>
+  <link href="http://web-k.github.com/blog/categories/capybara-webkit/atom.xml" rel="self"/>
+  <link href="http://web-k.github.com/"/>
+  <updated>2012-11-07T17:32:32+09:00</updated>
+  <id>http://web-k.github.com/</id>
+  <author>
+    <name><![CDATA[Team web-k]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Capybaraのブラウザエンジン]]></title>
+    <link href="http://web-k.github.com/blog/2012/11/07/capybara-driver/"/>
+    <updated>2012-11-07T16:37:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2012/11/07/capybara-driver</id>
+    <content type="html"><![CDATA[<p>Capybaraは通常Rack:Testと呼ばれるブラウザエンジンを用い、仮想的に画面操作をしています。そのためJavascriptを考慮したテストはできません。
+この場合、CapybaraのエンジンをJavascriptが動作する、capybara-webkitやSeleniumというブラウザエンジンに切り替えてテストを行います。
+capybara_webkitを使うにはGemfileにcapybara-webkitを追記します。
+<code>ruby
+group :test, :development do
+  ...
+  gem "capybara-webkit"
+end
+</code>
+次にenv.rbにJavascriptドライバーを記述します。
+<code>ruby
+Spork.prefork do
+  ...
+  Capybara.default_selector = :css
+  Capybara.javascript_driver = :webkit
+end
+</code>
+これでJacascripがテストで動作する環境ができました。Javascriptを動作させたいところにRSpecだと
+<code>ruby
+it "hoge hoge", :js =&gt; true do
+  ...
+end
+</code>
+Cucumerだとシナリオに@javascriptタグを付加します。
+<code>ruby
+@javascript
+シナリオ: hoge hoge
+</code>
+ブラウザ別のテストを実施したいときはSeleniumドライバーを使います。
+SeleniumドライバーはFirefox、InternetExplorer、GoogleChromeを実際に起動させてテストします。
+SeleniumはCapybaraに同梱されているので、ブラウザエンジンを切り替えるだけで使用可能になります。
+<code>ruby
+Capybara.default_driver = :selenium
+</code>
+デフォルトではFirefoxが起動するので、FirefoxではなくChromeを使用したいときには以下をCapybara.default_driverの前に記載します。
+<code>ruby
+Capybara.register_driver :Selenium do |app|
+  Capybara::Driver::Selenium.new(app, :browser =&gt; :chrome)
+end
+</code></p>
+
+<p>Seleniumドライバーは実際のブラウザを起動するのでほとんどのJavascriptをテストできますが、オーバーヘッドが大きくなります。
+従って、必要なテストにのみSeleniumドライバーを利用するようにします。
+RSpecのフィルタで切り替える方法を載せます。この方法は特定のサンプルのみブラウザの切り替えを行います。
+フィルタ機能を設定するには、spec_helper.rbにSelenium用のフィルターを用意します。
+``` ruby
+config.before(:all, :selenium => true) do
+  Capybara.current_driver = :selenium
+end</p>
+
+<p>config.after(:all, selenium => true) do
+  Capybara.use_default_driver
+end
+<code>
+あとはSeleniumを実行したいサンプルに:seleniumタグを追加します。
+</code> ruby
+describe "hoge hoge", :selenium => true do
+  ...
+end
+```</p>
+]]></content>
+  </entry>
+  
+</feed>
