@@ -20,14 +20,15 @@ Initialized empty Git repository in /Users/user/repo/.git/
 
 ### リポジトリの設定 / git config
 
-リポジトリ単位の設定は.git/config、ログインユーザ単位の設定は~/.gitconfigに格納されている。それぞれ、
+リポジトリ単位の設定は.git/config、ログインユーザ単位の設定は~/.gitconfigに、システム単位は/etc/gitconfigに格納されている。それぞれ、
 
 ```
 $ git config キー 値           # リポジトリ単位
 $ git config --global キー 値  # ログインユーザー単位
+$ git config --system キー 値  # システム単位
 ```
 
-にて値を設定出来る。現在の設定は
+にて値を設定出来る。各値はシステム→ログインユーザー・→ポジトリ単位の順で読み込まれ、後から読み込んだほうが優先される。現在の設定は
 
 ```
 $ git config --list
