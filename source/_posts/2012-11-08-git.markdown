@@ -1,0 +1,264 @@
+---
+layout: post
+title: "gitでよく使う21コマンドまとめ"
+date: 2012-11-08 00:43
+comments: true
+author: toshi3221
+categories: git
+titlecase: true
+---
+よく使うgitコマンドをリストアップしてみる
+
+### リポジトリ作成 / git init
+
+ローカルリポジトリを作成するにはリポジトリ名を指定する。
+
+```
+$ git init repo
+Initialized empty Git repository in /Users/user/repo/.git/
+```
+
+### リポジトリの設定 / git config
+
+リポジトリ単位の設定は.git/config、ログインユーザ単位の設定は~/.gitconfigに格納されている。それぞれ、
+
+```
+$ git config キー 値           # リポジトリ単位
+$ git config --global キー 値  # ログインユーザー単位
+```
+
+にて値を設定出来る。現在の設定は
+
+```
+$ git config --list
+```
+
+で参照可能。良く設定するキーは
+
+```
+$ git config user.name    # コミットユーザー名
+$ git config user.email   # コミットE-mail
+$ git config alias.*      # gitコマンドAlias
+```
+
+### ファイルをインデックスに登録 / git add
+
+gitの場合、ファイルを追加・更新しただけではまだコミット候補ではなく、インデックスに登録する必要がある。
+
+```
+$ git add .     # カレントフォルダ以降のファイルをすべて登録
+$ git add path  # ファイル・フォルダの登録
+```
+### リポジトリの状態を確認 / git status
+
+ワーキングツリー・インデックスの状態を確認する。リポジトリとの現在のファイルの変更・修正状況、コミット候補としてインデックスに登録されているか確認出来る。
+
+```
+$ git status
+# On branch source
+# Changes not staged for commit:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#
+#       modified:   .gitignore
+#
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#       source/_posts/2012-11-07-git.markdown
+no changes added to commit (use "git add" and/or "git commit -a")
+
+$ git status -s  # status簡易版
+ M .gitignore
+ ?? source/_posts/2012-11-07-git.markdown
+```
+
+### 差分を確認する / git diff
+
+リポジトリとの差分が確認出来る。
+
+```
+$ git diff  # ワーキングツリーの差分
+diff --git a/.gitignore b/.gitignore
+index 4bba145..b4bbc86 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -11,4 +11,5 @@ source/_stash
+source/stylesheets/screen.css
+vendor
+node_modules
+-nbproject/*
+\ No newline at end of file
++nbproject/*
++*.swp
+
+$ git diff HEAD  # インデックスとリポジトリ最新との差分
+$ git diff master  # masterブランチとの差分
+$ git diff master develop  # masterブランチとdevelopブランチとの差分
+```
+
+### コミットログの表示 / git log
+
+```
+$ git log  # 現在のブランチのログ表示
+$ git log -p  # 現在のブランチのdiffも含めてログ表示
+$ git log -2  # 最新2つのコミットログを表示
+$ git log --oneline --graph  # ログをコミット毎に1行フォーマットで表示し、コミットツリーを表示する
+```
+
+### ディレクトリ・ファイルの移動 / git mv
+
+コミット済みのファイルを移動・リネームする。コマンド実行するとコミット候補としてインデックスに登録される
+
+```
+$ git mv file1 file2  # file1をfile2にリネームする
+$ git mv dir1/file dir2/file  # fileをdir1からdir2に移動する
+```
+
+### ディレクトリ・ファイルの削除 / git rm
+
+コミット済み、またはインデックスに登録済みのファイルを削除する
+
+```
+$ git rm file  # fileを削除する
+```
+
+git rmをオプション無しで実行するとワーキングツリーからファイルが削除されるので、新規追加登録したファイルをインデックスから解除してファイルをワーキングツリーに残しておきたい場合は--cachedを使う
+
+```
+$ git add file
+$ git rm --cached file
+rm 'file'
+$ git status
+# On branch master
+#
+# Initial commit
+#
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#       file
+```
+
+### コミットする / git commit
+
+```
+$ git commit  # git addしておいたファイルのコミット。エディタが立ち上がってコメントを入力して保存するとコミットされる
+$ git commit -m "コメント"  # コメントを指定してコミット
+$ git commit -a  # すべての変更をコミット。ただし、新規ファイルは追加されない。明示的にgit addする必要がある
+```
+
+### 直前のコミットを変更する / git commit --amend
+
+--amendオプションを指定すると直前のコミットを追加修正したインデックス登録の差分を含めて差し替えることが出来る
+
+```
+$ git commit --amend  # (インデックス登録が無ければ)直前のコミットコメントを変更する
+```
+
+インデックス登録してある差分を含めて直前のコミットを変更する
+
+```
+$ git add file  # fileをインデックスに追加
+$ git commit --amend  # addしたfileと直前のコミットをマージして差し替える
+```
+
+### ローカルリポジトリ、インデックスを元に戻す / git reset
+
+```
+$ git reset --hard commit_hash  # 指定したコミットにローカルリポジトリ、インデックスを完全に戻す。コミットしていない状態に戻り無かったことになる
+$ git reset --soft HEAD~  # 1つ前のコミットに戻す。ワーキングツリー・インデックスファイルは影響しない
+$ git reset --mixed HEAD~  # 1つ前のコミットにインデックス・リポジトリを戻す。ワーキングツリーには影響しない
+```
+
+### grepする / git grep
+
+インデックスやワーキングツリーに対して検索する
+
+```
+$ git grep Text  # Textという文字列を検索する
+```
+
+### コミット内容の表示 / git show
+
+```
+$ git show commit_hash  # コミット内容表示。差分も参照出来る
+```
+
+### リモートリポジトリをローカルにコピー / git clone
+
+```
+$ git clone git-uri  # リモートリポジトリをコピー。フォルダ名はname.gitだったらnameになる。リモートリポジトリ名はoriginになる。
+$ git clone git-uri dir  # dirフォルダ名でリモートリポジトリをコピー
+$ git clone git-uri -o name  # リモートリポジトリ名をnameでコピー
+```
+
+### リモートリポジトリの管理 / git remote
+
+```
+$ git remote  # 登録されているリポジトリ名の表示
+$ git remote -v  # リポジトリ名とURIの表示
+$ git remote add name git-uri  # リポジトリ名「name」にてgit-uriリモートリポジトリの登録
+$ git remote show origin  # originリモートリポジトリの詳細情報表示
+$ git remote update  # リモートリポジトリの更新。fetchでも済みそう
+$ git remote rm devel  # リモートリポジトリdevelの登録解除
+$ git remote prune  # 削除されたリモートブランチの削除
+```
+
+### ブランチのマージ / git merge
+
+```
+$ git merge develop  # 現在のブランチにdevelopをマージ
+$ git merge --squash develop  # 現在のブランチにdevelopのコミットを1つにまとめてマージ
+```
+
+### リモートブランチにローカルブランチを送信 / git push
+
+```
+$ git push origin master:master  # リモートリポジトリoriginにローカルブランチ(左のmaster)をリモートブランチ(右のmaster)に送信
+$ git push origin master  # リモートリポジトリにローカルブランチmasterを送信
+$ git push origin master:testing  # リモートブランチを指定
+$ git push origin :testing  # リモートブランチの削除
+```
+
+### ローカルリポジトリにリモートリポジトリを取り込む / git pull
+
+```
+$ git pull  # originリモートリポジトリをローカルリポジトリに取り込む
+```
+
+ローカルリポジトリにコミットしていない変更がある場合、競合することがあるので、コミットしておくか、git stash saveして一旦ソースを待避してからpullすると良い。
+
+### ブランチの管理 / git branch
+
+```
+$ git branch  # ローカルブランチの確認。現在のブランチも確認出来る
+$ git branch -r  # リモートブランチの確認
+$ git branch -a  # ローカル・リモートすべてのブランチの確認
+$ git branch new  # newブランチの作成
+$ git branch new base  # baseブランチを起点にnewブランチを作成
+$ git branch -m base rename  # baseブランチをrenameブランチに名称変更
+$ git branch -d base  # baseブランチの削除。このブランチのみ存在する新しいコミットがある場合は削除されないので安全
+$ git branch -D base  # baseブランチの削除。新しいコミットがあっても強制削除する
+```
+
+### ブランチのスイッチ / git checkout
+
+```
+$ git checkout develop  # developブランチにスイッチ
+$ git checkout --merge develop  # ワーキングツリー・インデックスで修正があるファイルとスイッチ先ブランチをマージして切り替える
+$ git checkout -b new  # 現在のブランチを起点にnewブランチを作成
+$ git checkout -f  # 修正したワーキングツリーの修正を元に戻す。一度戻した修正は失われるので注意
+$ git checkout commit_hash file  # fileをcommit_hash時点の状態に戻す
+```
+
+### 未コミットの差分を一時的に保存する / git stash
+
+```
+$ git stash save  # 一時的に保存する。新規ファイルを保存する場合はgit addしておくこと
+$ git stash pop  # 一時的に保存した差分を元に戻す
+$ git stash list  # 保存されているキューの一覧を表示する
+$ git stash drop stash@{1}  # stash@{1}を破棄。元に戻せないので注意
+$ git stash clear  # 保存されているキューを全て破棄。元に戻せないので注意
+```
+
