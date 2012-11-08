@@ -9,7 +9,7 @@ titlecase: true
 ---
 よく使うgitコマンドをリストアップしてみる
 
-### リポジトリ作成 / git init
+### リポジトリ作成: git init
 
 ローカルリポジトリを作成するにはリポジトリ名を指定する。
 
@@ -18,16 +18,17 @@ $ git init repo
 Initialized empty Git repository in /Users/user/repo/.git/
 ```
 
-### リポジトリの設定 / git config
+### リポジトリの設定: git config
 
-リポジトリ単位の設定は.git/config、ログインユーザ単位の設定は~/.gitconfigに格納されている。それぞれ、
+リポジトリ単位の設定は.git/config、ログインユーザ単位の設定は~/.gitconfigに、システム単位は/etc/gitconfigに格納されている。それぞれ、
 
 ```
 $ git config キー 値           # リポジトリ単位
 $ git config --global キー 値  # ログインユーザー単位
+$ git config --system キー 値  # システム単位
 ```
 
-にて値を設定出来る。現在の設定は
+にて値を設定出来る。各値はシステム→ログインユーザー→リポジトリ単位の順で読み込まれ、後から読み込んだほうが優先される。現在の設定は
 
 ```
 $ git config --list
@@ -41,7 +42,7 @@ $ git config user.email   # コミットE-mail
 $ git config alias.*      # gitコマンドAlias
 ```
 
-### ファイルをインデックスに登録 / git add
+### ファイルをインデックスに登録: git add
 
 gitの場合、ファイルを追加・更新しただけではまだコミット候補ではなく、インデックスに登録する必要がある。
 
@@ -49,7 +50,7 @@ gitの場合、ファイルを追加・更新しただけではまだコミッ�
 $ git add .     # カレントフォルダ以降のファイルをすべて登録
 $ git add path  # ファイル・フォルダの登録
 ```
-### リポジトリの状態を確認 / git status
+### リポジトリの状態を確認: git status
 
 ワーキングツリー・インデックスの状態を確認する。リポジトリとの現在のファイルの変更・修正状況、コミット候補としてインデックスに登録されているか確認出来る。
 
@@ -73,7 +74,7 @@ $ git status -s  # status簡易版
  ?? source/_posts/2012-11-07-git.markdown
 ```
 
-### 差分を確認する / git diff
+### 差分を確認する: git diff
 
 リポジトリとの差分が確認出来る。
 
@@ -97,7 +98,7 @@ $ git diff master  # masterブランチとの差分
 $ git diff master develop  # masterブランチとdevelopブランチとの差分
 ```
 
-### コミットログの表示 / git log
+### コミットログの表示: git log
 
 ```
 $ git log  # 現在のブランチのログ表示
@@ -106,7 +107,7 @@ $ git log -2  # 最新2つのコミットログを表示
 $ git log --oneline --graph  # ログをコミット毎に1行フォーマットで表示し、コミットツリーを表示する
 ```
 
-### ディレクトリ・ファイルの移動 / git mv
+### ディレクトリ・ファイルの移動: git mv
 
 コミット済みのファイルを移動・リネームする。コマンド実行するとコミット候補としてインデックスに登録される
 
@@ -115,7 +116,7 @@ $ git mv file1 file2  # file1をfile2にリネームする
 $ git mv dir1/file dir2/file  # fileをdir1からdir2に移動する
 ```
 
-### ディレクトリ・ファイルの削除 / git rm
+### ディレクトリ・ファイルの削除: git rm
 
 コミット済み、またはインデックスに登録済みのファイルを削除する
 
@@ -140,7 +141,7 @@ $ git status
 #       file
 ```
 
-### コミットする / git commit
+### コミットする: git commit
 
 ```
 $ git commit  # git addしておいたファイルのコミット。エディタが立ち上がってコメントを入力して保存するとコミットされる
@@ -148,7 +149,7 @@ $ git commit -m "コメント"  # コメントを指定してコミット
 $ git commit -a  # すべての変更をコミット。ただし、新規ファイルは追加されない。明示的にgit addする必要がある
 ```
 
-### 直前のコミットを変更する / git commit --amend
+### 直前のコミットを変更する: git commit --amend
 
 --amendオプションを指定すると直前のコミットを追加修正したインデックス登録の差分を含めて差し替えることが出来る
 
@@ -163,7 +164,7 @@ $ git add file  # fileをインデックスに追加
 $ git commit --amend  # addしたfileと直前のコミットをマージして差し替える
 ```
 
-### ローカルリポジトリ、インデックスを元に戻す / git reset
+### ローカルリポジトリ、インデックスを元に戻す: git reset
 
 ```
 $ git reset --hard commit_hash  # 指定したコミットにローカルリポジトリ、インデックスを完全に戻す。コミットしていない状態に戻り無かったことになる
@@ -179,13 +180,13 @@ $ git reset --mixed HEAD~  # 1つ前のコミットにインデックス・リ�
 $ git grep Text  # Textという文字列を検索する
 ```
 
-### コミット内容の表示 / git show
+### コミット内容の表示: git show
 
 ```
 $ git show commit_hash  # コミット内容表示。差分も参照出来る
 ```
 
-### リモートリポジトリをローカルにコピー / git clone
+### リモートリポジトリをローカルにコピー: git clone
 
 ```
 $ git clone git-uri  # リモートリポジトリをコピー。フォルダ名はname.gitだったらnameになる。リモートリポジトリ名はoriginになる。
@@ -193,7 +194,7 @@ $ git clone git-uri dir  # dirフォルダ名でリモートリポジトリを�
 $ git clone git-uri -o name  # リモートリポジトリ名をnameでコピー
 ```
 
-### リモートリポジトリの管理 / git remote
+### リモートリポジトリの管理: git remote
 
 ```
 $ git remote  # 登録されているリポジトリ名の表示
@@ -205,14 +206,14 @@ $ git remote rm devel  # リモートリポジトリdevelの登録解除
 $ git remote prune  # 削除されたリモートブランチの削除
 ```
 
-### ブランチのマージ / git merge
+### ブランチのマージ: git merge
 
 ```
 $ git merge develop  # 現在のブランチにdevelopをマージ
 $ git merge --squash develop  # 現在のブランチにdevelopのコミットを1つにまとめてマージ
 ```
 
-### リモートブランチにローカルブランチを送信 / git push
+### リモートブランチにローカルブランチを送信: git push
 
 ```
 $ git push origin master:master  # リモートリポジトリoriginにローカルブランチ(左のmaster)をリモートブランチ(右のmaster)に送信
@@ -221,7 +222,7 @@ $ git push origin master:testing  # リモートブランチを指定
 $ git push origin :testing  # リモートブランチの削除
 ```
 
-### ローカルリポジトリにリモートリポジトリを取り込む / git pull
+### ローカルリポジトリにリモートリポジトリを取り込む: git pull
 
 ```
 $ git pull  # originリモートリポジトリをローカルリポジトリに取り込む
@@ -229,7 +230,7 @@ $ git pull  # originリモートリポジトリをローカルリポジトリに
 
 ローカルリポジトリにコミットしていない変更がある場合、競合することがあるので、コミットしておくか、git stash saveして一旦ソースを待避してからpullすると良い。
 
-### ブランチの管理 / git branch
+### ブランチの管理: git branch
 
 ```
 $ git branch  # ローカルブランチの確認。現在のブランチも確認出来る
@@ -242,7 +243,7 @@ $ git branch -d base  # baseブランチの削除。このブランチのみ存�
 $ git branch -D base  # baseブランチの削除。新しいコミットがあっても強制削除する
 ```
 
-### ブランチのスイッチ / git checkout
+### ブランチのスイッチ: git checkout
 
 ```
 $ git checkout develop  # developブランチにスイッチ
@@ -252,7 +253,7 @@ $ git checkout -f  # 修正したワーキングツリーの修正を元に戻�
 $ git checkout commit_hash file  # fileをcommit_hash時点の状態に戻す
 ```
 
-### 未コミットの差分を一時的に保存する / git stash
+### 未コミットの差分を一時的に保存する: git stash
 
 ```
 $ git stash save  # 一時的に保存する。新規ファイルを保存する場合はgit addしておくこと
@@ -262,3 +263,4 @@ $ git stash drop stash@{1}  # stash@{1}を破棄。元に戻せないので注�
 $ git stash clear  # 保存されているキューを全て破棄。元に戻せないので注意
 ```
 
+以上よく使う21コマンドを紹介した。次回はgit rebaseの使い方とgit cherry-pickなど頻繁には使わないが有用そうなコマンドを紹介する。
