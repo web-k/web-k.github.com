@@ -1,0 +1,584 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>ActionScript 3.0 - web-k.log</title>
+  <meta name="author" content="Team web-k">
+
+  
+  <meta name="description" content="ActionScript とは ActionScript は Adobe Flash Player や Adobe AIR のランタイム環境用の開発言語です。
+開発環境には Adobe Flash CS6(オーサリングツール)/Adobe Flex Builder(統合開発環境)/Adobe &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://web-k.github.com/blog/2012/11/07/actionscript/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="web-k.log" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35251356-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">web-k.log</a></h1>
+  
+    <h2>RubyやWebをメインに技術情報をのせていきます</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS"><span class="text">RSS</span></a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:web-k.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">ActionScript 3.0</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-07T10:57:00+09:00" pubdate data-updated="true">Nov 7<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>ActionScript とは</h3>
+
+<p>ActionScript は Adobe Flash Player や Adobe AIR のランタイム環境用の開発言語です。
+開発環境には Adobe Flash CS6(オーサリングツール)/Adobe Flex Builder(統合開発環境)/Adobe Flex(コマンドラインのコンパイラ)がありますが、
+有償であったりコマンドラインでコンパイルしなければならないので、
+ここでは無償の統合開発環境である FlashDevelop を使用しています。
+ActionScriptで書かれたコードを上記環境でコンパイルすることにより、SWF(Shockwave Flash file)ファイルが生成されます。
+このSWFファイルをウェブページなどに組み込めば、ランタイム環境で動作させることができます。</p>
+
+<p>ActionScript には ActionScript 1.0/2.0/3.0 の各バージョンがあり、2.0からオブジェクト指向言語になっています。
+ECMAScriptをベースに作られているため、Javascriptに似ており。また、オブジェクト指向言語になり、Javaにも似ている言語となっています。</p>
+
+<h3>文法</h3>
+
+<p>基本的なことと気になったことについて書いていきます。</p>
+
+<h4>変数宣言</h4>
+
+<p>var 変数名:型 で宣言します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var num1:Number; //小数点付きまたは小数点なしの値を含むすべての数値
+</span><span class='line'>var num2:int; //整数
+</span><span class='line'>var num3:uint; //符号なし整数
+</span><span class='line'>var boo:Boolean; //true か false の2値
+</span><span class='line'>var str:String; //文字列</span></code></pre></td></tr></table></div></figure>
+
+
+<p>などがあります。</p>
+
+<h4>文字列</h4>
+
+<p>文字列はシングルクォートかダブルクォートを使って定義します。\n(改行)などの特殊文字を入れることもできます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var str:String = "kaigyou¥n"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>文字列を操作するメソッドも用意されており、Rubyみたいに使えます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var str:String = "FLASH";
+</span><span class='line'>trace(str.split(""));//traceを使用すると開発ツール上で実行したときに出力欄に表示される
+</span><span class='line'>//>>F,L,A,S,H
+</span><span class='line'>trace(str.length);//文字列の長さ
+</span><span class='line'>//>>5
+</span><span class='line'>trace([str, "TEST",].join("　"));//配列要素間を空白で結合
+</span><span class='line'>//>>FLASH TEST</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上記コードだけでは実行できないので、以下のようにコードを.asファイルに記載して実行(FlashDevelopではF5)します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>package 
+</span><span class='line'>{
+</span><span class='line'>  import flash.display.Sprite;
+</span><span class='line'>  public class Main extends Sprite 
+</span><span class='line'>  {
+</span><span class='line'>      public function Main():void 
+</span><span class='line'>      {
+</span><span class='line'>          var str:String = "FLASH";
+</span><span class='line'>          trace(str.split(""));
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>配列</h4>
+
+<p>配列用の型があるので、Arrayで宣言します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var arr:Array;
+</span><span class='line'>arr = [a,b,c];</span></code></pre></td></tr></table></div></figure>
+
+
+<p>配列も文字列と同じようにメソッドが用意されており、操作できます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var arr:Array = ['a','b','c'];
+</span><span class='line'>arr.push('d'); //末尾にデータ追加
+</span><span class='line'>trace(arr);
+</span><span class='line'>//>>[a,b,c,d]
+</span><span class='line'>arr.pop(); //末尾のデータ取り出し
+</span><span class='line'>trace(arr);
+</span><span class='line'>//>>[a,b,c]</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>ハッシュ</h4>
+
+<p>Object型を使って、ハッシュを作ります。Object型はすべてのクラス定義の基本クラスです。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var hash:Object = new Object();
+</span><span class='line'>hash["program"] = "ActionScript"
+</span><span class='line'>trace(hash["program"]);
+</span><span class='line'>//>>ActionScript</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>ブロックスコープ</h4>
+
+<p>変数は関数単位で管理しており、ブロック変数として宣言したつもりでも関数スコープになっています。(withを使えば、実現できるらしいです。)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//多重定義でコンパイルエラー
+</span><span class='line'>for ( var i:Number = 0; i &lt; 1; i++) {
+</span><span class='line'>  i = 1;
+</span><span class='line'>}
+</span><span class='line'>for ( var i:String = 0; i &lt; 1; i++) {
+</span><span class='line'>  i = 'a';
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>例外</h2>
+
+<p>Javaのように例外をキャッチできます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>try {
+</span><span class='line'>    //例外が検出したい処理
+</span><span class='line'>} catch (e:Error) {
+</span><span class='line'>    // 例外処理
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>クラス</h2>
+
+<p>以下のようにクラス定義します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>package パッケージ名 { // パッケージ名省略可
+</span><span class='line'>    import パッケージ.クラス名;
+</span><span class='line'>    
+</span><span class='line'>    public class Main(クラス名、仮にMain) extends 親クラス名
+</span><span class='line'>    {
+</span><span class='line'>        // 変数宣言
+</span><span class='line'>        アクセス修飾子 var プロパティ名:プロパティの型;
+</span><span class='line'>        
+</span><span class='line'>        // コンストラクタ
+</span><span class='line'>        アクセス修飾子 function Main()//コンストラクタ名
+</span><span class='line'>        {
+</span><span class='line'>            処理1
+</span><span class='line'>        }
+</span><span class='line'>        
+</span><span class='line'>        // メソッド1
+</span><span class='line'>        アクセス修飾子 function メソッド名1(引数1:型 = デフォルト値):戻り値の型
+</span><span class='line'>        {
+</span><span class='line'>            処理2
+</span><span class='line'>        }
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>表示リスト</h2>
+
+<p>ActionScript 3.0 で構築されたアプリケーションには、表示リストと呼ばれるオブジェクトの階層があります。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ステージ //Stageクラス
+</span><span class='line'>  - SWFファイルのメインクラスのインスタンス //自分で定義したクラス
+</span><span class='line'>    - 表示オブジェクト //TextFieldなど
+</span><span class='line'>    - 表示オブジェクトコンテナ //Spriteクラス
+</span><span class='line'>      -(表示オブジェクト/表示オブジェクトコンテナ)</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>ステージ</li>
+</ul>
+
+
+<p>表示オブジェクトの基本コンテナ、各アプリケーションには1つのStageオブジェクトがあり、この中に画面の表示オブジェクトがすべて含まれます。
+ステージは、表示リスト階層の最上位にあたります。
+それぞれのSWFファイルには関連するActionScriptクラスがあり、これがSWFファイルのメインクラスと呼ばれます。
+SWFファイルのメインクラスは、Spriteクラスを拡張して定義します。
+SWFファイルが Flash Player または Adobe AIR 上で開かれると、SWFファイルのメインクラスのコンストラクタ関数が呼ばれ、
+作成されるインスタンスがStageオブジェクトに子として追加されます。</p>
+
+<ul>
+<li>表示オブジェクト</li>
+</ul>
+
+
+<p>ActionScript 3.0 では、アプリケーション内で表示される全てのエレメントタイプは、表示オブジェクトです。</p>
+
+<ul>
+<li>表示オブジェクトコンテナ</li>
+</ul>
+
+
+<p>表示オブジェクトコンテナは特殊な型の表示オブジェクトです。
+表示オブジェクトコンテナ(単にコンテナともいいます)は、それ自体が表示オブジェクトコンテナ/表示オブジェクトを子オブジェクトに含むことができます。
+表示オブジェクトコンテナに子オブジェクトを追加するには addChild関数を使います。
+表示オブジェクトコンテナとなりうる表示オブジェクトは Stage/MovieClip/Spriteクラスです。</p>
+
+<h2>Hello ActionScript</h2>
+
+<p>Flash上に「Hello ActionScript」と文字列を表示させます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>package hello
+</span><span class='line'>{
+</span><span class='line'>  import flash.display.Sprite; //画面表示の基本クラスのインポート
+</span><span class='line'>  import flash.text.*; //テキスト系のクラス
+</span><span class='line'>  public class Main extends Sprite
+</span><span class='line'>  {
+</span><span class='line'>      public function Main (){//コンストラクタ
+</span><span class='line'>          var textField:TextField = new TextField();//入れ物確保
+</span><span class='line'>          textField.text = "Hello ActionScript";//文字列挿入
+</span><span class='line'>          addChild(textField);//textFieldをSpriteクラスに追加して表示
+</span><span class='line'>      }   
+</span><span class='line'>  }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>参考</h4>
+
+<ul>
+<li><a href="http://help.adobe.com/ja_JP/ActionScript/3.0_ProgrammingAS3/">Adobe ActionScript 3.0 * Adobe Flash 用 Adobe ActionScript</a> - 公式ドキュメント</li>
+<li><a href="http://blog.livedoor.jp/takaaki_bb/archives/51374100.html">読書メモ＋tips＋日記 : [Flash] ActionScript 3.0 基礎文法最速マスター</a></li>
+<li><a href="http://www40.atwiki.jp/spellbound/">ActionScript入門Wiki - トップページ</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">ntth</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-07T10:57:00+09:00" pubdate data-updated="true">Nov 7<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/actionscript/'>ActionScript</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://web-k.github.com/blog/2012/11/07/actionscript/" data-via="" data-counturl="http://web-k.github.com/blog/2012/11/07/actionscript/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/10/22/internationalization-i18n/" title="Previous Post: i18n(Internationalization)">&laquo; i18n(Internationalization)</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/11/07/capybara-driver/" title="Next Post: Capybaraのドライバ">Capybaraのドライバ &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/11/08/git/">gitでよく使う21コマンドまとめ</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/07/rspec-raise/">RSpecで例外のテストをする</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/07/capybara-driver/">Capybaraのドライバ</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/07/actionscript/">ActionScript 3.0</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/22/internationalization-i18n/">i18n(Internationalization)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/09/rails-filter/">Railsのbefore_filterとメソッド返り値</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/08/nexus7/">Nexus 7(Jelly Bean)のUser AgentとCSS 3D Transforms対応状況を調べてみた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/05/fabrication-cucumber/">FabricationとCucumberの連携</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/04/fabrication/">Fabrication</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/03/compare-matchers/">RSpecとCapybaraのマッチャ比較</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list"><li><a href='/blog/categories/actionscript'>ActionScript (1)</a></li><li><a href='/blog/categories/android'>Android (1)</a></li><li><a href='/blog/categories/capybara'>capybara (1)</a></li><li><a href='/blog/categories/capybara-webkit'>capybara-webkit (1)</a></li><li><a href='/blog/categories/css3'>CSS3 (1)</a></li><li><a href='/blog/categories/cucumber'>Cucumber (1)</a></li><li><a href='/blog/categories/fabrication'>Fabrication (2)</a></li><li><a href='/blog/categories/git'>git (1)</a></li><li><a href='/blog/categories/html5'>HTML5 (1)</a></li><li><a href='/blog/categories/i18n'>i18n (1)</a></li><li><a href='/blog/categories/rspec'>RSpec (4)</a></li><li><a href='/blog/categories/ruby'>Ruby (5)</a></li></ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Team web-k -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'web-k';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://web-k.github.com/blog/2012/11/07/actionscript/';
+        var disqus_url = 'http://web-k.github.com/blog/2012/11/07/actionscript/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

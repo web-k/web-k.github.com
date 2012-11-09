@@ -1,0 +1,628 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>gitでよく使う21コマンドまとめ - web-k.log</title>
+  <meta name="author" content="Team web-k">
+
+  
+  <meta name="description" content="よく使うgitコマンドをリストアップしてみる リポジトリ作成: git init ローカルリポジトリを作成するにはリポジトリ名を指定する。 1
+2
+$ git init repo
+Initialized empty Git repository in /Users/user/repo/.git/ &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://web-k.github.com/blog/2012/11/08/git/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="web-k.log" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35251356-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">web-k.log</a></h1>
+  
+    <h2>RubyやWebをメインに技術情報をのせていきます</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS"><span class="text">RSS</span></a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:web-k.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Gitでよく使う21コマンドまとめ</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-08T00:43:00+09:00" pubdate data-updated="true">Nov 8<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>よく使うgitコマンドをリストアップしてみる</p>
+
+<h3>リポジトリ作成: git init</h3>
+
+<p>ローカルリポジトリを作成するにはリポジトリ名を指定する。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git init repo
+</span><span class='line'>Initialized empty Git repository in /Users/user/repo/.git/</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>リポジトリの設定: git config</h3>
+
+<p>リポジトリ単位の設定は.git/config、ログインユーザ単位の設定は~/.gitconfigに、システム単位は/etc/gitconfigに格納されている。それぞれ、</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git config キー 値           # リポジトリ単位
+</span><span class='line'>$ git config --global キー 値  # ログインユーザー単位
+</span><span class='line'>$ git config --system キー 値  # システム単位</span></code></pre></td></tr></table></div></figure>
+
+
+<p>にて値を設定出来る。各値はシステム→ログインユーザー→リポジトリ単位の順で読み込まれ、後から読み込んだほうが優先される。現在の設定は</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git config --list</span></code></pre></td></tr></table></div></figure>
+
+
+<p>で参照可能。良く設定するキーは</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git config user.name    # コミットユーザー名
+</span><span class='line'>$ git config user.email   # コミットE-mail
+</span><span class='line'>$ git config alias.*      # gitコマンドAlias</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ファイルをインデックスに登録: git add</h3>
+
+<p>gitの場合、ファイルを追加・更新しただけではまだコミット候補ではなく、インデックスに登録する必要がある。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git add .     # カレントフォルダ以降のファイルをすべて登録
+</span><span class='line'>$ git add path  # ファイル・フォルダの登録</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>リポジトリの状態を確認: git status</h3>
+
+<p>ワーキングツリー・インデックスの状態を確認する。リポジトリとの現在のファイルの変更・修正状況、コミット候補としてインデックスに登録されているか確認出来る。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git status
+</span><span class='line'># On branch source
+</span><span class='line'># Changes not staged for commit:
+</span><span class='line'>#   (use "git add &lt;file&gt;..." to update what will be committed)
+</span><span class='line'>#   (use "git checkout -- &lt;file&gt;..." to discard changes in working directory)
+</span><span class='line'>#
+</span><span class='line'>#       modified:   .gitignore
+</span><span class='line'>#
+</span><span class='line'># Untracked files:
+</span><span class='line'>#   (use "git add &lt;file&gt;..." to include in what will be committed)
+</span><span class='line'>#
+</span><span class='line'>#       source/_posts/2012-11-07-git.markdown
+</span><span class='line'>no changes added to commit (use "git add" and/or "git commit -a")
+</span><span class='line'>
+</span><span class='line'>$ git status -s  # status簡易版
+</span><span class='line'> M .gitignore
+</span><span class='line'> ?? source/_posts/2012-11-07-git.markdown</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>差分を確認する: git diff</h3>
+
+<p>リポジトリとの差分が確認出来る。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git diff  # ワーキングツリーの差分
+</span><span class='line'>diff --git a/.gitignore b/.gitignore
+</span><span class='line'>index 4bba145..b4bbc86 100644
+</span><span class='line'>--- a/.gitignore
+</span><span class='line'>+++ b/.gitignore
+</span><span class='line'>@@ -11,4 +11,5 @@ source/_stash
+</span><span class='line'>source/stylesheets/screen.css
+</span><span class='line'>vendor
+</span><span class='line'>node_modules
+</span><span class='line'>-nbproject/*
+</span><span class='line'>\ No newline at end of file
+</span><span class='line'>+nbproject/*
+</span><span class='line'>+*.swp
+</span><span class='line'>
+</span><span class='line'>$ git diff HEAD  # インデックスとリポジトリ最新との差分
+</span><span class='line'>$ git diff master  # masterブランチとの差分
+</span><span class='line'>$ git diff master develop  # masterブランチとdevelopブランチとの差分</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>コミットログの表示: git log</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git log  # 現在のブランチのログ表示
+</span><span class='line'>$ git log -p  # 現在のブランチのdiffも含めてログ表示
+</span><span class='line'>$ git log -2  # 最新2つのコミットログを表示
+</span><span class='line'>$ git log --oneline --graph  # ログをコミット毎に1行フォーマットで表示し、コミットツリーを表示する</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ディレクトリ・ファイルの移動: git mv</h3>
+
+<p>コミット済みのファイルを移動・リネームする。コマンド実行するとコミット候補としてインデックスに登録される</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git mv file1 file2  # file1をfile2にリネームする
+</span><span class='line'>$ git mv dir1/file dir2/file  # fileをdir1からdir2に移動する</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ディレクトリ・ファイルの削除: git rm</h3>
+
+<p>コミット済み、またはインデックスに登録済みのファイルを削除する</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git rm file  # fileを削除する</span></code></pre></td></tr></table></div></figure>
+
+
+<p>git rmをオプション無しで実行するとワーキングツリーからファイルが削除されるので、新規追加登録したファイルをインデックスから解除してファイルをワーキングツリーに残しておきたい場合は&#8211;cachedを使う</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git add file
+</span><span class='line'>$ git rm --cached file
+</span><span class='line'>rm 'file'
+</span><span class='line'>$ git status
+</span><span class='line'># On branch master
+</span><span class='line'>#
+</span><span class='line'># Initial commit
+</span><span class='line'>#
+</span><span class='line'># Untracked files:
+</span><span class='line'>#   (use "git add &lt;file&gt;..." to include in what will be committed)
+</span><span class='line'>#
+</span><span class='line'>#       file</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>コミットする: git commit</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git commit  # git addしておいたファイルのコミット。エディタが立ち上がってコメントを入力して保存するとコミットされる
+</span><span class='line'>$ git commit -m "コメント"  # コメントを指定してコミット
+</span><span class='line'>$ git commit -a  # すべての変更をコミット。ただし、新規ファイルは追加されない。明示的にgit addする必要がある</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>直前のコミットを変更する: git commit &#8211;amend</h3>
+
+<p>&#8211;amendオプションを指定すると直前のコミットを追加修正したインデックス登録の差分を含めて差し替えることが出来る</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git commit --amend  # (インデックス登録が無ければ)直前のコミットコメントを変更する</span></code></pre></td></tr></table></div></figure>
+
+
+<p>インデックス登録してある差分を含めて直前のコミットを変更する</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git add file  # fileをインデックスに追加
+</span><span class='line'>$ git commit --amend  # addしたfileと直前のコミットをマージして差し替える</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ローカルリポジトリ、インデックスを元に戻す: git reset</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git reset --hard commit_hash  # 指定したコミットにローカルリポジトリ、インデックスを完全に戻す。コミットしていない状態に戻り無かったことになる
+</span><span class='line'>$ git reset --soft HEAD~  # 1つ前のコミットに戻す。ワーキングツリー・インデックスファイルは影響しない
+</span><span class='line'>$ git reset --mixed HEAD~  # 1つ前のコミットにインデックス・リポジトリを戻す。ワーキングツリーには影響しない</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>grepする / git grep</h3>
+
+<p>インデックスやワーキングツリーに対して検索する</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git grep Text  # Textという文字列を検索する</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>コミット内容の表示: git show</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git show commit_hash  # コミット内容表示。差分も参照出来る</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>リモートリポジトリをローカルにコピー: git clone</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git clone git-uri  # リモートリポジトリをコピー。フォルダ名はname.gitだったらnameになる。リモートリポジトリ名はoriginになる。
+</span><span class='line'>$ git clone git-uri dir  # dirフォルダ名でリモートリポジトリをコピー
+</span><span class='line'>$ git clone git-uri -o name  # リモートリポジトリ名をnameでコピー</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>リモートリポジトリの管理: git remote</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git remote  # 登録されているリポジトリ名の表示
+</span><span class='line'>$ git remote -v  # リポジトリ名とURIの表示
+</span><span class='line'>$ git remote add name git-uri  # リポジトリ名「name」にてgit-uriリモートリポジトリの登録
+</span><span class='line'>$ git remote show origin  # originリモートリポジトリの詳細情報表示
+</span><span class='line'>$ git remote update  # リモートリポジトリの更新。fetchでも済みそう
+</span><span class='line'>$ git remote rm devel  # リモートリポジトリdevelの登録解除
+</span><span class='line'>$ git remote prune  # 削除されたリモートブランチの削除</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ブランチのマージ: git merge</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git merge develop  # 現在のブランチにdevelopをマージ
+</span><span class='line'>$ git merge --squash develop  # 現在のブランチにdevelopのコミットを1つにまとめてマージ</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>リモートブランチにローカルブランチを送信: git push</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git push origin master:master  # リモートリポジトリoriginにローカルブランチ(左のmaster)をリモートブランチ(右のmaster)に送信
+</span><span class='line'>$ git push origin master  # リモートリポジトリにローカルブランチmasterを送信
+</span><span class='line'>$ git push origin master:testing  # リモートブランチを指定
+</span><span class='line'>$ git push origin :testing  # リモートブランチの削除</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ローカルリポジトリにリモートリポジトリを取り込む: git pull</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git pull  # originリモートリポジトリをローカルリポジトリに取り込む</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ローカルリポジトリにコミットしていない変更がある場合、競合することがあるので、コミットしておくか、git stash saveして一旦ソースを待避してからpullすると良い。</p>
+
+<h3>ブランチの管理: git branch</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git branch  # ローカルブランチの確認。現在のブランチも確認出来る
+</span><span class='line'>$ git branch -r  # リモートブランチの確認
+</span><span class='line'>$ git branch -a  # ローカル・リモートすべてのブランチの確認
+</span><span class='line'>$ git branch new  # newブランチの作成
+</span><span class='line'>$ git branch new base  # baseブランチを起点にnewブランチを作成
+</span><span class='line'>$ git branch -m base rename  # baseブランチをrenameブランチに名称変更
+</span><span class='line'>$ git branch -d base  # baseブランチの削除。このブランチのみ存在する新しいコミットがある場合は削除されないので安全
+</span><span class='line'>$ git branch -D base  # baseブランチの削除。新しいコミットがあっても強制削除する</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ブランチのスイッチ: git checkout</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git checkout develop  # developブランチにスイッチ
+</span><span class='line'>$ git checkout --merge develop  # ワーキングツリー・インデックスで修正があるファイルとスイッチ先ブランチをマージして切り替える
+</span><span class='line'>$ git checkout -b new  # 現在のブランチを起点にnewブランチを作成
+</span><span class='line'>$ git checkout -f  # 修正したワーキングツリーの修正を元に戻す。一度戻した修正は失われるので注意
+</span><span class='line'>$ git checkout commit_hash file  # fileをcommit_hash時点の状態に戻す</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>未コミットの差分を一時的に保存する: git stash</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git stash save  # 一時的に保存する。新規ファイルを保存する場合はgit addしておくこと
+</span><span class='line'>$ git stash pop  # 一時的に保存した差分を元に戻す
+</span><span class='line'>$ git stash list  # 保存されているキューの一覧を表示する
+</span><span class='line'>$ git stash drop stash@{1}  # stash@{1}を破棄。元に戻せないので注意
+</span><span class='line'>$ git stash clear  # 保存されているキューを全て破棄。元に戻せないので注意</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以上よく使う21コマンドを紹介した。次回はgit rebaseの使い方とgit cherry-pickなど頻繁には使わないが有用そうなコマンドを紹介する。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">toshi3221</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-08T00:43:00+09:00" pubdate data-updated="true">Nov 8<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/git/'>git</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://web-k.github.com/blog/2012/11/08/git/" data-via="" data-counturl="http://web-k.github.com/blog/2012/11/08/git/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/11/07/rspec-raise/" title="Previous Post: RSpecで例外のテストをする">&laquo; RSpecで例外のテストをする</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/11/08/git/">gitでよく使う21コマンドまとめ</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/07/rspec-raise/">RSpecで例外のテストをする</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/07/capybara-driver/">Capybaraのドライバ</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/07/actionscript/">ActionScript 3.0</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/22/internationalization-i18n/">i18n(Internationalization)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/09/rails-filter/">Railsのbefore_filterとメソッド返り値</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/08/nexus7/">Nexus 7(Jelly Bean)のUser AgentとCSS 3D Transforms対応状況を調べてみた</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/05/fabrication-cucumber/">FabricationとCucumberの連携</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/04/fabrication/">Fabrication</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/03/compare-matchers/">RSpecとCapybaraのマッチャ比較</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list"><li><a href='/blog/categories/actionscript'>ActionScript (1)</a></li><li><a href='/blog/categories/android'>Android (1)</a></li><li><a href='/blog/categories/capybara'>capybara (1)</a></li><li><a href='/blog/categories/capybara-webkit'>capybara-webkit (1)</a></li><li><a href='/blog/categories/css3'>CSS3 (1)</a></li><li><a href='/blog/categories/cucumber'>Cucumber (1)</a></li><li><a href='/blog/categories/fabrication'>Fabrication (2)</a></li><li><a href='/blog/categories/git'>git (1)</a></li><li><a href='/blog/categories/html5'>HTML5 (1)</a></li><li><a href='/blog/categories/i18n'>i18n (1)</a></li><li><a href='/blog/categories/rspec'>RSpec (4)</a></li><li><a href='/blog/categories/ruby'>Ruby (5)</a></li></ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Team web-k -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'web-k';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://web-k.github.com/blog/2012/11/08/git/';
+        var disqus_url = 'http://web-k.github.com/blog/2012/11/08/git/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

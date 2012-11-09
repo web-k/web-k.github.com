@@ -4,7 +4,7 @@
   <title><![CDATA[Category: capybara-webkit | web-k.log]]></title>
   <link href="http://web-k.github.com/blog/categories/capybara-webkit/atom.xml" rel="self"/>
   <link href="http://web-k.github.com/"/>
-  <updated>2012-11-07T17:32:32+09:00</updated>
+  <updated>2012-11-09T09:15:08+09:00</updated>
   <id>http://web-k.github.com/</id>
   <author>
     <name><![CDATA[Team web-k]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Capybaraのブラウザエンジン]]></title>
+    <title type="html"><![CDATA[Capybaraのドライバ]]></title>
     <link href="http://web-k.github.com/blog/2012/11/07/capybara-driver/"/>
     <updated>2012-11-07T16:37:00+09:00</updated>
     <id>http://web-k.github.com/blog/2012/11/07/capybara-driver</id>
@@ -29,15 +29,12 @@ end
 </code>
 次にenv.rbにJavascriptドライバーを記述します。
 <code>ruby
-Spork.prefork do
-  ...
-  Capybara.default_selector = :css
-  Capybara.javascript_driver = :webkit
-end
+Capybara.default_selector = :css
+Capybara.javascript_driver = :webkit
 </code>
 これでJacascripがテストで動作する環境ができました。Javascriptを動作させたいところにRSpecだと
 <code>ruby
-it "hoge hoge", :js =&gt; true do
+it "hoge hoge", js: true do
   ...
 end
 </code>
@@ -55,7 +52,7 @@ Capybara.default_driver = :selenium
 デフォルトではFirefoxが起動するので、FirefoxではなくChromeを使用したいときには以下をCapybara.default_driverの前に記載します。
 <code>ruby
 Capybara.register_driver :Selenium do |app|
-  Capybara::Driver::Selenium.new(app, :browser =&gt; :chrome)
+  Capybara::Driver::Selenium.new(app, browser: :chrome)
 end
 </code></p>
 
@@ -64,17 +61,25 @@ end
 RSpecのフィルタで切り替える方法を載せます。この方法は特定のサンプルのみブラウザの切り替えを行います。
 フィルタ機能を設定するには、spec_helper.rbにSelenium用のフィルターを用意します。
 ``` ruby
-config.before(:all, :selenium => true) do
-  Capybara.current_driver = :selenium
-end</p>
+RSpec.configure do |config|
+  ...
+  config.before(:all, selenium: true) do</p>
 
-<p>config.after(:all, selenium => true) do
-  Capybara.use_default_driver
-end
+<pre><code>Capybara.current_driver = :selenium
+</code></pre>
+
+<p>  end</p>
+
+<p>  config.after(:all, selenium: true) do</p>
+
+<pre><code>Capybara.use_default_driver
+</code></pre>
+
+<p>  end
 <code>
-あとはSeleniumを実行したいサンプルに:seleniumタグを追加します。
+あとはSeleniumを実行したいサンプルにseleniumタグを追加します。
 </code> ruby
-describe "hoge hoge", :selenium => true do
+describe "hoge hoge", selenium: true do
   ...
 end
 ```</p>

@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: git | web-k.log]]></title>
+  <link href="http://web-k.github.com/blog/categories/git/atom.xml" rel="self"/>
+  <link href="http://web-k.github.com/"/>
+  <updated>2012-11-09T09:15:08+09:00</updated>
+  <id>http://web-k.github.com/</id>
+  <author>
+    <name><![CDATA[Team web-k]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[gitでよく使う21コマンドまとめ]]></title>
+    <link href="http://web-k.github.com/blog/2012/11/08/git/"/>
+    <updated>2012-11-08T00:43:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2012/11/08/git</id>
+    <content type="html"><![CDATA[<p>よく使うgitコマンドをリストアップしてみる</p>
+
+<h3>リポジトリ作成: git init</h3>
+
+<p>ローカルリポジトリを作成するにはリポジトリ名を指定する。</p>
+
+<p><code>
+$ git init repo
+Initialized empty Git repository in /Users/user/repo/.git/
+</code></p>
+
+<h3>リポジトリの設定: git config</h3>
+
+<p>リポジトリ単位の設定は.git/config、ログインユーザ単位の設定は~/.gitconfigに、システム単位は/etc/gitconfigに格納されている。それぞれ、</p>
+
+<p><code>
+$ git config キー 値           # リポジトリ単位
+$ git config --global キー 値  # ログインユーザー単位
+$ git config --system キー 値  # システム単位
+</code></p>
+
+<p>にて値を設定出来る。各値はシステム→ログインユーザー→リポジトリ単位の順で読み込まれ、後から読み込んだほうが優先される。現在の設定は</p>
+
+<p><code>
+$ git config --list
+</code></p>
+
+<p>で参照可能。良く設定するキーは</p>
+
+<p><code>
+$ git config user.name    # コミットユーザー名
+$ git config user.email   # コミットE-mail
+$ git config alias.*      # gitコマンドAlias
+</code></p>
+
+<h3>ファイルをインデックスに登録: git add</h3>
+
+<p>gitの場合、ファイルを追加・更新しただけではまだコミット候補ではなく、インデックスに登録する必要がある。</p>
+
+<p><code>
+$ git add .     # カレントフォルダ以降のファイルをすべて登録
+$ git add path  # ファイル・フォルダの登録
+</code></p>
+
+<h3>リポジトリの状態を確認: git status</h3>
+
+<p>ワーキングツリー・インデックスの状態を確認する。リポジトリとの現在のファイルの変更・修正状況、コミット候補としてインデックスに登録されているか確認出来る。</p>
+
+<p>```
+$ git status</p>
+
+<h1>On branch source</h1>
+
+<h1>Changes not staged for commit:</h1>
+
+<h1>(use "git add <file>..." to update what will be committed)</h1>
+
+<h1>(use "git checkout -- <file>..." to discard changes in working directory)</h1>
+
+<p>#</p>
+
+<h1>modified:   .gitignore</h1>
+
+<p>#</p>
+
+<h1>Untracked files:</h1>
+
+<h1>(use "git add <file>..." to include in what will be committed)</h1>
+
+<p>#</p>
+
+<h1>source/_posts/2012-11-07-git.markdown</h1>
+
+<p>no changes added to commit (use "git add" and/or "git commit -a")</p>
+
+<p>$ git status -s  # status簡易版
+ M .gitignore
+ ?? source/_posts/2012-11-07-git.markdown
+```</p>
+
+<h3>差分を確認する: git diff</h3>
+
+<p>リポジトリとの差分が確認出来る。</p>
+
+<p>```
+$ git diff  # ワーキングツリーの差分
+diff --git a/.gitignore b/.gitignore
+index 4bba145..b4bbc86 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -11,4 +11,5 @@ source/_stash
+source/stylesheets/screen.css
+vendor
+node_modules
+-nbproject/<em>
+\ No newline at end of file
++nbproject/</em>
++*.swp</p>
+
+<p>$ git diff HEAD  # インデックスとリポジトリ最新との差分
+$ git diff master  # masterブランチとの差分
+$ git diff master develop  # masterブランチとdevelopブランチとの差分
+```</p>
+
+<h3>コミットログの表示: git log</h3>
+
+<p><code>
+$ git log  # 現在のブランチのログ表示
+$ git log -p  # 現在のブランチのdiffも含めてログ表示
+$ git log -2  # 最新2つのコミットログを表示
+$ git log --oneline --graph  # ログをコミット毎に1行フォーマットで表示し、コミットツリーを表示する
+</code></p>
+
+<h3>ディレクトリ・ファイルの移動: git mv</h3>
+
+<p>コミット済みのファイルを移動・リネームする。コマンド実行するとコミット候補としてインデックスに登録される</p>
+
+<p><code>
+$ git mv file1 file2  # file1をfile2にリネームする
+$ git mv dir1/file dir2/file  # fileをdir1からdir2に移動する
+</code></p>
+
+<h3>ディレクトリ・ファイルの削除: git rm</h3>
+
+<p>コミット済み、またはインデックスに登録済みのファイルを削除する</p>
+
+<p><code>
+$ git rm file  # fileを削除する
+</code></p>
+
+<p>git rmをオプション無しで実行するとワーキングツリーからファイルが削除されるので、新規追加登録したファイルをインデックスから解除してファイルをワーキングツリーに残しておきたい場合は--cachedを使う</p>
+
+<p>```
+$ git add file
+$ git rm --cached file
+rm 'file'
+$ git status</p>
+
+<h1>On branch master</h1>
+
+<p>#</p>
+
+<h1>Initial commit</h1>
+
+<p>#</p>
+
+<h1>Untracked files:</h1>
+
+<h1>(use "git add <file>..." to include in what will be committed)</h1>
+
+<p>#</p>
+
+<h1>file</h1>
+
+<p>```</p>
+
+<h3>コミットする: git commit</h3>
+
+<p><code>
+$ git commit  # git addしておいたファイルのコミット。エディタが立ち上がってコメントを入力して保存するとコミットされる
+$ git commit -m "コメント"  # コメントを指定してコミット
+$ git commit -a  # すべての変更をコミット。ただし、新規ファイルは追加されない。明示的にgit addする必要がある
+</code></p>
+
+<h3>直前のコミットを変更する: git commit --amend</h3>
+
+<p>--amendオプションを指定すると直前のコミットを追加修正したインデックス登録の差分を含めて差し替えることが出来る</p>
+
+<p><code>
+$ git commit --amend  # (インデックス登録が無ければ)直前のコミットコメントを変更する
+</code></p>
+
+<p>インデックス登録してある差分を含めて直前のコミットを変更する</p>
+
+<p><code>
+$ git add file  # fileをインデックスに追加
+$ git commit --amend  # addしたfileと直前のコミットをマージして差し替える
+</code></p>
+
+<h3>ローカルリポジトリ、インデックスを元に戻す: git reset</h3>
+
+<p><code>
+$ git reset --hard commit_hash  # 指定したコミットにローカルリポジトリ、インデックスを完全に戻す。コミットしていない状態に戻り無かったことになる
+$ git reset --soft HEAD~  # 1つ前のコミットに戻す。ワーキングツリー・インデックスファイルは影響しない
+$ git reset --mixed HEAD~  # 1つ前のコミットにインデックス・リポジトリを戻す。ワーキングツリーには影響しない
+</code></p>
+
+<h3>grepする / git grep</h3>
+
+<p>インデックスやワーキングツリーに対して検索する</p>
+
+<p><code>
+$ git grep Text  # Textという文字列を検索する
+</code></p>
+
+<h3>コミット内容の表示: git show</h3>
+
+<p><code>
+$ git show commit_hash  # コミット内容表示。差分も参照出来る
+</code></p>
+
+<h3>リモートリポジトリをローカルにコピー: git clone</h3>
+
+<p><code>
+$ git clone git-uri  # リモートリポジトリをコピー。フォルダ名はname.gitだったらnameになる。リモートリポジトリ名はoriginになる。
+$ git clone git-uri dir  # dirフォルダ名でリモートリポジトリをコピー
+$ git clone git-uri -o name  # リモートリポジトリ名をnameでコピー
+</code></p>
+
+<h3>リモートリポジトリの管理: git remote</h3>
+
+<p><code>
+$ git remote  # 登録されているリポジトリ名の表示
+$ git remote -v  # リポジトリ名とURIの表示
+$ git remote add name git-uri  # リポジトリ名「name」にてgit-uriリモートリポジトリの登録
+$ git remote show origin  # originリモートリポジトリの詳細情報表示
+$ git remote update  # リモートリポジトリの更新。fetchでも済みそう
+$ git remote rm devel  # リモートリポジトリdevelの登録解除
+$ git remote prune  # 削除されたリモートブランチの削除
+</code></p>
+
+<h3>ブランチのマージ: git merge</h3>
+
+<p><code>
+$ git merge develop  # 現在のブランチにdevelopをマージ
+$ git merge --squash develop  # 現在のブランチにdevelopのコミットを1つにまとめてマージ
+</code></p>
+
+<h3>リモートブランチにローカルブランチを送信: git push</h3>
+
+<p><code>
+$ git push origin master:master  # リモートリポジトリoriginにローカルブランチ(左のmaster)をリモートブランチ(右のmaster)に送信
+$ git push origin master  # リモートリポジトリにローカルブランチmasterを送信
+$ git push origin master:testing  # リモートブランチを指定
+$ git push origin :testing  # リモートブランチの削除
+</code></p>
+
+<h3>ローカルリポジトリにリモートリポジトリを取り込む: git pull</h3>
+
+<p><code>
+$ git pull  # originリモートリポジトリをローカルリポジトリに取り込む
+</code></p>
+
+<p>ローカルリポジトリにコミットしていない変更がある場合、競合することがあるので、コミットしておくか、git stash saveして一旦ソースを待避してからpullすると良い。</p>
+
+<h3>ブランチの管理: git branch</h3>
+
+<p><code>
+$ git branch  # ローカルブランチの確認。現在のブランチも確認出来る
+$ git branch -r  # リモートブランチの確認
+$ git branch -a  # ローカル・リモートすべてのブランチの確認
+$ git branch new  # newブランチの作成
+$ git branch new base  # baseブランチを起点にnewブランチを作成
+$ git branch -m base rename  # baseブランチをrenameブランチに名称変更
+$ git branch -d base  # baseブランチの削除。このブランチのみ存在する新しいコミットがある場合は削除されないので安全
+$ git branch -D base  # baseブランチの削除。新しいコミットがあっても強制削除する
+</code></p>
+
+<h3>ブランチのスイッチ: git checkout</h3>
+
+<p><code>
+$ git checkout develop  # developブランチにスイッチ
+$ git checkout --merge develop  # ワーキングツリー・インデックスで修正があるファイルとスイッチ先ブランチをマージして切り替える
+$ git checkout -b new  # 現在のブランチを起点にnewブランチを作成
+$ git checkout -f  # 修正したワーキングツリーの修正を元に戻す。一度戻した修正は失われるので注意
+$ git checkout commit_hash file  # fileをcommit_hash時点の状態に戻す
+</code></p>
+
+<h3>未コミットの差分を一時的に保存する: git stash</h3>
+
+<p><code>
+$ git stash save  # 一時的に保存する。新規ファイルを保存する場合はgit addしておくこと
+$ git stash pop  # 一時的に保存した差分を元に戻す
+$ git stash list  # 保存されているキューの一覧を表示する
+$ git stash drop stash@{1}  # stash@{1}を破棄。元に戻せないので注意
+$ git stash clear  # 保存されているキューを全て破棄。元に戻せないので注意
+</code></p>
+
+<p>以上よく使う21コマンドを紹介した。次回はgit rebaseの使い方とgit cherry-pickなど頻繁には使わないが有用そうなコマンドを紹介する。</p>
+]]></content>
+  </entry>
+  
+</feed>

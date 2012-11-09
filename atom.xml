@@ -4,7 +4,7 @@
   <title><![CDATA[web-k.log]]></title>
   <link href="http://web-k.github.com/atom.xml" rel="self"/>
   <link href="http://web-k.github.com/"/>
-  <updated>2012-11-07T17:32:32+09:00</updated>
+  <updated>2012-11-09T09:15:08+09:00</updated>
   <id>http://web-k.github.com/</id>
   <author>
     <name><![CDATA[Team web-k]]></name>
@@ -14,7 +14,381 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Capybaraのブラウザエンジン]]></title>
+    <title type="html"><![CDATA[gitでよく使う21コマンドまとめ]]></title>
+    <link href="http://web-k.github.com/blog/2012/11/08/git/"/>
+    <updated>2012-11-08T00:43:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2012/11/08/git</id>
+    <content type="html"><![CDATA[<p>よく使うgitコマンドをリストアップしてみる</p>
+
+<h3>リポジトリ作成: git init</h3>
+
+<p>ローカルリポジトリを作成するにはリポジトリ名を指定する。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git init repo
+</span><span class='line'>Initialized empty Git repository in /Users/user/repo/.git/</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>リポジトリの設定: git config</h3>
+
+<p>リポジトリ単位の設定は.git/config、ログインユーザ単位の設定は~/.gitconfigに、システム単位は/etc/gitconfigに格納されている。それぞれ、</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git config キー 値           # リポジトリ単位
+</span><span class='line'>$ git config --global キー 値  # ログインユーザー単位
+</span><span class='line'>$ git config --system キー 値  # システム単位</span></code></pre></td></tr></table></div></figure>
+
+
+<p>にて値を設定出来る。各値はシステム→ログインユーザー→リポジトリ単位の順で読み込まれ、後から読み込んだほうが優先される。現在の設定は</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git config --list</span></code></pre></td></tr></table></div></figure>
+
+
+<p>で参照可能。良く設定するキーは</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git config user.name    # コミットユーザー名
+</span><span class='line'>$ git config user.email   # コミットE-mail
+</span><span class='line'>$ git config alias.*      # gitコマンドAlias</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ファイルをインデックスに登録: git add</h3>
+
+<p>gitの場合、ファイルを追加・更新しただけではまだコミット候補ではなく、インデックスに登録する必要がある。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git add .     # カレントフォルダ以降のファイルをすべて登録
+</span><span class='line'>$ git add path  # ファイル・フォルダの登録</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>リポジトリの状態を確認: git status</h3>
+
+<p>ワーキングツリー・インデックスの状態を確認する。リポジトリとの現在のファイルの変更・修正状況、コミット候補としてインデックスに登録されているか確認出来る。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git status
+</span><span class='line'># On branch source
+</span><span class='line'># Changes not staged for commit:
+</span><span class='line'>#   (use "git add &lt;file&gt;..." to update what will be committed)
+</span><span class='line'>#   (use "git checkout -- &lt;file&gt;..." to discard changes in working directory)
+</span><span class='line'>#
+</span><span class='line'>#       modified:   .gitignore
+</span><span class='line'>#
+</span><span class='line'># Untracked files:
+</span><span class='line'>#   (use "git add &lt;file&gt;..." to include in what will be committed)
+</span><span class='line'>#
+</span><span class='line'>#       source/_posts/2012-11-07-git.markdown
+</span><span class='line'>no changes added to commit (use "git add" and/or "git commit -a")
+</span><span class='line'>
+</span><span class='line'>$ git status -s  # status簡易版
+</span><span class='line'> M .gitignore
+</span><span class='line'> ?? source/_posts/2012-11-07-git.markdown</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>差分を確認する: git diff</h3>
+
+<p>リポジトリとの差分が確認出来る。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git diff  # ワーキングツリーの差分
+</span><span class='line'>diff --git a/.gitignore b/.gitignore
+</span><span class='line'>index 4bba145..b4bbc86 100644
+</span><span class='line'>--- a/.gitignore
+</span><span class='line'>+++ b/.gitignore
+</span><span class='line'>@@ -11,4 +11,5 @@ source/_stash
+</span><span class='line'>source/stylesheets/screen.css
+</span><span class='line'>vendor
+</span><span class='line'>node_modules
+</span><span class='line'>-nbproject/*
+</span><span class='line'>\ No newline at end of file
+</span><span class='line'>+nbproject/*
+</span><span class='line'>+*.swp
+</span><span class='line'>
+</span><span class='line'>$ git diff HEAD  # インデックスとリポジトリ最新との差分
+</span><span class='line'>$ git diff master  # masterブランチとの差分
+</span><span class='line'>$ git diff master develop  # masterブランチとdevelopブランチとの差分</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>コミットログの表示: git log</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git log  # 現在のブランチのログ表示
+</span><span class='line'>$ git log -p  # 現在のブランチのdiffも含めてログ表示
+</span><span class='line'>$ git log -2  # 最新2つのコミットログを表示
+</span><span class='line'>$ git log --oneline --graph  # ログをコミット毎に1行フォーマットで表示し、コミットツリーを表示する</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ディレクトリ・ファイルの移動: git mv</h3>
+
+<p>コミット済みのファイルを移動・リネームする。コマンド実行するとコミット候補としてインデックスに登録される</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git mv file1 file2  # file1をfile2にリネームする
+</span><span class='line'>$ git mv dir1/file dir2/file  # fileをdir1からdir2に移動する</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ディレクトリ・ファイルの削除: git rm</h3>
+
+<p>コミット済み、またはインデックスに登録済みのファイルを削除する</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git rm file  # fileを削除する</span></code></pre></td></tr></table></div></figure>
+
+
+<p>git rmをオプション無しで実行するとワーキングツリーからファイルが削除されるので、新規追加登録したファイルをインデックスから解除してファイルをワーキングツリーに残しておきたい場合は&#8211;cachedを使う</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git add file
+</span><span class='line'>$ git rm --cached file
+</span><span class='line'>rm 'file'
+</span><span class='line'>$ git status
+</span><span class='line'># On branch master
+</span><span class='line'>#
+</span><span class='line'># Initial commit
+</span><span class='line'>#
+</span><span class='line'># Untracked files:
+</span><span class='line'>#   (use "git add &lt;file&gt;..." to include in what will be committed)
+</span><span class='line'>#
+</span><span class='line'>#       file</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>コミットする: git commit</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git commit  # git addしておいたファイルのコミット。エディタが立ち上がってコメントを入力して保存するとコミットされる
+</span><span class='line'>$ git commit -m "コメント"  # コメントを指定してコミット
+</span><span class='line'>$ git commit -a  # すべての変更をコミット。ただし、新規ファイルは追加されない。明示的にgit addする必要がある</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>直前のコミットを変更する: git commit &#8211;amend</h3>
+
+<p>&#8211;amendオプションを指定すると直前のコミットを追加修正したインデックス登録の差分を含めて差し替えることが出来る</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git commit --amend  # (インデックス登録が無ければ)直前のコミットコメントを変更する</span></code></pre></td></tr></table></div></figure>
+
+
+<p>インデックス登録してある差分を含めて直前のコミットを変更する</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git add file  # fileをインデックスに追加
+</span><span class='line'>$ git commit --amend  # addしたfileと直前のコミットをマージして差し替える</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ローカルリポジトリ、インデックスを元に戻す: git reset</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git reset --hard commit_hash  # 指定したコミットにローカルリポジトリ、インデックスを完全に戻す。コミットしていない状態に戻り無かったことになる
+</span><span class='line'>$ git reset --soft HEAD~  # 1つ前のコミットに戻す。ワーキングツリー・インデックスファイルは影響しない
+</span><span class='line'>$ git reset --mixed HEAD~  # 1つ前のコミットにインデックス・リポジトリを戻す。ワーキングツリーには影響しない</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>grepする / git grep</h3>
+
+<p>インデックスやワーキングツリーに対して検索する</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git grep Text  # Textという文字列を検索する</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>コミット内容の表示: git show</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git show commit_hash  # コミット内容表示。差分も参照出来る</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>リモートリポジトリをローカルにコピー: git clone</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git clone git-uri  # リモートリポジトリをコピー。フォルダ名はname.gitだったらnameになる。リモートリポジトリ名はoriginになる。
+</span><span class='line'>$ git clone git-uri dir  # dirフォルダ名でリモートリポジトリをコピー
+</span><span class='line'>$ git clone git-uri -o name  # リモートリポジトリ名をnameでコピー</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>リモートリポジトリの管理: git remote</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git remote  # 登録されているリポジトリ名の表示
+</span><span class='line'>$ git remote -v  # リポジトリ名とURIの表示
+</span><span class='line'>$ git remote add name git-uri  # リポジトリ名「name」にてgit-uriリモートリポジトリの登録
+</span><span class='line'>$ git remote show origin  # originリモートリポジトリの詳細情報表示
+</span><span class='line'>$ git remote update  # リモートリポジトリの更新。fetchでも済みそう
+</span><span class='line'>$ git remote rm devel  # リモートリポジトリdevelの登録解除
+</span><span class='line'>$ git remote prune  # 削除されたリモートブランチの削除</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ブランチのマージ: git merge</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git merge develop  # 現在のブランチにdevelopをマージ
+</span><span class='line'>$ git merge --squash develop  # 現在のブランチにdevelopのコミットを1つにまとめてマージ</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>リモートブランチにローカルブランチを送信: git push</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git push origin master:master  # リモートリポジトリoriginにローカルブランチ(左のmaster)をリモートブランチ(右のmaster)に送信
+</span><span class='line'>$ git push origin master  # リモートリポジトリにローカルブランチmasterを送信
+</span><span class='line'>$ git push origin master:testing  # リモートブランチを指定
+</span><span class='line'>$ git push origin :testing  # リモートブランチの削除</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ローカルリポジトリにリモートリポジトリを取り込む: git pull</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git pull  # originリモートリポジトリをローカルリポジトリに取り込む</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ローカルリポジトリにコミットしていない変更がある場合、競合することがあるので、コミットしておくか、git stash saveして一旦ソースを待避してからpullすると良い。</p>
+
+<h3>ブランチの管理: git branch</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git branch  # ローカルブランチの確認。現在のブランチも確認出来る
+</span><span class='line'>$ git branch -r  # リモートブランチの確認
+</span><span class='line'>$ git branch -a  # ローカル・リモートすべてのブランチの確認
+</span><span class='line'>$ git branch new  # newブランチの作成
+</span><span class='line'>$ git branch new base  # baseブランチを起点にnewブランチを作成
+</span><span class='line'>$ git branch -m base rename  # baseブランチをrenameブランチに名称変更
+</span><span class='line'>$ git branch -d base  # baseブランチの削除。このブランチのみ存在する新しいコミットがある場合は削除されないので安全
+</span><span class='line'>$ git branch -D base  # baseブランチの削除。新しいコミットがあっても強制削除する</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ブランチのスイッチ: git checkout</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git checkout develop  # developブランチにスイッチ
+</span><span class='line'>$ git checkout --merge develop  # ワーキングツリー・インデックスで修正があるファイルとスイッチ先ブランチをマージして切り替える
+</span><span class='line'>$ git checkout -b new  # 現在のブランチを起点にnewブランチを作成
+</span><span class='line'>$ git checkout -f  # 修正したワーキングツリーの修正を元に戻す。一度戻した修正は失われるので注意
+</span><span class='line'>$ git checkout commit_hash file  # fileをcommit_hash時点の状態に戻す</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>未コミットの差分を一時的に保存する: git stash</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git stash save  # 一時的に保存する。新規ファイルを保存する場合はgit addしておくこと
+</span><span class='line'>$ git stash pop  # 一時的に保存した差分を元に戻す
+</span><span class='line'>$ git stash list  # 保存されているキューの一覧を表示する
+</span><span class='line'>$ git stash drop stash@{1}  # stash@{1}を破棄。元に戻せないので注意
+</span><span class='line'>$ git stash clear  # 保存されているキューを全て破棄。元に戻せないので注意</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以上よく使う21コマンドを紹介した。次回はgit rebaseの使い方とgit cherry-pickなど頻繁には使わないが有用そうなコマンドを紹介する。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[RSpecで例外のテストをする]]></title>
+    <link href="http://web-k.github.com/blog/2012/11/07/rspec-raise/"/>
+    <updated>2012-11-07T23:14:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2012/11/07/rspec-raise</id>
+    <content type="html"><![CDATA[<p>RSpecで例外のテストするにはlambdaを使用する。
+例えば、adminというroleを持つUserのインスタンスに対し、destroyというインスタンスメソッドを実行すると、CannotDestroyAdminUserという例外が出るテストをする。その場合次のように書く。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">it</span> <span class="s2">&quot;hoge hoge&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="vi">@user</span><span class="o">.</span><span class="n">roles</span><span class="o">=</span><span class="p">(</span><span class="o">[</span><span class="s1">&#39;admin&#39;</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>  <span class="vi">@user</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>  <span class="nb">lambda</span><span class="p">{</span><span class="vi">@user</span><span class="o">.</span><span class="n">destroy</span><span class="p">}</span><span class="o">.</span><span class="n">should</span> <span class="n">raise_error</span><span class="p">(</span><span class="no">CannotDestroyAdminUser</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Capybaraのドライバ]]></title>
     <link href="http://web-k.github.com/blog/2012/11/07/capybara-driver/"/>
     <updated>2012-11-07T16:37:00+09:00</updated>
     <id>http://web-k.github.com/blog/2012/11/07/capybara-driver</id>
@@ -37,14 +411,8 @@ capybara_webkitを使うにはGemfileにcapybara-webkitを追記します。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Spork</span><span class="o">.</span><span class="n">prefork</span> <span class="k">do</span>
-</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
-</span><span class='line'>  <span class="no">Capybara</span><span class="o">.</span><span class="n">default_selector</span> <span class="o">=</span> <span class="ss">:css</span>
-</span><span class='line'>  <span class="no">Capybara</span><span class="o">.</span><span class="n">javascript_driver</span> <span class="o">=</span> <span class="ss">:webkit</span>
-</span><span class='line'><span class="k">end</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Capybara</span><span class="o">.</span><span class="n">default_selector</span> <span class="o">=</span> <span class="ss">:css</span>
+</span><span class='line'><span class="no">Capybara</span><span class="o">.</span><span class="n">javascript_driver</span> <span class="o">=</span> <span class="ss">:webkit</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -53,7 +421,7 @@ capybara_webkitを使うにはGemfileにcapybara-webkitを追記します。</p>
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">it</span> <span class="s2">&quot;hoge hoge&quot;</span><span class="p">,</span> <span class="ss">:js</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="k">do</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">it</span> <span class="s2">&quot;hoge hoge&quot;</span><span class="p">,</span> <span class="n">js</span><span class="p">:</span> <span class="kp">true</span> <span class="k">do</span>
 </span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -83,7 +451,7 @@ SeleniumはCapybaraに同梱されているので、ブラウザエンジンを�
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Capybara</span><span class="o">.</span><span class="n">register_driver</span> <span class="ss">:Selenium</span> <span class="k">do</span> <span class="o">|</span><span class="n">app</span><span class="o">|</span>
-</span><span class='line'>  <span class="no">Capybara</span><span class="o">::</span><span class="no">Driver</span><span class="o">::</span><span class="no">Selenium</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="ss">:browser</span> <span class="o">=&gt;</span> <span class="ss">:chrome</span><span class="p">)</span>
+</span><span class='line'>  <span class="no">Capybara</span><span class="o">::</span><span class="no">Driver</span><span class="o">::</span><span class="no">Selenium</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">browser</span><span class="p">:</span> <span class="ss">:chrome</span><span class="p">)</span>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -100,25 +468,336 @@ RSpecのフィルタで切り替える方法を載せます。この方法は特
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">config</span><span class="o">.</span><span class="n">before</span><span class="p">(</span><span class="ss">:all</span><span class="p">,</span> <span class="ss">:selenium</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">)</span> <span class="k">do</span>
-</span><span class='line'>  <span class="no">Capybara</span><span class="o">.</span><span class="n">current_driver</span> <span class="o">=</span> <span class="ss">:selenium</span>
-</span><span class='line'><span class="k">end</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">RSpec</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">before</span><span class="p">(</span><span class="ss">:all</span><span class="p">,</span> <span class="n">selenium</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>    <span class="no">Capybara</span><span class="o">.</span><span class="n">current_driver</span> <span class="o">=</span> <span class="ss">:selenium</span>
+</span><span class='line'>  <span class="k">end</span>
 </span><span class='line'>
-</span><span class='line'><span class="n">config</span><span class="o">.</span><span class="n">after</span><span class="p">(</span><span class="ss">:all</span><span class="p">,</span> <span class="n">selenium</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">)</span> <span class="k">do</span>
-</span><span class='line'>  <span class="no">Capybara</span><span class="o">.</span><span class="n">use_default_driver</span>
-</span><span class='line'><span class="k">end</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">after</span><span class="p">(</span><span class="ss">:all</span><span class="p">,</span> <span class="n">selenium</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>    <span class="no">Capybara</span><span class="o">.</span><span class="n">use_default_driver</span>
+</span><span class='line'>  <span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>あとはSeleniumを実行したいサンプルに:seleniumタグを追加します。</p>
+<p>あとはSeleniumを実行したいサンプルにseleniumタグを追加します。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">describe</span> <span class="s2">&quot;hoge hoge&quot;</span><span class="p">,</span> <span class="ss">:selenium</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="k">do</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">describe</span> <span class="s2">&quot;hoge hoge&quot;</span><span class="p">,</span> <span class="n">selenium</span><span class="p">:</span> <span class="kp">true</span> <span class="k">do</span>
 </span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ActionScript 3.0]]></title>
+    <link href="http://web-k.github.com/blog/2012/11/07/actionscript/"/>
+    <updated>2012-11-07T10:57:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2012/11/07/actionscript</id>
+    <content type="html"><![CDATA[<h3>ActionScript とは</h3>
+
+<p>ActionScript は Adobe Flash Player や Adobe AIR のランタイム環境用の開発言語です。
+開発環境には Adobe Flash CS6(オーサリングツール)/Adobe Flex Builder(統合開発環境)/Adobe Flex(コマンドラインのコンパイラ)がありますが、
+有償であったりコマンドラインでコンパイルしなければならないので、
+ここでは無償の統合開発環境である FlashDevelop を使用しています。
+ActionScriptで書かれたコードを上記環境でコンパイルすることにより、SWF(Shockwave Flash file)ファイルが生成されます。
+このSWFファイルをウェブページなどに組み込めば、ランタイム環境で動作させることができます。</p>
+
+<p>ActionScript には ActionScript 1.0/2.0/3.0 の各バージョンがあり、2.0からオブジェクト指向言語になっています。
+ECMAScriptをベースに作られているため、Javascriptに似ており。また、オブジェクト指向言語になり、Javaにも似ている言語となっています。</p>
+
+<h3>文法</h3>
+
+<p>基本的なことと気になったことについて書いていきます。</p>
+
+<h4>変数宣言</h4>
+
+<p>var 変数名:型 で宣言します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var num1:Number; //小数点付きまたは小数点なしの値を含むすべての数値
+</span><span class='line'>var num2:int; //整数
+</span><span class='line'>var num3:uint; //符号なし整数
+</span><span class='line'>var boo:Boolean; //true か false の2値
+</span><span class='line'>var str:String; //文字列</span></code></pre></td></tr></table></div></figure>
+
+
+<p>などがあります。</p>
+
+<h4>文字列</h4>
+
+<p>文字列はシングルクォートかダブルクォートを使って定義します。\n(改行)などの特殊文字を入れることもできます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var str:String = "kaigyou¥n"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>文字列を操作するメソッドも用意されており、Rubyみたいに使えます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var str:String = "FLASH";
+</span><span class='line'>trace(str.split(""));//traceを使用すると開発ツール上で実行したときに出力欄に表示される
+</span><span class='line'>//>>F,L,A,S,H
+</span><span class='line'>trace(str.length);//文字列の長さ
+</span><span class='line'>//>>5
+</span><span class='line'>trace([str, "TEST",].join("　"));//配列要素間を空白で結合
+</span><span class='line'>//>>FLASH TEST</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上記コードだけでは実行できないので、以下のようにコードを.asファイルに記載して実行(FlashDevelopではF5)します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>package 
+</span><span class='line'>{
+</span><span class='line'>  import flash.display.Sprite;
+</span><span class='line'>  public class Main extends Sprite 
+</span><span class='line'>  {
+</span><span class='line'>      public function Main():void 
+</span><span class='line'>      {
+</span><span class='line'>          var str:String = "FLASH";
+</span><span class='line'>          trace(str.split(""));
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>配列</h4>
+
+<p>配列用の型があるので、Arrayで宣言します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var arr:Array;
+</span><span class='line'>arr = [a,b,c];</span></code></pre></td></tr></table></div></figure>
+
+
+<p>配列も文字列と同じようにメソッドが用意されており、操作できます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var arr:Array = ['a','b','c'];
+</span><span class='line'>arr.push('d'); //末尾にデータ追加
+</span><span class='line'>trace(arr);
+</span><span class='line'>//>>[a,b,c,d]
+</span><span class='line'>arr.pop(); //末尾のデータ取り出し
+</span><span class='line'>trace(arr);
+</span><span class='line'>//>>[a,b,c]</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>ハッシュ</h4>
+
+<p>Object型を使って、ハッシュを作ります。Object型はすべてのクラス定義の基本クラスです。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var hash:Object = new Object();
+</span><span class='line'>hash["program"] = "ActionScript"
+</span><span class='line'>trace(hash["program"]);
+</span><span class='line'>//>>ActionScript</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>ブロックスコープ</h4>
+
+<p>変数は関数単位で管理しており、ブロック変数として宣言したつもりでも関数スコープになっています。(withを使えば、実現できるらしいです。)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//多重定義でコンパイルエラー
+</span><span class='line'>for ( var i:Number = 0; i &lt; 1; i++) {
+</span><span class='line'>  i = 1;
+</span><span class='line'>}
+</span><span class='line'>for ( var i:String = 0; i &lt; 1; i++) {
+</span><span class='line'>  i = 'a';
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>例外</h2>
+
+<p>Javaのように例外をキャッチできます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>try {
+</span><span class='line'>    //例外が検出したい処理
+</span><span class='line'>} catch (e:Error) {
+</span><span class='line'>    // 例外処理
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>クラス</h2>
+
+<p>以下のようにクラス定義します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>package パッケージ名 { // パッケージ名省略可
+</span><span class='line'>    import パッケージ.クラス名;
+</span><span class='line'>    
+</span><span class='line'>    public class Main(クラス名、仮にMain) extends 親クラス名
+</span><span class='line'>    {
+</span><span class='line'>        // 変数宣言
+</span><span class='line'>        アクセス修飾子 var プロパティ名:プロパティの型;
+</span><span class='line'>        
+</span><span class='line'>        // コンストラクタ
+</span><span class='line'>        アクセス修飾子 function Main()//コンストラクタ名
+</span><span class='line'>        {
+</span><span class='line'>            処理1
+</span><span class='line'>        }
+</span><span class='line'>        
+</span><span class='line'>        // メソッド1
+</span><span class='line'>        アクセス修飾子 function メソッド名1(引数1:型 = デフォルト値):戻り値の型
+</span><span class='line'>        {
+</span><span class='line'>            処理2
+</span><span class='line'>        }
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>表示リスト</h2>
+
+<p>ActionScript 3.0 で構築されたアプリケーションには、表示リストと呼ばれるオブジェクトの階層があります。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ステージ //Stageクラス
+</span><span class='line'>  - SWFファイルのメインクラスのインスタンス //自分で定義したクラス
+</span><span class='line'>    - 表示オブジェクト //TextFieldなど
+</span><span class='line'>    - 表示オブジェクトコンテナ //Spriteクラス
+</span><span class='line'>      -(表示オブジェクト/表示オブジェクトコンテナ)</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>ステージ</li>
+</ul>
+
+
+<p>表示オブジェクトの基本コンテナ、各アプリケーションには1つのStageオブジェクトがあり、この中に画面の表示オブジェクトがすべて含まれます。
+ステージは、表示リスト階層の最上位にあたります。
+それぞれのSWFファイルには関連するActionScriptクラスがあり、これがSWFファイルのメインクラスと呼ばれます。
+SWFファイルのメインクラスは、Spriteクラスを拡張して定義します。
+SWFファイルが Flash Player または Adobe AIR 上で開かれると、SWFファイルのメインクラスのコンストラクタ関数が呼ばれ、
+作成されるインスタンスがStageオブジェクトに子として追加されます。</p>
+
+<ul>
+<li>表示オブジェクト</li>
+</ul>
+
+
+<p>ActionScript 3.0 では、アプリケーション内で表示される全てのエレメントタイプは、表示オブジェクトです。</p>
+
+<ul>
+<li>表示オブジェクトコンテナ</li>
+</ul>
+
+
+<p>表示オブジェクトコンテナは特殊な型の表示オブジェクトです。
+表示オブジェクトコンテナ(単にコンテナともいいます)は、それ自体が表示オブジェクトコンテナ/表示オブジェクトを子オブジェクトに含むことができます。
+表示オブジェクトコンテナに子オブジェクトを追加するには addChild関数を使います。
+表示オブジェクトコンテナとなりうる表示オブジェクトは Stage/MovieClip/Spriteクラスです。</p>
+
+<h2>Hello ActionScript</h2>
+
+<p>Flash上に「Hello ActionScript」と文字列を表示させます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>package hello
+</span><span class='line'>{
+</span><span class='line'>  import flash.display.Sprite; //画面表示の基本クラスのインポート
+</span><span class='line'>  import flash.text.*; //テキスト系のクラス
+</span><span class='line'>  public class Main extends Sprite
+</span><span class='line'>  {
+</span><span class='line'>      public function Main (){//コンストラクタ
+</span><span class='line'>          var textField:TextField = new TextField();//入れ物確保
+</span><span class='line'>          textField.text = "Hello ActionScript";//文字列挿入
+</span><span class='line'>          addChild(textField);//textFieldをSpriteクラスに追加して表示
+</span><span class='line'>      }   
+</span><span class='line'>  }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>参考</h4>
+
+<ul>
+<li><a href="http://help.adobe.com/ja_JP/ActionScript/3.0_ProgrammingAS3/">Adobe ActionScript 3.0 * Adobe Flash 用 Adobe ActionScript</a> - 公式ドキュメント</li>
+<li><a href="http://blog.livedoor.jp/takaaki_bb/archives/51374100.html">読書メモ＋tips＋日記 : [Flash] ActionScript 3.0 基礎文法最速マスター</a></li>
+<li><a href="http://www40.atwiki.jp/spellbound/">ActionScript入門Wiki - トップページ</a></li>
+</ul>
 
 ]]></content>
   </entry>

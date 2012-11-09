@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Capybaraのブラウザエンジン - web-k.log</title>
+  <title>Capybaraのドライバ - web-k.log</title>
   <meta name="author" content="Team web-k">
 
   
@@ -80,7 +80,7 @@
   
   <header>
     
-      <h1 class="entry-title">Capybaraのブラウザエンジン</h1>
+      <h1 class="entry-title">Capybaraのドライバ</h1>
     
     
       <p class="meta">
@@ -124,14 +124,8 @@ capybara_webkitを使うにはGemfileにcapybara-webkitを追記します。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Spork</span><span class="o">.</span><span class="n">prefork</span> <span class="k">do</span>
-</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
-</span><span class='line'>  <span class="no">Capybara</span><span class="o">.</span><span class="n">default_selector</span> <span class="o">=</span> <span class="ss">:css</span>
-</span><span class='line'>  <span class="no">Capybara</span><span class="o">.</span><span class="n">javascript_driver</span> <span class="o">=</span> <span class="ss">:webkit</span>
-</span><span class='line'><span class="k">end</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Capybara</span><span class="o">.</span><span class="n">default_selector</span> <span class="o">=</span> <span class="ss">:css</span>
+</span><span class='line'><span class="no">Capybara</span><span class="o">.</span><span class="n">javascript_driver</span> <span class="o">=</span> <span class="ss">:webkit</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -140,7 +134,7 @@ capybara_webkitを使うにはGemfileにcapybara-webkitを追記します。</p>
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">it</span> <span class="s2">&quot;hoge hoge&quot;</span><span class="p">,</span> <span class="ss">:js</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="k">do</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">it</span> <span class="s2">&quot;hoge hoge&quot;</span><span class="p">,</span> <span class="n">js</span><span class="p">:</span> <span class="kp">true</span> <span class="k">do</span>
 </span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -170,7 +164,7 @@ SeleniumはCapybaraに同梱されているので、ブラウザエンジンを�
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Capybara</span><span class="o">.</span><span class="n">register_driver</span> <span class="ss">:Selenium</span> <span class="k">do</span> <span class="o">|</span><span class="n">app</span><span class="o">|</span>
-</span><span class='line'>  <span class="no">Capybara</span><span class="o">::</span><span class="no">Driver</span><span class="o">::</span><span class="no">Selenium</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="ss">:browser</span> <span class="o">=&gt;</span> <span class="ss">:chrome</span><span class="p">)</span>
+</span><span class='line'>  <span class="no">Capybara</span><span class="o">::</span><span class="no">Driver</span><span class="o">::</span><span class="no">Selenium</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">browser</span><span class="p">:</span> <span class="ss">:chrome</span><span class="p">)</span>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -187,22 +181,26 @@ RSpecのフィルタで切り替える方法を載せます。この方法は特
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">config</span><span class="o">.</span><span class="n">before</span><span class="p">(</span><span class="ss">:all</span><span class="p">,</span> <span class="ss">:selenium</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">)</span> <span class="k">do</span>
-</span><span class='line'>  <span class="no">Capybara</span><span class="o">.</span><span class="n">current_driver</span> <span class="o">=</span> <span class="ss">:selenium</span>
-</span><span class='line'><span class="k">end</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">RSpec</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">before</span><span class="p">(</span><span class="ss">:all</span><span class="p">,</span> <span class="n">selenium</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>    <span class="no">Capybara</span><span class="o">.</span><span class="n">current_driver</span> <span class="o">=</span> <span class="ss">:selenium</span>
+</span><span class='line'>  <span class="k">end</span>
 </span><span class='line'>
-</span><span class='line'><span class="n">config</span><span class="o">.</span><span class="n">after</span><span class="p">(</span><span class="ss">:all</span><span class="p">,</span> <span class="n">selenium</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">)</span> <span class="k">do</span>
-</span><span class='line'>  <span class="no">Capybara</span><span class="o">.</span><span class="n">use_default_driver</span>
-</span><span class='line'><span class="k">end</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">after</span><span class="p">(</span><span class="ss">:all</span><span class="p">,</span> <span class="n">selenium</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>    <span class="no">Capybara</span><span class="o">.</span><span class="n">use_default_driver</span>
+</span><span class='line'>  <span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>あとはSeleniumを実行したいサンプルに:seleniumタグを追加します。</p>
+<p>あとはSeleniumを実行したいサンプルにseleniumタグを追加します。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">describe</span> <span class="s2">&quot;hoge hoge&quot;</span><span class="p">,</span> <span class="ss">:selenium</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="k">do</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">describe</span> <span class="s2">&quot;hoge hoge&quot;</span><span class="p">,</span> <span class="n">selenium</span><span class="p">:</span> <span class="kp">true</span> <span class="k">do</span>
 </span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -215,7 +213,7 @@ RSpecのフィルタで切り替える方法を載せます。この方法は特
       
   
 
-<span class="byline author vcard">Posted by <span class="fn">Team web-k</span></span>
+<span class="byline author vcard">Posted by <span class="fn">aizawa1126</span></span>
 
       
 
@@ -254,8 +252,10 @@ RSpecのフィルタで切り替える方法を載せます。この方法は特
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/10/22/internationalization-i18n/" title="Previous Post: i18n(Internationalization)">&laquo; i18n(Internationalization)</a>
+        <a class="basic-alignment left" href="/blog/2012/11/07/actionscript/" title="Previous Post: ActionScript 3.0">&laquo; ActionScript 3.0</a>
       
+      
+        <a class="basic-alignment right" href="/blog/2012/11/07/rspec-raise/" title="Next Post: RSpecで例外のテストをする">RSpecで例外のテストをする &raquo;</a>
       
     </p>
   </footer>
@@ -276,7 +276,19 @@ RSpecのフィルタで切り替える方法を載せます。この方法は特
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2012/11/07/capybara-driver/">Capybaraのブラウザエンジン</a>
+        <a href="/blog/2012/11/08/git/">gitでよく使う21コマンドまとめ</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/07/rspec-raise/">RSpecで例外のテストをする</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/07/capybara-driver/">Capybaraのドライバ</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/07/actionscript/">ActionScript 3.0</a>
       </li>
     
       <li class="post">
@@ -303,19 +315,11 @@ RSpecのフィルタで切り替える方法を載せます。この方法は特
         <a href="/blog/2012/10/03/compare-matchers/">RSpecとCapybaraのマッチャ比較</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2012/10/02/rspec-mock/">RSpecまとめ(2)～Mock(double/stub/mock)～</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/09/27/rspec_basic/">RSpecまとめ(1)～基本メソッド～</a>
-      </li>
-    
   </ul>
 </section>
 <section>
   <h1>Categories</h1>
-    <ul id="category-list"><li><a href='/blog/categories/android'>Android (1)</a></li><li><a href='/blog/categories/capybara'>capybara (1)</a></li><li><a href='/blog/categories/capybara-webkit'>capybara-webkit (1)</a></li><li><a href='/blog/categories/css3'>CSS3 (1)</a></li><li><a href='/blog/categories/cucumber'>Cucumber (1)</a></li><li><a href='/blog/categories/fabrication'>Fabrication (2)</a></li><li><a href='/blog/categories/html5'>HTML5 (1)</a></li><li><a href='/blog/categories/i18n'>i18n (1)</a></li><li><a href='/blog/categories/rspec'>RSpec (3)</a></li><li><a href='/blog/categories/ruby'>Ruby (5)</a></li></ul>
+    <ul id="category-list"><li><a href='/blog/categories/actionscript'>ActionScript (1)</a></li><li><a href='/blog/categories/android'>Android (1)</a></li><li><a href='/blog/categories/capybara'>capybara (1)</a></li><li><a href='/blog/categories/capybara-webkit'>capybara-webkit (1)</a></li><li><a href='/blog/categories/css3'>CSS3 (1)</a></li><li><a href='/blog/categories/cucumber'>Cucumber (1)</a></li><li><a href='/blog/categories/fabrication'>Fabrication (2)</a></li><li><a href='/blog/categories/git'>git (1)</a></li><li><a href='/blog/categories/html5'>HTML5 (1)</a></li><li><a href='/blog/categories/i18n'>i18n (1)</a></li><li><a href='/blog/categories/rspec'>RSpec (4)</a></li><li><a href='/blog/categories/ruby'>Ruby (5)</a></li></ul>
 </section>
 
   
