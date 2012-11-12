@@ -5,28 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Railsのbefore_filterとメソッド返り値 - web-k.log</title>
+  <title>Web Storageの使い方 - web-k.log</title>
   <meta name="author" content="Team web-k">
 
   
-  <meta name="description" content="before_filterで実行したメソッドがfalseをreturnしたらどうなるか、気になったのでメモ。 確認した環境はRuby 1.9.3p194, Rails 3.2.8。 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-class &hellip;">
+  <meta name="description" content="Web Storageとは Web Storageは、HTML5の周辺APIのひとつで、ブラウザにデータを保存するための仕組みです。データの保存・上書き・削除・全クリアなどの操作は、JavaScriptで行います。
+Web StorageはCookieとよく似ていますが、 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -35,7 +19,7 @@ class &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://web-k.github.com/blog/2012/10/09/rails-filter/">
+  <link rel="canonical" href="http://web-k.github.com/blog/2012/11/12/webstorage/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -96,7 +80,7 @@ class &hellip;">
   
   <header>
     
-      <h1 class="entry-title">Railsのbefore_filterとメソッド返り値</h1>
+      <h1 class="entry-title">Web Storageの使い方</h1>
     
     
       <p class="meta">
@@ -112,7 +96,7 @@ class &hellip;">
   
 
 
-<time datetime="2012-10-09T16:54:00+09:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
+<time datetime="2012-11-12T14:55:00+09:00" pubdate data-updated="true">Nov 12<span>th</span>, 2012</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -121,11 +105,85 @@ class &hellip;">
   </header>
 
 
-<div class="entry-content"><p>before_filterで実行したメソッドがfalseをreturnしたらどうなるか、気になったのでメモ。</p>
+<div class="entry-content"><h3>Web Storageとは</h3>
 
-<p>確認した環境はRuby 1.9.3p194, Rails 3.2.8。</p>
+<p>Web Storageは、HTML5の周辺APIのひとつで、ブラウザにデータを保存するための仕組みです。データの保存・上書き・削除・全クリアなどの操作は、JavaScriptで行います。
+Web StorageはCookieとよく似ていますが、Cookieに比べてはるかに大きな容量のデータをブラウザに保存できます。
+Web Storageには、sessionStorageとlocalStorageの2種類のストレージが用意されています。どちらもキーと値をペアにしたデータリストをブラウザに保存するkey-value型のデータ保存形式である点は同じですが、データの有効期限などが異なります。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<h3>CookieとsessionStorageとlocalStorageの差異</h3>
+
+<table>
+<thead>
+<tr>
+<th>機能 </th>
+<th> Cookie </th>
+<th> sessionStorage </th>
+<th> localStorage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>保存容量 </td>
+<td> 4KB </td>
+<td>  1オリジン当たり5MB(推奨) </td>
+<td> 1オリジン当たり5MB(推奨)</td>
+</tr>
+<tr>
+<td>データの有効期限 </td>
+<td> 指定期限まで有効 </td>
+<td> ウィンドウやタブを閉じるまで有効 </td>
+<td> 永続的に有効</td>
+</tr>
+<tr>
+<td>サーバーへのデータ送信 </td>
+<td> 毎回自動送信 </td>
+<td> 必要時のみ送信 </td>
+<td> 必要時のみ送信</td>
+</tr>
+<tr>
+<td>別ウィンドウでのデータ共有 </td>
+<td> 可 </td>
+<td> 不可 </td>
+<td> 可</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>オリジン： プロトコル://ドメイン名:ポート番号 のこと</p>
+
+<h3>Web Storageのメソッドと使い方</h3>
+
+<p>Web Storageで提供されているメソッドは、データの保存・取得・指定キーの値削除・全値クリアの4つです。メソッドはsessionStorageとlocalStorageで共通です。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//データの保存
+</span><span class='line'>setItem(key, value)
+</span><span class='line'>
+</span><span class='line'>//データの取得
+</span><span class='line'>getItem(key)
+</span><span class='line'>
+</span><span class='line'>//指定キーの値削除
+</span><span class='line'>removeItem(key)
+</span><span class='line'>
+</span><span class='line'>//全値クリア
+</span><span class='line'>clear()</span></code></pre></td></tr></table></div></figure>
+
+
+<p>データの上書きをする場合はもう一度keyとvalueを保存します。メソッドの使い方は以下の通り。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -141,34 +199,23 @@ class &hellip;">
 <span class='line-number'>14</span>
 <span class='line-number'>15</span>
 <span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var storage = localStorage;
 </span><span class='line'>
-</span><span class='line'>  <span class="n">before_filter</span> <span class="ss">:false_filter</span>
-</span><span class='line'><span class="c1">#  before_filter :redirect_filter</span>
-</span><span class='line'>  <span class="n">before_filter</span> <span class="ss">:true_filter</span>
+</span><span class='line'>//userIdキーに1を保存
+</span><span class='line'>storage.setItem('userId', '1');
 </span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">false_filter</span>
-</span><span class='line'>    <span class="k">return</span> <span class="kp">false</span>
-</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>//userIdキーに新たなvalueをセットし直せば上書き保存
+</span><span class='line'>storage.setItem('userId', '2');
 </span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">redirect_filter</span>
-</span><span class='line'>    <span class="n">redirect_to</span> <span class="n">root_path</span>
-</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>//userIdキーの値を取得（2が返る）
+</span><span class='line'>storage.getItem('userId');
 </span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">true_filter</span>
-</span><span class='line'>    <span class="k">return</span> <span class="kp">true</span>
-</span><span class='line'>  <span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>//userIdキーの値を削除
+</span><span class='line'>storage.removeItem('userId');
+</span><span class='line'>
+</span><span class='line'>//ストレージにあるデータをすべてクリア
+</span><span class='line'>storage.clear();</span></code></pre></td></tr></table></div></figure>
 
-
-<p>true/falseだからといって特に何も起こらなかった。falseでもそのまま次のbefore_filterが実行されたり、filter後に控えているコントローラのメソッドが実行された。</p>
-
-<p>before_filterやafter_filterはメソッドを優先して実行するかどうかを決めているだけであり、メソッドの返り値を受け取ってどうこうするというモノではないようだ。</p>
-
-<p>ただし、before_filterで呼んだメソッドの中にrenderやredirect_to、raiseなどがあると、その後に控えている他のbefore_filterや以降のコントローラのメソッドは実行されない。</p>
-
-<p>なお、<a href="http://www.fdiary.net/ml/rails/msg/3168">rails:3168</a>によると、rails 1.xではfilterにfalseが返ると、そこで処理が止まっていたようです。</p>
 </div>
 
 
@@ -177,7 +224,7 @@ class &hellip;">
       
   
 
-<span class="byline author vcard">Posted by <span class="fn">Team web-k</span></span>
+<span class="byline author vcard">Posted by <span class="fn">aizawa1126</span></span>
 
       
 
@@ -191,7 +238,7 @@ class &hellip;">
   
 
 
-<time datetime="2012-10-09T16:54:00+09:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
+<time datetime="2012-11-12T14:55:00+09:00" pubdate data-updated="true">Nov 12<span>th</span>, 2012</time>
       
 
 
@@ -199,7 +246,7 @@ class &hellip;">
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://web-k.github.com/blog/2012/10/09/rails-filter/" data-via="" data-counturl="http://web-k.github.com/blog/2012/10/09/rails-filter/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://web-k.github.com/blog/2012/11/12/webstorage/" data-via="" data-counturl="http://web-k.github.com/blog/2012/11/12/webstorage/" >Tweet</a>
   
   
   
@@ -210,10 +257,8 @@ class &hellip;">
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/10/08/nexus7/" title="Previous Post: Nexus 7(Jelly Bean)のUser AgentとCSS 3D Transforms対応状況を調べてみた">&laquo; Nexus 7(Jelly Bean)のUser AgentとCSS 3D Transforms対応状況を調べてみた</a>
+        <a class="basic-alignment left" href="/blog/2012/11/08/git/" title="Previous Post: gitでよく使う21コマンドまとめ">&laquo; gitでよく使う21コマンドまとめ</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2012/10/22/internationalization-i18n/" title="Next Post: i18n(Internationalization)">i18n(Internationalization) &raquo;</a>
       
     </p>
   </footer>
@@ -299,8 +344,8 @@ class &hellip;">
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://web-k.github.com/blog/2012/10/09/rails-filter/';
-        var disqus_url = 'http://web-k.github.com/blog/2012/10/09/rails-filter/';
+        var disqus_identifier = 'http://web-k.github.com/blog/2012/11/12/webstorage/';
+        var disqus_url = 'http://web-k.github.com/blog/2012/11/12/webstorage/';
         var disqus_script = 'embed.js';
       
     (function () {

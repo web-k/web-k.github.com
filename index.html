@@ -9,10 +9,8 @@
   <meta name="author" content="Team web-k">
 
   
-  <meta name="description" content="よく使うgitコマンドをリストアップしてみる リポジトリ作成: git init ローカルリポジトリを作成するにはリポジトリ名を指定する。 1
-2
-$ git init repo
-Initialized empty Git repository in /Users/user/repo/.git/ &hellip;">
+  <meta name="description" content="Web Storageとは Web Storageは、HTML5の周辺APIのひとつで、ブラウザにデータを保存するための仕組みです。データの保存・上書き・削除・全クリアなどの操作は、JavaScriptで行います。
+Web StorageはCookieとよく似ていますが、 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -79,6 +77,154 @@ Initialized empty Git repository in /Users/user/repo/.git/ &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/11/12/webstorage/">Web Storageの使い方</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-12T14:55:00+09:00" pubdate data-updated="true">Nov 12<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/11/12/webstorage/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>Web Storageとは</h3>
+
+<p>Web Storageは、HTML5の周辺APIのひとつで、ブラウザにデータを保存するための仕組みです。データの保存・上書き・削除・全クリアなどの操作は、JavaScriptで行います。
+Web StorageはCookieとよく似ていますが、Cookieに比べてはるかに大きな容量のデータをブラウザに保存できます。
+Web Storageには、sessionStorageとlocalStorageの2種類のストレージが用意されています。どちらもキーと値をペアにしたデータリストをブラウザに保存するkey-value型のデータ保存形式である点は同じですが、データの有効期限などが異なります。</p>
+
+<h3>CookieとsessionStorageとlocalStorageの差異</h3>
+
+<table>
+<thead>
+<tr>
+<th>機能 </th>
+<th> Cookie </th>
+<th> sessionStorage </th>
+<th> localStorage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>保存容量 </td>
+<td> 4KB </td>
+<td>  1オリジン当たり5MB(推奨) </td>
+<td> 1オリジン当たり5MB(推奨)</td>
+</tr>
+<tr>
+<td>データの有効期限 </td>
+<td> 指定期限まで有効 </td>
+<td> ウィンドウやタブを閉じるまで有効 </td>
+<td> 永続的に有効</td>
+</tr>
+<tr>
+<td>サーバーへのデータ送信 </td>
+<td> 毎回自動送信 </td>
+<td> 必要時のみ送信 </td>
+<td> 必要時のみ送信</td>
+</tr>
+<tr>
+<td>別ウィンドウでのデータ共有 </td>
+<td> 可 </td>
+<td> 不可 </td>
+<td> 可</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>オリジン： プロトコル://ドメイン名:ポート番号 のこと</p>
+
+<h3>Web Storageのメソッドと使い方</h3>
+
+<p>Web Storageで提供されているメソッドは、データの保存・取得・指定キーの値削除・全値クリアの4つです。メソッドはsessionStorageとlocalStorageで共通です。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//データの保存
+</span><span class='line'>setItem(key, value)
+</span><span class='line'>
+</span><span class='line'>//データの取得
+</span><span class='line'>getItem(key)
+</span><span class='line'>
+</span><span class='line'>//指定キーの値削除
+</span><span class='line'>removeItem(key)
+</span><span class='line'>
+</span><span class='line'>//全値クリア
+</span><span class='line'>clear()</span></code></pre></td></tr></table></div></figure>
+
+
+<p>データの上書きをする場合はもう一度keyとvalueを保存します。メソッドの使い方は以下の通り。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var storage = localStorage;
+</span><span class='line'>
+</span><span class='line'>//userIdキーに1を保存
+</span><span class='line'>storage.setItem('userId', '1');
+</span><span class='line'>
+</span><span class='line'>//userIdキーに新たなvalueをセットし直せば上書き保存
+</span><span class='line'>storage.setItem('userId', '2');
+</span><span class='line'>
+</span><span class='line'>//userIdキーの値を取得（2が返る）
+</span><span class='line'>storage.getItem('userId');
+</span><span class='line'>
+</span><span class='line'>//userIdキーの値を削除
+</span><span class='line'>storage.removeItem('userId');
+</span><span class='line'>
+</span><span class='line'>//ストレージにあるデータをすべてクリア
+</span><span class='line'>storage.clear();</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1977,226 +2123,6 @@ Sequencesは指定がなければ、0からはじまる。</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/03/compare-matchers/">RSpecとCapybaraのマッチャ比較</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-03T14:36:00+09:00" pubdate data-updated="true">Oct 3<span>rd</span>, 2012</time>
-        
-         | <a href="/blog/2012/10/03/compare-matchers/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Ruby on RailsでSpecを書く時に、RSpecのマッチャなのかCapybaraのマッチャなのか分からなくなったのでメモ</p>
-
-<h3>RSpecのマッチャ</h3>
-
-<p>RSpecのマッチャには、「演算子マッチャ」と「ビルトインマッチャ」があり、「should」や「should_not」と組み合わせて使用します。
-(shouldとshould_notはRSpecがObjectを拡張して作ったメソッド)</p>
-
-<p>マッチャとして使用できる演算子は、「&lt;」、「&lt;=」、「==」、「===」、「=~」、「>」、「>=」の７種類。</p>
-
-<p>使うときは以下のようにして記載します。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="mi">3</span>
-</span><span class='line'><span class="mi">1</span><span class="o">.</span><span class="n">should</span> <span class="o">&lt;</span> <span class="mi">2</span>
-</span><span class='line'><span class="s2">&quot;apple&quot;</span><span class="o">.</span><span class="n">should_not</span> <span class="o">=~</span> <span class="sr">/orange/</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>なお、「!=」や「!~」などの否定演算子は<strong>サポートされていません</strong>。「なんとかではないこと」を記載するときはshouldの代わりにshould_notを使います。</p>
-
-<p>ビルトインマッチャは</p>
-
-<ul>
-<li>be</li>
-<li>be_a</li>
-<li>be_a_kind_of</li>
-<li>be_an_instance_of</li>
-<li>be_close</li>
-<li>be_within</li>
-<li>change</li>
-<li>eq</li>
-<li>eql</li>
-<li>equal</li>
-<li>exist</li>
-<li>expect</li>
-<li>have</li>
-<li>have_at_least</li>
-<li>have_at_most</li>
-<li>include</li>
-<li>match</li>
-<li>raise_error</li>
-<li>respond_to</li>
-<li>satisfy</li>
-<li>throw_symbol</li>
-</ul>
-
-
-<p>って感じでたくさんあります。
-「be_XXX」マッチャは「be_a_XXX」、「be_an_XXX」と記載しても同じ動作になります。
-「have_XXX」マッチャは、RSpec の実行時には 「has_XXX?」メソッドの呼び出しとして解釈されます。これは、should と並べ たときの字面を (英語として) 自然な記述するための措置です。</p>
-
-<p>使うときは以下のようにして記載します。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="s2">&quot;string&quot;</span><span class="o">.</span><span class="n">should</span> <span class="n">be_an_instance_of</span><span class="p">(</span><span class="nb">String</span><span class="p">)</span>
-</span><span class='line'><span class="mi">1</span><span class="o">.</span><span class="n">should</span> <span class="n">be_a_kind_of</span><span class="p">(</span><span class="no">Numeric</span><span class="p">)</span>
-</span><span class='line'><span class="mi">1</span><span class="o">.</span><span class="n">should_not</span> <span class="n">be_an_instance_of</span><span class="p">(</span><span class="nb">String</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>また、マッチャを独自定義して使用することも可能です。
-次のように書きます。（<a href="http://rspec.rubyforge.org/rspec/1.2.9/classes/Spec/Matchers.html">公式ドキュメント</a>から引用）</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Spec</span><span class="o">::</span><span class="no">Matchers</span><span class="o">.</span><span class="n">define</span> <span class="ss">:be_in_zone</span> <span class="k">do</span> <span class="o">|</span><span class="n">zone</span><span class="o">|</span>
-</span><span class='line'>  <span class="n">match</span> <span class="k">do</span> <span class="o">|</span><span class="n">player</span><span class="o">|</span>
-</span><span class='line'>    <span class="n">player</span><span class="o">.</span><span class="n">in_zone?</span><span class="p">(</span><span class="n">zone</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Railsで使う場合は、spec/フォルダ直下にcustom_matchers.rbを作り、</p>
-
-<p>custom_matchers.rb</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">CustomMatcher</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">custom_matcher</span>
-</span><span class='line'>    <span class="c1">#マッチャの処理を記述 </span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>spec/spec_helper.rbを編集</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/custom_matchers&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="no">RSpec</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">include</span><span class="p">(</span><span class="no">CustomMatcher</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>これでマッチャとしてcustom_matcherが使えるようになります。</p>
-
-<h3>Capybaraのマッチャ</h3>
-
-<p>Capybaraのマッチャは、オブジェクト対してメソッドの様に記載したり、RSpecのマッチャの様に記載することができます。
-形式は「has_xxx?」の形をしているものがほとんど。</p>
-
-<ul>
-<li>assert_selector</li>
-<li>has_button? / has_no_button?</li>
-<li>has_checked_field? / has_no_checked_field?</li>
-<li>has_content? / has_no_content?</li>
-<li>has_css? / has_no_css?</li>
-<li>has_field? / has_no_field?</li>
-<li>has_link? / has_no_link?</li>
-<li>has_select? / has_no_select?</li>
-<li>has_selector? / has_no_selector?</li>
-<li>has_table? / has_no_table?</li>
-<li>has_text? / has_no_text?</li>
-<li>has_unchecked_field? / has_no_unchecked_field?</li>
-<li>has_xpath? / has_no_xpath?</li>
-</ul>
-
-
-<p>って感じでこちらもたくさんあります。</p>
-
-<p>使うときは以下のようにして記載します。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">page</span><span class="o">.</span><span class="n">has_xpath?</span><span class="p">(</span><span class="s1">&#39;//table/tr&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="n">page</span><span class="o">.</span><span class="n">has_css?</span><span class="p">(</span><span class="s1">&#39;table tr.hoge&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="n">page</span><span class="o">.</span><span class="n">has_no_content?</span><span class="p">(</span><span class="s1">&#39;hoge&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="c1"># page.has_XXX? は true/false を返すだけなので、テスト結果を得たいときは、</span>
-</span><span class='line'><span class="c1"># assert page.has_xpath?(&#39;//table/tr&#39;)</span>
-</span><span class='line'><span class="c1"># というようにassertを付けて記載します。</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>また、RSpecのマッチャの様に記載するときは「has_XXX?」を「have_XXX」に直して以下のようにします。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_xpath</span><span class="p">(</span><span class="s1">&#39;//table/tr&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_css</span><span class="p">(</span><span class="s1">&#39;table tr.hoge&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_no_content</span><span class="p">(</span><span class="s1">&#39;hoge&#39;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>このとき、page.<strong>should</strong> have_no_XXX(&#8216;value&#8217;)をpage.<strong>should_not</strong> have_XXX(&#8216;value&#8217;)とは書かないほうがよいです。
-理由はAjaxの待ち時間を考慮するためです。
-Capybaraには非同期のJavascriptを扱う時に、まだページに存在していないされていないDOM要素を一定の待ち時間が経過したら再度探すという振る舞いがあります。
-shouldを用いたときにその振る舞いは発揮されますが、should_notを用いたときはその振る舞いは発揮されず１回目の捜査で終了します。
-待ち時間は次のように変更することができます。（デフォルトは2秒です。）</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Capybara</span><span class="o">.</span><span class="n">default_wait_time</span> <span class="o">=</span> <span class="mi">3</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>参考リンク</h3>
-
-<ul>
-<li><a href="http://jp.rubyist.net/magazine/?0021-Rspec">Rubyist Magazine - スはスペックのス 【第 1 回】 RSpec の概要と、RSpec on Rails (モデル編)</a></li>
-<li><a href="http://blog.digital-squad.net/article/194513209.html">rspecでカスタムマッチャの設定｜WEBデザイン Tips</a></li>
-<li><a href="http://d.hatena.ne.jp/willnet/20110704/1309782442">Capybara の README 意訳 - おもしろWEBサービス開発日記</a></li>
-</ul>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -2210,6 +2136,10 @@ shouldを用いたときにその振る舞いは発揮されますが、should_n
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/11/12/webstorage/">Web Storageの使い方</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/11/08/git/">gitでよく使う21コマンドまとめ</a>
@@ -2245,10 +2175,6 @@ shouldを用いたときにその振る舞いは発揮されますが、should_n
     
       <li class="post">
         <a href="/blog/2012/10/04/fabrication/">Fabrication</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/03/compare-matchers/">RSpecとCapybaraのマッチャ比較</a>
       </li>
     
   </ul>
