@@ -8,9 +8,10 @@ categories:
 ---
 ### Web Storageとは
 
-Web Storageは、HTML5の周辺APIのひとつで、ブラウザにデータを保存するための仕組みです。データの保存・上書き・削除・全クリアなどの操作は、JavaScriptで行います。
+Web Storageは、HTML5の周辺APIのひとつで、ブラウザにデータを保存するための仕組みです。データの保存・上書き・削除・全クリアなどの操作は、Javascriptで行います。
 Web StorageはCookieとよく似ていますが、Cookieに比べてはるかに大きな容量のデータをブラウザに保存できます。
 Web Storageには、sessionStorageとlocalStorageの2種類のストレージが用意されています。どちらもキーと値をペアにしたデータリストをブラウザに保存するkey-value型のデータ保存形式である点は同じですが、データの有効期限などが異なります。
+対応している主要なブラウザはIE8以降、Firefox3.5以降、Safari4.0以降です。詳しくは[Can I use... Support tables for HTML5, CSS3, etc](http://caniuse.com/#feat=namevalue-storage)をご覧ください。
 
 ### CookieとsessionStorageとlocalStorageの差異
 
@@ -22,6 +23,11 @@ Web Storageには、sessionStorageとlocalStorageの2種類のストレージが
 別ウィンドウでのデータ共有 | 可 | 不可 | 可
 
 オリジン： プロトコル://ドメイン名:ポート番号 のこと
+
+### IE6, 7でローカルストレージを実現
+
+IE6, 7でWeb Storageを利用することはできないが、[jStorage](http://www.jstorage.info/)というjQueryプラグインを利用することで、ローカルストレージを実現できる。
+ただし、保存容量が128KBになるなどWeb Storageに劣るところはある。
 
 ### Web Storageのメソッドと使い方
 
