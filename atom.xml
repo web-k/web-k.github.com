@@ -4,7 +4,7 @@
   <title><![CDATA[web-k.log]]></title>
   <link href="http://web-k.github.com/atom.xml" rel="self"/>
   <link href="http://web-k.github.com/"/>
-  <updated>2012-11-12T16:08:07+09:00</updated>
+  <updated>2012-11-14T09:46:15+09:00</updated>
   <id>http://web-k.github.com/</id>
   <author>
     <name><![CDATA[Team web-k]]></name>
@@ -20,9 +20,10 @@
     <id>http://web-k.github.com/blog/2012/11/12/webstorage</id>
     <content type="html"><![CDATA[<h3>Web Storageとは</h3>
 
-<p>Web Storageは、HTML5の周辺APIのひとつで、ブラウザにデータを保存するための仕組みです。データの保存・上書き・削除・全クリアなどの操作は、JavaScriptで行います。
+<p>Web Storageは、HTML5の周辺APIのひとつで、ブラウザにデータを保存するための仕組みです。データの保存・上書き・削除・全クリアなどの操作は、Javascriptで行います。
 Web StorageはCookieとよく似ていますが、Cookieに比べてはるかに大きな容量のデータをブラウザに保存できます。
-Web Storageには、sessionStorageとlocalStorageの2種類のストレージが用意されています。どちらもキーと値をペアにしたデータリストをブラウザに保存するkey-value型のデータ保存形式である点は同じですが、データの有効期限などが異なります。</p>
+Web Storageには、sessionStorageとlocalStorageの2種類のストレージが用意されています。どちらもキーと値をペアにしたデータリストをブラウザに保存するkey-value型のデータ保存形式である点は同じですが、データの有効期限などが異なります。
+対応している主要なブラウザはIE8以降、Firefox3.5以降、Safari4.0以降です。詳しくは<a href="http://caniuse.com/#feat=namevalue-storage">Can I use&#8230; Support tables for HTML5, CSS3, etc</a>をご覧ください。</p>
 
 <h3>CookieとsessionStorageとlocalStorageの差異</h3>
 
@@ -65,6 +66,11 @@ Web Storageには、sessionStorageとlocalStorageの2種類のストレージが
 
 
 <p>オリジン： プロトコル://ドメイン名:ポート番号 のこと</p>
+
+<h3>IE6, 7でローカルストレージを実現</h3>
+
+<p>IE6, 7でWeb Storageを利用することはできないが、<a href="http://www.jstorage.info/">jStorage</a>というjQueryプラグインを利用することで、ローカルストレージを実現できる。
+ただし、保存容量が128KBになるなどWeb Storageに劣るところはある。</p>
 
 <h3>Web Storageのメソッドと使い方</h3>
 
