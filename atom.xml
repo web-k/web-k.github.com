@@ -4,7 +4,7 @@
   <title><![CDATA[web-k.log]]></title>
   <link href="http://web-k.github.com/atom.xml" rel="self"/>
   <link href="http://web-k.github.com/"/>
-  <updated>2012-11-14T09:46:15+09:00</updated>
+  <updated>2012-11-14T13:34:30+09:00</updated>
   <id>http://web-k.github.com/</id>
   <author>
     <name><![CDATA[Team web-k]]></name>
@@ -135,6 +135,16 @@ Web Storageには、sessionStorageとlocalStorageの2種類のストレージが
 </span><span class='line'>//ストレージにあるデータをすべてクリア
 </span><span class='line'>storage.clear();</span></code></pre></td></tr></table></div></figure>
 
+
+<h3>localStorage使用上の注意</h3>
+
+<ol>
+<li>cookieをブロックしている場合、localStorageが機能しない</li>
+<li>cookieを削除するとlocalStorageのデータも消える</li>
+</ol>
+
+
+<p>より詳細な情報は<a href="http://himaxoff.blog111.fc2.com/blog-entry-193.html">無職のプログラミング Web Storageについて調べる</a>に記載されています。</p>
 ]]></content>
   </entry>
   
