@@ -64,3 +64,10 @@ storage.removeItem('userId');
 //ストレージにあるデータをすべてクリア
 storage.clear();
 ```
+
+### localStorage使用上の注意
+
+1. cookieをブロックしている場合、localStorageが機能しない
+2. cookieを削除するとlocalStorageのデータも消える
+
+より詳細な情報は[無職のプログラミング Web Storageについて調べる](http://himaxoff.blog111.fc2.com/blog-entry-193.html)に記載されています。
