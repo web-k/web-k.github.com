@@ -1,7 +1,8 @@
 ---
 layout: post
-title: "Capybaraのブラウザエンジン"
+title: "Capybaraのドライバ"
 date: 2012-11-07 16:37
+author: aizawa1126
 comments: true
 categories: [Ruby, capybara-webkit]
 ---
@@ -16,15 +17,12 @@ end
 ```
 次にenv.rbにJavascriptドライバーを記述します。
 ``` ruby
-Spork.prefork do
-  ...
-  Capybara.default_selector = :css
-  Capybara.javascript_driver = :webkit
-end
+Capybara.default_selector = :css
+Capybara.javascript_driver = :webkit
 ```
 これでJacascripがテストで動作する環境ができました。Javascriptを動作させたいところにRSpecだと
 ``` ruby
-it "hoge hoge", :js => true do
+it "hoge hoge", js: true do
   ...
 end
 ```
@@ -42,7 +40,7 @@ Capybara.default_driver = :selenium
 デフォルトではFirefoxが起動するので、FirefoxではなくChromeを使用したいときには以下をCapybara.default_driverの前に記載します。
 ``` ruby
 Capybara.register_driver :Selenium do |app|
-  Capybara::Driver::Selenium.new(app, :browser => :chrome)
+  Capybara::Driver::Selenium.new(app, browser: :chrome)
 end
 ```
 
@@ -51,17 +49,19 @@ Seleniumドライバーは実際のブラウザを起動するのでほとんど
 RSpecのフィルタで切り替える方法を載せます。この方法は特定のサンプルのみブラウザの切り替えを行います。
 フィルタ機能を設定するには、spec_helper.rbにSelenium用のフィルターを用意します。
 ``` ruby
-config.before(:all, :selenium => true) do
-  Capybara.current_driver = :selenium
-end
+RSpec.configure do |config|
+  ...
+  config.before(:all, selenium: true) do
+    Capybara.current_driver = :selenium
+  end
 
-config.after(:all, selenium => true) do
-  Capybara.use_default_driver
-end
+  config.after(:all, selenium: true) do
+    Capybara.use_default_driver
+  end
 ```
-あとはSeleniumを実行したいサンプルに:seleniumタグを追加します。
+あとはSeleniumを実行したいサンプルにseleniumタグを追加します。
 ``` ruby
-describe "hoge hoge", :selenium => true do
+describe "hoge hoge", selenium: true do
   ...
 end
 ```
