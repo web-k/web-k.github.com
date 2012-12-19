@@ -22,6 +22,7 @@ resources :articles
 という記載がある。
 これはリソースCRUD操作を行うためのURLとアクションを自動で設定してくれる。
 RailsでCRUDを行うために用意されている7つのアクション(index, new, create, show, edit, update, destroy)とURLとの紐付けをresourcesを使うことによって一度にすることができる。
+なお、routes.rbにresources, resourceなどと書いていくわけだが、ルーティングの優先順位は上から順となっている。
 
 現在設定されているルーティングを確認するには、rake routesコマンド用いる。
 ```
@@ -57,11 +58,61 @@ PUT        /profile          update    profile_path
 DELETE     /profile          destroy   profile_path
 ```
 
+### ルーティングの制限
+
+デフォルトのアクション7つのうち、不要なURLを生成したくない場合、:only 又は :except オプションを使用する。
+
+:onlyオプションを用いると、指定したアクションのみ生成される。
+``` ruby
+resources :articles, :only => [:index, :new, :create, :show]
+```
+:exceptオプションを用いると、指定したアクションは生成されない。
+``` ruby
+resources :articles, :except => [:destroy]
+```
+
+### ルーティングの追加
+
+ルーティングの追加方法はリソースのidがURLに付くかどうかで、2つの方法がある。リソースidが付く方(/articles/1/preview みたいなの)をメンバールーティング、付かない方(/articles/preview みたいなの)をコレクションルーティングと呼ぶ。
+
+メンバールーティングの追加
+``` ruby
+resources :articles do
+  member do
+    get 'preview'
+  end
+end
+# 又は
+resources :articles do
+  get 'preview', :on => :member
+end
+```
+コレクションルーティングの追加
+``` ruby
+resources :articles do
+  collection do
+    get 'preview'
+  end
+end
+# 又は
+resources :articles do
+  get 'preview', :on => :collection
+end
+```
+
 ### URLをピンポイントで指定
 
-ログアウトのリンクなど、どのユーザでも変らないURLをピンポイントで指定するには次のようにする。
+ログアウトのリンクなど、どのユーザでも変らないURLをピンポイントで指定するには次のようにmatchを用いる。
 ``` ruby
 match "/authentication/logout" => "authentication#logout"
+```
+
+### メソッドの指定
+
+``` ruby
+get "/authentication/logout" => "authentication#logout"
+# 又は :viaオプションを用いて
+match "/authentication/logout" => "authentication#logout", :via => :get
 ```
 
 ### Named helperの設定
@@ -99,7 +150,7 @@ root :to => "articles#index"
 
 ### Non-Resourceful Routes
 
-Non-Resourceful Routesとは、任意のURLをアクションにアクションにルーティングするためのサポート。
+Non-Resourceful Routesとは、任意のURLをアクションにルーティングするためのサポート。
 ``` ruby
 match ':controller(/:action(/:id))'
 ```
