@@ -1,0 +1,265 @@
+---
+layout: post
+title: "Rails Internationalization (I18n) APIについて"
+date: 2013-01-22 09:36
+comments: true
+author: ntth
+categories: Rails,i18n
+---
+
+[Ruby on Rails Guides: Rails Internationalization (I18n) API](http://guides.rubyonrails.org/i18n.html) を自己解釈しながら翻訳していきます。
+この記事は3章までの内容になります。
+
+## はじめに
+I18n(internationalization) Gem はRails2.2から提供されており、多言語をサポートしたアプリケーションを提供するためのフレームワークである。
+「国際化(I18n:internationalization)」を行うとは、全ての文字を抽象化し、日付や通貨などロケール(地域や言語)によるものをアプリケーションの外に出すことである。
+「地域化(L10n:localization)」を行うとは、それらアプリケーションの外に出したものに対して、翻訳やフォーマットを提供することである。
+
+I18n化するために必要なこと
+
+* I18nのサポートを確保すること
+* 辞書ファイルの場所をRailsに教えること
+* ロケールの設定/選択の仕方をRailsに教えること
+
+L10n化するために必要なこと
+
+* Railsのデフォルトロケールの補完を行うこと
+  * 例）日付/時間フォーマット、月の名前など
+* アプリケーション中に辞書のキーに相当する抽象化された文字列を設定すること
+  * 例）フラッシュメッセージやView内の静的な文字列など
+* どこかに翻訳結果の辞書を保存しておくこと
+
+## 公開 I18n API
+最も重要なAPIが以下の2つ
+{% codeblock lang:ruby %}
+translate # テキストの翻訳
+localize  # 日付/時間をロケールに合わせたフォーマットに変換
+I18n.t 'store.title'　#translateをtに短縮したもの
+I18n.l Time.now　   　#localizeをlに短縮したもの
+{% endcodeblock %}
+
+## Railsアプリケーションの初期化方法
+Railsのデフォルトではconfig/localesフォルダにある.rbと.ymlファイルを自動でロードする。
+{% codeblock lang:ruby %}
+en:
+  hello: "hello world"
+{% endcodeblock %}
+このサンプルの場合は、:enロケールだった場合は「hello」というキーを「hello world」という文字列にマップする。
+
+デフォルトのappllcation.rbファイルに辞書の追加の仕方やデフォルトロケールの設定の仕方がコメントアウトで載っている。
+{% codeblock lang:ruby %}
+# The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
+# config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
+# config.i18n.default_locale = :de
+{% endcodeblock %}
+load_pathは辞書ファイルを自動ロードするための設定でRuby配列のパスになっている。
+default_localeがデフォルトのロケール設定になる。無指定のときは英語がデフォルトロケールになる。
+
+### ロケールの設定と渡し方
+複数のロケールを使う場合リクエスト中にロケール設定の仕方が必要になる。
+ここで注意したいのは、sessionやcookieでロケールを保存して選択してはいけないことである。
+ロケールはURLの一部に含めるべきで、URLを友人に送ったときは同じページで同じコンテンツで表示させるべきである。
+RESTfulのアプローチでいけばこのルールから外れるべきではない。
+
+簡単なロケールの設定の仕方は、ApplicationControllerのbefore_filterに以下のように書き、
+URLのクエリとしてlocaleを渡す(例:http://localhost:3000?locale=de)方法である。
+{% codeblock lang:ruby %}
+before_filter :set_locale
+def set_locale
+  I18n.locale = params[:locale] || I18n.default_locale
+end
+{% endcodeblock %}
+
+### ドメイン名からロケールを設定
+www.example.com なら英語、www.example.esならスペインのロケールというようにドメイン名でロケールを分ける。
+トップレベルでロケールを設定すると以下のような利点がある。
+
+* ロケールがURLに含まれるのが明らかであること
+* 人々が直感的にコンテンツの言語を理解できること
+* 簡単な構成
+* サーチエンジンが異なる言語のコンテンツは異なるドメインのリンクとして扱うことを期待できること
+
+ApplicationController以下のように記述すると実現できる。
+{% codeblock lang:ruby %}
+before_filter :set_locale
+def set_locale
+  I18n.locale = extract_locale_from_tld || I18n.default_locale
+end
+# Get locale from top-level domain or return nil if such locale is not available
+# You have to put something like:
+#   127.0.0.1 application.com
+#   127.0.0.1 application.it
+#   127.0.0.1 application.pl
+# in your /etc/hosts file to try this out locally
+def extract_locale_from_tld
+  parsed_locale = request.host.split('.').last
+  I18n.available_locales.include?(parsed_locale.to_sym) ? parsed_locale  : nil
+end
+{% endcodeblock %}
+サブドメインに設定する場合は
+{% codeblock lang:ruby %}
+# Get locale code from request subdomain (like http://it.application.local:3000)
+# You have to put something like:
+#   127.0.0.1 gr.application.local
+# in your /etc/hosts file to try this out locally
+def extract_locale_from_subdomain
+  parsed_locale = request.subdomains.first
+  I18n.available_locales.include?(parsed_locale.to_sym) ? parsed_locale : nil
+end
+{% endcodeblock %}
+available_localesには定義済みのロケールリストが保存されている。
+
+以下はロケールを切り替えるリンクの方法の例、APP_CONFIG[:deutsch_website_url]には「http://www.application.de」のような値が保存されている。
+{% codeblock lang:ruby %}
+link_to("Deutsch", "#{APP_CONFIG[:deutsch_website_url]}#{request.env['REQUEST_URI']}")
+{% endcodeblock %}
+
+### URLパラメータからロケールを設定
+URLにロケールを含めるのは最も一般的な方法である。
+先の例のparamsからロケールを設定する場合、全てのリクエストに　link_to( books_url(:locale => I18n.locale)))　のようなロケールを含めるのは大変であるので、
+ApplicationController#default_url_optionsメソッドをオーバーライドする。
+{% codeblock lang:ruby %}
+# app/controllers/application_controller.rb
+def default_url_options(options={})
+  logger.debug "default_url_options is passed options: #{options.inspect}\n"
+  { :locale => I18n.locale }
+end
+{% endcodeblock %}
+これはurl_forメソッドのデフォルト設定をオーバーライドしているので、url_forメソッドを使ったもの(root_path/routesファイルのリソースパス)全てに自動でクエリがつくようになる。
+
+www.example.com/en/booksのようなURLでロケールを設定する場合は、routesファイルで以下のようにpath_prefix付ける。
+{% codeblock lang:ruby %}
+# config/routes.rb
+scope "/:locale" do
+  resources :books
+end
+{% endcodeblock %}
+
+### クライアント情報からロケールを設定
+* Accept-Languageを使う方法
+
+ブラウザなどに含まれているHTTPヘッダーを使う
+{% codeblock lang:ruby %}
+def set_locale
+  logger.debug "* Accept-Language: #{request.env['HTTP_ACCEPT_LANGUAGE']}"
+  I18n.locale = extract_locale_from_accept_language_header
+  logger.debug "* Locale set to '#{I18n.locale}'"
+end
+private
+def extract_locale_from_accept_language_header
+  request.env['HTTP_ACCEPT_LANGUAGE'].scan(/^[a-z]{2}/).first
+end
+{% endcodeblock %}
+
+* GeoIPなどのデータベースを使う方法
+
+クライアントのIPアドレスから地域の情報をマッピングしてロケールを決める。
+GeoIP Lite Countryデータベースを使うと、IPアドレスから国/地域/市などを返してくれる。
+
+* ユーザプロファイルからとる方法
+
+ユーザがアプリケーション内でロケールを設定できるようにして、データベースに保存する。
+
+## アプリケーションの国際化
+以上で、Ruby on RailsアプリケーションのI18nサポートの初期化が終わった。
+次にL10n化を行う。
+つまり、全てのロケール固有のパーツを抽象化することと、その翻訳を用意することである。
+
+### 翻訳を追加
+Railsの「t」ヘルパーをキーと一緒に使って以下のように書ける。
+{% codeblock lang:ruby %}
+# app/controllers/home_controller.rb
+class HomeController < ApplicationController
+  def index
+    flash[:notice] = t(:hello_flash)
+  end
+end
+# app/views/home/index.html.erb
+<h1><%=t :hello_world %></h1>
+<p><%= flash[:notice] %></p>
+# config/locales/en.yml
+en:
+  hello_world: Hello world!
+  hello_flash: Hello flash!
+# config/locales/pirate.yml
+pirate:
+  hello_world: Ahoy World
+  hello_flash: Ahoy Flash
+{% endcodeblock %}
+キーに該当する辞書ファイルが見つからない場合は <span class="translation_missing"> のようなタグがHTMLに入る。
+辞書ファイルを追加する場合は、サーバの再起動が必要である。
+辞書ファイルにはYAMLまたはRubyファイルが使われるが、Rails開発者の中ではYAMLが推奨されている。
+しかし、YAMLはスペースや特殊文字に弱く、アプリケーションがロードに失敗することもある。
+Rubyファイルは最初のリクエストでアプリケーションがクラッシュするので、間違いがわかりやすい。
+
+### 変数を渡して翻訳
+
+以下のようにしてViewから辞書ファイルに変数を渡せる。
+{% codeblock lang:ruby %}
+# app/views/home/index.html.erb
+<%=t 'greet_username', :user => "Bill", :message => "Goodbye" %>
+# config/locales/en.yml
+en:
+  greet_username: "%{message}, %{user}!"
+{% endcodeblock %}
+
+### 日時フォーマットの追加
+
+時間フォーマットをl10n化するときはRailsメソッドの「l」ヘルパーを使って、Timeオブジェクトを渡す。
+ヘルパーには :format オプションも渡せる。無指定の場合は:defaultフォーマットが使用される。
+{% codeblock lang:ruby %}
+# app/views/home/index.html.erb
+<p><%= l Time.now, :format => :short %></p>
+# config/locales/pirate.yml
+pirate:
+  time:
+    formats:
+      short: "arrrround %H'ish"　# %Hは24時間制の時
+{% endcodeblock %}
+
+辞書ファイルは以下で提供されているので、Gemで使うなり、config/localesにファイルを手動で置くなりして利用すると良い。
+rails-i18n repository at Github(https://github.com/svenfuchs/rails-i18n/tree/master/rails/locale)
+
+### L10n化したView
+Rails2.3からロケールによるテンプレート自動選択してくれるになった。
+app/views/books/index.html.erbテンプレートを用意し、同階層にindex.es.html.erbファイルを置くと、
+esロケールではesのerbファイルを参照し、デフォルトはindex.html.erbファイルが参照される。
+
+### 組織化された辞書ファイル
+
+1つのロケールに対して、1つの辞書ファイルだと、増えたときに管理するのが難しくなる。
+よって、以下のように階層化するなどして管理するとよい。
+{% codeblock %}
+|-defaults
+|---es.rb
+|---en.rb
+|-models
+|---book
+|-----es.rb
+|-----en.rb
+|-views
+|---defaults
+|-----es.rb
+|-----en.rb
+|---books
+|-----es.rb
+|-----en.rb
+|---users
+|-----es.rb
+|-----en.rb
+|---navigation
+|-----es.rb
+|-----en.rb
+{% endcodeblock %}
+これはモデルとビュー内のモデル属性とデフォルトで分けた例である。
+このようにネストした場合は、辞書ファイルがデフォルト設定ではロードされなくなるので、以下のように
+書かなければならない。
+
+{% codeblock lang:ruby %}
+# config/application.rb
+  config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
+{% endcodeblock %}
+
+## 参考
+* [Ruby on Rails Guides: Rails Internationalization (I18n) API](http://guides.rubyonrails.org/i18n.html#the-public-i18n-api)
+* [Rails 3 の I18n について - おもしろWEBサービス開発日記](http://d.hatena.ne.jp/willnet/20100430/1272618929)
