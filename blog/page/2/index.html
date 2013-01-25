@@ -9,7 +9,10 @@
   <meta name="author" content="Team web-k">
 
   
-  <meta name="description" content="Ruby on RailsでSpecを書く時に、RSpecのマッチャなのかCapybaraのマッチャなのか分からなくなったのでメモ RSpecのマッチャ RSpecのマッチャには、「演算子マッチャ」と「ビルトインマッチャ」があり、「should」や「should_not」と組み合わせて使用します &hellip;">
+  <meta name="description" content="よく使うgitコマンドをリストアップしてみる リポジトリ作成: git init ローカルリポジトリを作成するにはリポジトリ名を指定する。 1
+2
+$ git init repo
+Initialized empty Git repository in /Users/user/repo/.git/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -76,6 +79,1903 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/11/08/git/">Gitでよく使う21コマンドまとめ</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-08T00:43:00+09:00" pubdate data-updated="true">Nov 8<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/11/08/git/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>よく使うgitコマンドをリストアップしてみる</p>
+
+<h3>リポジトリ作成: git init</h3>
+
+<p>ローカルリポジトリを作成するにはリポジトリ名を指定する。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git init repo
+</span><span class='line'>Initialized empty Git repository in /Users/user/repo/.git/</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>リポジトリの設定: git config</h3>
+
+<p>リポジトリ単位の設定は.git/config、ログインユーザ単位の設定は~/.gitconfigに、システム単位は/etc/gitconfigに格納されている。それぞれ、</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git config キー 値           # リポジトリ単位
+</span><span class='line'>$ git config --global キー 値  # ログインユーザー単位
+</span><span class='line'>$ git config --system キー 値  # システム単位</span></code></pre></td></tr></table></div></figure>
+
+
+<p>にて値を設定出来る。各値はシステム→ログインユーザー→リポジトリ単位の順で読み込まれ、後から読み込んだほうが優先される。現在の設定は</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git config --list</span></code></pre></td></tr></table></div></figure>
+
+
+<p>で参照可能。良く設定するキーは</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git config user.name    # コミットユーザー名
+</span><span class='line'>$ git config user.email   # コミットE-mail
+</span><span class='line'>$ git config alias.*      # gitコマンドAlias</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ファイルをインデックスに登録: git add</h3>
+
+<p>gitの場合、ファイルを追加・更新しただけではまだコミット候補ではなく、インデックスに登録する必要がある。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git add .     # カレントフォルダ以降のファイルをすべて登録
+</span><span class='line'>$ git add path  # ファイル・フォルダの登録</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>リポジトリの状態を確認: git status</h3>
+
+<p>ワーキングツリー・インデックスの状態を確認する。リポジトリとの現在のファイルの変更・修正状況、コミット候補としてインデックスに登録されているか確認出来る。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git status
+</span><span class='line'># On branch source
+</span><span class='line'># Changes not staged for commit:
+</span><span class='line'>#   (use "git add &lt;file&gt;..." to update what will be committed)
+</span><span class='line'>#   (use "git checkout -- &lt;file&gt;..." to discard changes in working directory)
+</span><span class='line'>#
+</span><span class='line'>#       modified:   .gitignore
+</span><span class='line'>#
+</span><span class='line'># Untracked files:
+</span><span class='line'>#   (use "git add &lt;file&gt;..." to include in what will be committed)
+</span><span class='line'>#
+</span><span class='line'>#       source/_posts/2012-11-07-git.markdown
+</span><span class='line'>no changes added to commit (use "git add" and/or "git commit -a")
+</span><span class='line'>
+</span><span class='line'>$ git status -s  # status簡易版
+</span><span class='line'> M .gitignore
+</span><span class='line'> ?? source/_posts/2012-11-07-git.markdown</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>差分を確認する: git diff</h3>
+
+<p>リポジトリとの差分が確認出来る。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git diff  # ワーキングツリーの差分
+</span><span class='line'>diff --git a/.gitignore b/.gitignore
+</span><span class='line'>index 4bba145..b4bbc86 100644
+</span><span class='line'>--- a/.gitignore
+</span><span class='line'>+++ b/.gitignore
+</span><span class='line'>@@ -11,4 +11,5 @@ source/_stash
+</span><span class='line'>source/stylesheets/screen.css
+</span><span class='line'>vendor
+</span><span class='line'>node_modules
+</span><span class='line'>-nbproject/*
+</span><span class='line'>\ No newline at end of file
+</span><span class='line'>+nbproject/*
+</span><span class='line'>+*.swp
+</span><span class='line'>
+</span><span class='line'>$ git diff HEAD  # インデックスとリポジトリ最新との差分
+</span><span class='line'>$ git diff master  # masterブランチとの差分
+</span><span class='line'>$ git diff master develop  # masterブランチとdevelopブランチとの差分</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>コミットログの表示: git log</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git log  # 現在のブランチのログ表示
+</span><span class='line'>$ git log -p  # 現在のブランチのdiffも含めてログ表示
+</span><span class='line'>$ git log -2  # 最新2つのコミットログを表示
+</span><span class='line'>$ git log --oneline --graph  # ログをコミット毎に1行フォーマットで表示し、コミットツリーを表示する</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ディレクトリ・ファイルの移動: git mv</h3>
+
+<p>コミット済みのファイルを移動・リネームする。コマンド実行するとコミット候補としてインデックスに登録される</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git mv file1 file2  # file1をfile2にリネームする
+</span><span class='line'>$ git mv dir1/file dir2/file  # fileをdir1からdir2に移動する</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ディレクトリ・ファイルの削除: git rm</h3>
+
+<p>コミット済み、またはインデックスに登録済みのファイルを削除する</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git rm file  # fileを削除する</span></code></pre></td></tr></table></div></figure>
+
+
+<p>git rmをオプション無しで実行するとワーキングツリーからファイルが削除されるので、新規追加登録したファイルをインデックスから解除してファイルをワーキングツリーに残しておきたい場合は&#8211;cachedを使う</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git add file
+</span><span class='line'>$ git rm --cached file
+</span><span class='line'>rm 'file'
+</span><span class='line'>$ git status
+</span><span class='line'># On branch master
+</span><span class='line'>#
+</span><span class='line'># Initial commit
+</span><span class='line'>#
+</span><span class='line'># Untracked files:
+</span><span class='line'>#   (use "git add &lt;file&gt;..." to include in what will be committed)
+</span><span class='line'>#
+</span><span class='line'>#       file</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>コミットする: git commit</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git commit  # git addしておいたファイルのコミット。エディタが立ち上がってコメントを入力して保存するとコミットされる
+</span><span class='line'>$ git commit -m "コメント"  # コメントを指定してコミット
+</span><span class='line'>$ git commit -a  # すべての変更をコミット。ただし、新規ファイルは追加されない。明示的にgit addする必要がある</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>直前のコミットを変更する: git commit &#8211;amend</h3>
+
+<p>&#8211;amendオプションを指定すると直前のコミットを追加修正したインデックス登録の差分を含めて差し替えることが出来る</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git commit --amend  # (インデックス登録が無ければ)直前のコミットコメントを変更する</span></code></pre></td></tr></table></div></figure>
+
+
+<p>インデックス登録してある差分を含めて直前のコミットを変更する</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git add file  # fileをインデックスに追加
+</span><span class='line'>$ git commit --amend  # addしたfileと直前のコミットをマージして差し替える</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ローカルリポジトリ、インデックスを元に戻す: git reset</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git reset --hard commit_hash  # 指定したコミットにローカルリポジトリ、インデックスを完全に戻す。コミットしていない状態に戻り無かったことになる
+</span><span class='line'>$ git reset --soft HEAD~  # 1つ前のコミットに戻す。ワーキングツリー・インデックスファイルは影響しない
+</span><span class='line'>$ git reset --mixed HEAD~  # 1つ前のコミットにインデックス・リポジトリを戻す。ワーキングツリーには影響しない</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>grepする / git grep</h3>
+
+<p>インデックスやワーキングツリーに対して検索する</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git grep Text  # Textという文字列を検索する</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>コミット内容の表示: git show</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git show commit_hash  # コミット内容表示。差分も参照出来る</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>リモートリポジトリをローカルにコピー: git clone</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git clone git-uri  # リモートリポジトリをコピー。フォルダ名はname.gitだったらnameになる。リモートリポジトリ名はoriginになる。
+</span><span class='line'>$ git clone git-uri dir  # dirフォルダ名でリモートリポジトリをコピー
+</span><span class='line'>$ git clone git-uri -o name  # リモートリポジトリ名をnameでコピー</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>リモートリポジトリの管理: git remote</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git remote  # 登録されているリポジトリ名の表示
+</span><span class='line'>$ git remote -v  # リポジトリ名とURIの表示
+</span><span class='line'>$ git remote add name git-uri  # リポジトリ名「name」にてgit-uriリモートリポジトリの登録
+</span><span class='line'>$ git remote show origin  # originリモートリポジトリの詳細情報表示
+</span><span class='line'>$ git remote update  # リモートリポジトリの更新。fetchでも済みそう
+</span><span class='line'>$ git remote rm devel  # リモートリポジトリdevelの登録解除
+</span><span class='line'>$ git remote prune  # 削除されたリモートブランチの削除</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ブランチのマージ: git merge</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git merge develop  # 現在のブランチにdevelopをマージ
+</span><span class='line'>$ git merge --squash develop  # 現在のブランチにdevelopのコミットを1つにまとめてマージ</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>リモートブランチにローカルブランチを送信: git push</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git push origin master:master  # リモートリポジトリoriginにローカルブランチ(左のmaster)をリモートブランチ(右のmaster)に送信
+</span><span class='line'>$ git push origin master  # リモートリポジトリにローカルブランチmasterを送信
+</span><span class='line'>$ git push origin master:testing  # リモートブランチを指定
+</span><span class='line'>$ git push origin :testing  # リモートブランチの削除</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ローカルリポジトリにリモートリポジトリを取り込む: git pull</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git pull  # originリモートリポジトリをローカルリポジトリに取り込む</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ローカルリポジトリにコミットしていない変更がある場合、競合することがあるので、コミットしておくか、git stash saveして一旦ソースを待避してからpullすると良い。</p>
+
+<h3>ブランチの管理: git branch</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git branch  # ローカルブランチの確認。現在のブランチも確認出来る
+</span><span class='line'>$ git branch -r  # リモートブランチの確認
+</span><span class='line'>$ git branch -a  # ローカル・リモートすべてのブランチの確認
+</span><span class='line'>$ git branch new  # newブランチの作成
+</span><span class='line'>$ git branch new base  # baseブランチを起点にnewブランチを作成
+</span><span class='line'>$ git branch -m base rename  # baseブランチをrenameブランチに名称変更
+</span><span class='line'>$ git branch -d base  # baseブランチの削除。このブランチのみ存在する新しいコミットがある場合は削除されないので安全
+</span><span class='line'>$ git branch -D base  # baseブランチの削除。新しいコミットがあっても強制削除する</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ブランチのスイッチ: git checkout</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git checkout develop  # developブランチにスイッチ
+</span><span class='line'>$ git checkout --merge develop  # ワーキングツリー・インデックスで修正があるファイルとスイッチ先ブランチをマージして切り替える
+</span><span class='line'>$ git checkout -b new  # 現在のブランチを起点にnewブランチを作成
+</span><span class='line'>$ git checkout -f  # 修正したワーキングツリーの修正を元に戻す。一度戻した修正は失われるので注意
+</span><span class='line'>$ git checkout commit_hash file  # fileをcommit_hash時点の状態に戻す</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>未コミットの差分を一時的に保存する: git stash</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git stash save  # 一時的に保存する。新規ファイルを保存する場合はgit addしておくこと
+</span><span class='line'>$ git stash pop  # 一時的に保存した差分を元に戻す
+</span><span class='line'>$ git stash list  # 保存されているキューの一覧を表示する
+</span><span class='line'>$ git stash drop stash@{1}  # stash@{1}を破棄。元に戻せないので注意
+</span><span class='line'>$ git stash clear  # 保存されているキューを全て破棄。元に戻せないので注意</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以上よく使う21コマンドを紹介した。次回はgit rebaseの使い方とgit cherry-pickなど頻繁には使わないが有用そうなコマンドを紹介する。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/11/07/rspec-raise/">RSpecで例外のテストをする</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-07T23:14:00+09:00" pubdate data-updated="true">Nov 7<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/11/07/rspec-raise/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>RSpecで例外のテストするにはlambdaを使用する。
+例えば、adminというroleを持つUserのインスタンスに対し、destroyというインスタンスメソッドを実行すると、CannotDestroyAdminUserという例外が出るテストをする。その場合次のように書く。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">it</span> <span class="s2">&quot;hoge hoge&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="vi">@user</span><span class="o">.</span><span class="n">roles</span><span class="o">=</span><span class="p">(</span><span class="o">[</span><span class="s1">&#39;admin&#39;</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>  <span class="vi">@user</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>  <span class="nb">lambda</span><span class="p">{</span><span class="vi">@user</span><span class="o">.</span><span class="n">destroy</span><span class="p">}</span><span class="o">.</span><span class="n">should</span> <span class="n">raise_error</span><span class="p">(</span><span class="no">CannotDestroyAdminUser</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/11/07/capybara-driver/">Capybaraのドライバ</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-07T16:37:00+09:00" pubdate data-updated="true">Nov 7<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/11/07/capybara-driver/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Capybaraは通常Rack:Testと呼ばれるブラウザエンジンを用い、仮想的に画面操作をしています。そのためJavascriptを考慮したテストはできません。
+この場合、CapybaraのエンジンをJavascriptが動作する、capybara-webkitやSeleniumというブラウザエンジンに切り替えてテストを行います。
+capybara_webkitを使うにはGemfileにcapybara-webkitを追記します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">group</span> <span class="ss">:test</span><span class="p">,</span> <span class="ss">:development</span> <span class="k">do</span>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s2">&quot;capybara-webkit&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>次にenv.rbにJavascriptドライバーを記述します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Capybara</span><span class="o">.</span><span class="n">default_selector</span> <span class="o">=</span> <span class="ss">:css</span>
+</span><span class='line'><span class="no">Capybara</span><span class="o">.</span><span class="n">javascript_driver</span> <span class="o">=</span> <span class="ss">:webkit</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これでJacascripがテストで動作する環境ができました。Javascriptを動作させたいところにRSpecだと</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">it</span> <span class="s2">&quot;hoge hoge&quot;</span><span class="p">,</span> <span class="n">js</span><span class="p">:</span> <span class="kp">true</span> <span class="k">do</span>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Cucumerだとシナリオに@javascriptタグを付加します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vi">@javascript</span>
+</span><span class='line'><span class="err">シナリオ</span><span class="p">:</span> <span class="n">hoge</span> <span class="n">hoge</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ブラウザ別のテストを実施したいときはSeleniumドライバーを使います。
+SeleniumドライバーはFirefox、InternetExplorer、GoogleChromeを実際に起動させてテストします。
+SeleniumはCapybaraに同梱されているので、ブラウザエンジンを切り替えるだけで使用可能になります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Capybara</span><span class="o">.</span><span class="n">default_driver</span> <span class="o">=</span> <span class="ss">:selenium</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>デフォルトではFirefoxが起動するので、FirefoxではなくChromeを使用したいときには以下をCapybara.default_driverの前に記載します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Capybara</span><span class="o">.</span><span class="n">register_driver</span> <span class="ss">:Selenium</span> <span class="k">do</span> <span class="o">|</span><span class="n">app</span><span class="o">|</span>
+</span><span class='line'>  <span class="no">Capybara</span><span class="o">::</span><span class="no">Driver</span><span class="o">::</span><span class="no">Selenium</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">browser</span><span class="p">:</span> <span class="ss">:chrome</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Seleniumドライバーは実際のブラウザを起動するのでほとんどのJavascriptをテストできますが、オーバーヘッドが大きくなります。
+従って、必要なテストにのみSeleniumドライバーを利用するようにします。
+RSpecのフィルタで切り替える方法を載せます。この方法は特定のサンプルのみブラウザの切り替えを行います。
+フィルタ機能を設定するには、spec_helper.rbにSelenium用のフィルターを用意します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">RSpec</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">before</span><span class="p">(</span><span class="ss">:all</span><span class="p">,</span> <span class="n">selenium</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>    <span class="no">Capybara</span><span class="o">.</span><span class="n">current_driver</span> <span class="o">=</span> <span class="ss">:selenium</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">after</span><span class="p">(</span><span class="ss">:all</span><span class="p">,</span> <span class="n">selenium</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>    <span class="no">Capybara</span><span class="o">.</span><span class="n">use_default_driver</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>あとはSeleniumを実行したいサンプルにseleniumタグを追加します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">describe</span> <span class="s2">&quot;hoge hoge&quot;</span><span class="p">,</span> <span class="n">selenium</span><span class="p">:</span> <span class="kp">true</span> <span class="k">do</span>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/11/07/actionscript/">ActionScript 3.0</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-07T10:57:00+09:00" pubdate data-updated="true">Nov 7<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/11/07/actionscript/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>ActionScript とは</h3>
+
+<p>ActionScript は Adobe Flash Player や Adobe AIR のランタイム環境用の開発言語です。
+開発環境には Adobe Flash CS6(オーサリングツール)/Adobe Flex Builder(統合開発環境)/Adobe Flex(コマンドラインのコンパイラ)がありますが、
+有償であったりコマンドラインでコンパイルしなければならないので、
+ここでは無償の統合開発環境である FlashDevelop を使用しています。
+ActionScriptで書かれたコードを上記環境でコンパイルすることにより、SWF(Shockwave Flash file)ファイルが生成されます。
+このSWFファイルをウェブページなどに組み込めば、ランタイム環境で動作させることができます。</p>
+
+<p>ActionScript には ActionScript 1.0/2.0/3.0 の各バージョンがあり、2.0からオブジェクト指向言語になっています。
+ECMAScriptをベースに作られているため、Javascriptに似ており。また、オブジェクト指向言語になり、Javaにも似ている言語となっています。</p>
+
+<h3>文法</h3>
+
+<p>基本的なことと気になったことについて書いていきます。</p>
+
+<h4>変数宣言</h4>
+
+<p>var 変数名:型 で宣言します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var num1:Number; //小数点付きまたは小数点なしの値を含むすべての数値
+</span><span class='line'>var num2:int; //整数
+</span><span class='line'>var num3:uint; //符号なし整数
+</span><span class='line'>var boo:Boolean; //true か false の2値
+</span><span class='line'>var str:String; //文字列</span></code></pre></td></tr></table></div></figure>
+
+
+<p>などがあります。</p>
+
+<h4>文字列</h4>
+
+<p>文字列はシングルクォートかダブルクォートを使って定義します。\n(改行)などの特殊文字を入れることもできます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var str:String = "kaigyou¥n"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>文字列を操作するメソッドも用意されており、Rubyみたいに使えます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var str:String = "FLASH";
+</span><span class='line'>trace(str.split(""));//traceを使用すると開発ツール上で実行したときに出力欄に表示される
+</span><span class='line'>//>>F,L,A,S,H
+</span><span class='line'>trace(str.length);//文字列の長さ
+</span><span class='line'>//>>5
+</span><span class='line'>trace([str, "TEST",].join("　"));//配列要素間を空白で結合
+</span><span class='line'>//>>FLASH TEST</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上記コードだけでは実行できないので、以下のようにコードを.asファイルに記載して実行(FlashDevelopではF5)します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>package 
+</span><span class='line'>{
+</span><span class='line'>  import flash.display.Sprite;
+</span><span class='line'>  public class Main extends Sprite 
+</span><span class='line'>  {
+</span><span class='line'>      public function Main():void 
+</span><span class='line'>      {
+</span><span class='line'>          var str:String = "FLASH";
+</span><span class='line'>          trace(str.split(""));
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>配列</h4>
+
+<p>配列用の型があるので、Arrayで宣言します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var arr:Array;
+</span><span class='line'>arr = [a,b,c];</span></code></pre></td></tr></table></div></figure>
+
+
+<p>配列も文字列と同じようにメソッドが用意されており、操作できます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var arr:Array = ['a','b','c'];
+</span><span class='line'>arr.push('d'); //末尾にデータ追加
+</span><span class='line'>trace(arr);
+</span><span class='line'>//>>[a,b,c,d]
+</span><span class='line'>arr.pop(); //末尾のデータ取り出し
+</span><span class='line'>trace(arr);
+</span><span class='line'>//>>[a,b,c]</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>ハッシュ</h4>
+
+<p>Object型を使って、ハッシュを作ります。Object型はすべてのクラス定義の基本クラスです。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>var hash:Object = new Object();
+</span><span class='line'>hash["program"] = "ActionScript"
+</span><span class='line'>trace(hash["program"]);
+</span><span class='line'>//>>ActionScript</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>ブロックスコープ</h4>
+
+<p>変数は関数単位で管理しており、ブロック変数として宣言したつもりでも関数スコープになっています。(withを使えば、実現できるらしいです。)</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//多重定義でコンパイルエラー
+</span><span class='line'>for ( var i:Number = 0; i &lt; 1; i++) {
+</span><span class='line'>  i = 1;
+</span><span class='line'>}
+</span><span class='line'>for ( var i:String = 0; i &lt; 1; i++) {
+</span><span class='line'>  i = 'a';
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>例外</h2>
+
+<p>Javaのように例外をキャッチできます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>try {
+</span><span class='line'>    //例外が検出したい処理
+</span><span class='line'>} catch (e:Error) {
+</span><span class='line'>    // 例外処理
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>クラス</h2>
+
+<p>以下のようにクラス定義します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>package パッケージ名 { // パッケージ名省略可
+</span><span class='line'>    import パッケージ.クラス名;
+</span><span class='line'>    
+</span><span class='line'>    public class Main(クラス名、仮にMain) extends 親クラス名
+</span><span class='line'>    {
+</span><span class='line'>        // 変数宣言
+</span><span class='line'>        アクセス修飾子 var プロパティ名:プロパティの型;
+</span><span class='line'>        
+</span><span class='line'>        // コンストラクタ
+</span><span class='line'>        アクセス修飾子 function Main()//コンストラクタ名
+</span><span class='line'>        {
+</span><span class='line'>            処理1
+</span><span class='line'>        }
+</span><span class='line'>        
+</span><span class='line'>        // メソッド1
+</span><span class='line'>        アクセス修飾子 function メソッド名1(引数1:型 = デフォルト値):戻り値の型
+</span><span class='line'>        {
+</span><span class='line'>            処理2
+</span><span class='line'>        }
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>表示リスト</h2>
+
+<p>ActionScript 3.0 で構築されたアプリケーションには、表示リストと呼ばれるオブジェクトの階層があります。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ステージ //Stageクラス
+</span><span class='line'>  - SWFファイルのメインクラスのインスタンス //自分で定義したクラス
+</span><span class='line'>    - 表示オブジェクト //TextFieldなど
+</span><span class='line'>    - 表示オブジェクトコンテナ //Spriteクラス
+</span><span class='line'>      -(表示オブジェクト/表示オブジェクトコンテナ)</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>ステージ</li>
+</ul>
+
+
+<p>表示オブジェクトの基本コンテナ、各アプリケーションには1つのStageオブジェクトがあり、この中に画面の表示オブジェクトがすべて含まれます。
+ステージは、表示リスト階層の最上位にあたります。
+それぞれのSWFファイルには関連するActionScriptクラスがあり、これがSWFファイルのメインクラスと呼ばれます。
+SWFファイルのメインクラスは、Spriteクラスを拡張して定義します。
+SWFファイルが Flash Player または Adobe AIR 上で開かれると、SWFファイルのメインクラスのコンストラクタ関数が呼ばれ、
+作成されるインスタンスがStageオブジェクトに子として追加されます。</p>
+
+<ul>
+<li>表示オブジェクト</li>
+</ul>
+
+
+<p>ActionScript 3.0 では、アプリケーション内で表示される全てのエレメントタイプは、表示オブジェクトです。</p>
+
+<ul>
+<li>表示オブジェクトコンテナ</li>
+</ul>
+
+
+<p>表示オブジェクトコンテナは特殊な型の表示オブジェクトです。
+表示オブジェクトコンテナ(単にコンテナともいいます)は、それ自体が表示オブジェクトコンテナ/表示オブジェクトを子オブジェクトに含むことができます。
+表示オブジェクトコンテナに子オブジェクトを追加するには addChild関数を使います。
+表示オブジェクトコンテナとなりうる表示オブジェクトは Stage/MovieClip/Spriteクラスです。</p>
+
+<h2>Hello ActionScript</h2>
+
+<p>Flash上に「Hello ActionScript」と文字列を表示させます。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>package hello
+</span><span class='line'>{
+</span><span class='line'>  import flash.display.Sprite; //画面表示の基本クラスのインポート
+</span><span class='line'>  import flash.text.*; //テキスト系のクラス
+</span><span class='line'>  public class Main extends Sprite
+</span><span class='line'>  {
+</span><span class='line'>      public function Main (){//コンストラクタ
+</span><span class='line'>          var textField:TextField = new TextField();//入れ物確保
+</span><span class='line'>          textField.text = "Hello ActionScript";//文字列挿入
+</span><span class='line'>          addChild(textField);//textFieldをSpriteクラスに追加して表示
+</span><span class='line'>      }   
+</span><span class='line'>  }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>参考</h4>
+
+<ul>
+<li><a href="http://help.adobe.com/ja_JP/ActionScript/3.0_ProgrammingAS3/">Adobe ActionScript 3.0 * Adobe Flash 用 Adobe ActionScript</a> - 公式ドキュメント</li>
+<li><a href="http://blog.livedoor.jp/takaaki_bb/archives/51374100.html">読書メモ＋tips＋日記 : [Flash] ActionScript 3.0 基礎文法最速マスター</a></li>
+<li><a href="http://www40.atwiki.jp/spellbound/">ActionScript入門Wiki - トップページ</a></li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/22/internationalization-i18n/">i18n(Internationalization)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-22T13:03:00+09:00" pubdate data-updated="true">Oct 22<span>nd</span>, 2012</time>
+        
+         | <a href="/blog/2012/10/22/internationalization-i18n/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Railsでi18nを使った多言語対応について調べたので、それについてまとめる。
+今回は多言語対応の一般的な話をまとめる。</p>
+
+<h3>多言語対応について</h3>
+
+<p>ソフトウェアを多言語対応するときの工程として</p>
+
+<ul>
+<li>i18n(Internationalization:国際化)</li>
+<li>l10n(Localization:地域化)</li>
+<li>m17n(Multilingualization:多言語化)</li>
+</ul>
+
+
+<p>の各ステップがある。
+名前の由来は最初と最後の文字と間の文字数からきている。i18nだとInternationalizationの最初のiと最後のn、その間に18文字あることからきている。</p>
+
+<p>「i18n」とは、ソフトウェアに技術的な変更を加えることなく、多言語、多地域に対応させる枠組みを作っておくことである。
+i18nに対応すると次に各言語においての対応を実装していく必要がある。それが「l10n」で、特定の1言語で必要とされる言語特有の機能等を実装し、対応させることである。
+多言語に渡ってl10nの対応をし、利用者の言語に合わせて切り替えて表示できる状態が「m17n」対応となり、多言語対応となる。</p>
+
+<h3>Railsにおける多言語対応</h3>
+
+<p>Railsにはi18nの機能が標準でついており、利用することで多言語対応ができる。
+詳しくは次回以降で記載する。</p>
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://www.atmarkit.co.jp/fxml/rensai/xmlwomanabou11/learning-xml11.html">多言語対応の問題と解決を考える</a></li>
+<li><a href="http://guides.rubyonrails.org/i18n.html">Ruby on Rails Guides: Rails Internationalization (I18n) API</a></li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/09/rails-filter/">Railsのbefore_filterとメソッド返り値</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-09T16:54:00+09:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/10/09/rails-filter/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>before_filterで実行したメソッドがfalseをreturnしたらどうなるか、気になったのでメモ。</p>
+
+<p>確認した環境はRuby 1.9.3p194, Rails 3.2.8。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">before_filter</span> <span class="ss">:false_filter</span>
+</span><span class='line'><span class="c1">#  before_filter :redirect_filter</span>
+</span><span class='line'>  <span class="n">before_filter</span> <span class="ss">:true_filter</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">false_filter</span>
+</span><span class='line'>    <span class="k">return</span> <span class="kp">false</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">redirect_filter</span>
+</span><span class='line'>    <span class="n">redirect_to</span> <span class="n">root_path</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">true_filter</span>
+</span><span class='line'>    <span class="k">return</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>true/falseだからといって特に何も起こらなかった。falseでもそのまま次のbefore_filterが実行されたり、filter後に控えているコントローラのメソッドが実行された。</p>
+
+<p>before_filterやafter_filterはメソッドを優先して実行するかどうかを決めているだけであり、メソッドの返り値を受け取ってどうこうするというモノではないようだ。</p>
+
+<p>ただし、before_filterで呼んだメソッドの中にrenderやredirect_to、raiseなどがあると、その後に控えている他のbefore_filterや以降のコントローラのメソッドは実行されない。</p>
+
+<p>なお、<a href="http://www.fdiary.net/ml/rails/msg/3168">rails:3168</a>によると、rails 1.xではfilterにfalseが返ると、そこで処理が止まっていたようです。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/08/nexus7/">Nexus 7(Jelly Bean)のUser AgentとCSS 3D Transforms対応状況を調べてみた</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-08T09:05:00+09:00" pubdate data-updated="true">Oct 8<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/10/08/nexus7/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>今週末10/6にNexus 7が届いて楽しくいじり倒していたのだが、ブラウザでの以下の2点の大きな変更が気になっていた。</p>
+
+<ul>
+<li>Android 4.1 Jelly BeansからFlash Playerが未サポートになってGoogle Playから新規インストール出来なくなった。</li>
+<li>標準ブラウザがChromeに変わった</li>
+</ul>
+
+
+<p>Flashが使えなくなったことでHTML5で対応する必要がでてくる(ていうかHTML5で対応出来ないと詰む)ことが多くなる。なので、各ブラウザアプリUser AgentとCSS 3D Transformsの挙動を実際に試してみる。</p>
+
+<h3>User Agent</h3>
+
+<table>
+<thead>
+<tr>
+<th>ブラウザ </th>
+<th> User Agent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Chrome </td>
+<td> Mozilla/5.0 (Linux; Android 4.1.1; Nexus 7 Build/JRO03S) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Safari/535.19</td>
+</tr>
+<tr>
+<td>Dolphin </td>
+<td> Mozilla/5.0 (Linux; U; Android 4.1.1; ja-jp; Nexus 7 Build/JRO03S) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Safari/534.30</td>
+</tr>
+<tr>
+<td>Firefox </td>
+<td> Mozilla/5.0 (Android; Tablet; rv:15.0) Gecko/15.0 Firefox/15.0.1</td>
+</tr>
+<tr>
+<td>Sleipnir </td>
+<td> Mozilla/5.0 (Linux; U; Android 4.1.1; ja-jp; Nexus 7 Build/JRO03S) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Safari/534.30</td>
+</tr>
+<tr>
+<td>OperaMobile </td>
+<td> Opera/9.80 (Android 4.1.1; Linux; Opera Tablet/ADR-1207201819; U; ja) Presto/2.10.254 Version/12.00</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>ICSの標準ブラウザでのUser Agentは後半が「AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30」になっているのでDolphinとSleipnirはJelly Beanになっても以前の標準ブラウザと同一エンジンで同じ挙動を示しそうな感じだ。</p>
+
+<p>Firefoxはバージョン番号が含まれてないのでJelly Beanかどうか判断出来ないという結果に。Flash未サポートかどうかUser Agentで簡単に振り分けられなくなっちゃうので、出来ればバージョン番号も付加して改善して欲しいところ。</p>
+
+<p>次にCSS 3D Transformsの挙動を見てCSS3の対応状況を見てみる。</p>
+
+<h3>CSS 3D Transforms</h3>
+
+<p>挙動の確認は6枚の画像をサイコロ風に並べたCube型に配置してFPSの様な視点を作ってグリグリ回して確かめた。結果は以下の通り</p>
+
+<table>
+<thead>
+<tr>
+<th>ブラウザ </th>
+<th> 対応状況 </th>
+<th> 挙動</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Chrome </td>
+<td> △ </td>
+<td>  CSSは認識しているがグリグリ動かすと画像落ちする</td>
+</tr>
+<tr>
+<td>Dolphin </td>
+<td> ◎ </td>
+<td> FPSの視点でグリグリOK</td>
+</tr>
+<tr>
+<td>Firefox </td>
+<td> △ </td>
+<td> 描写は出来て、画像落ちはしないが、使い物にならないくらい激重</td>
+</tr>
+<tr>
+<td>Sleipnir </td>
+<td> ◎ </td>
+<td> Dolphinと同じでOK</td>
+</tr>
+<tr>
+<td>OperaMobile </td>
+<td> × </td>
+<td> CSS/3D is not supported. と出る。3D表示出来ない</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>ちなみにPCではFirefoxとChromeはWin/Mac共PCにGPU搭載されていればHWアクセラレーションがきちんと動作して問題なく動作する。</p>
+
+<h3>結果</h3>
+
+<p>△は(アニメーションしないならもしかしたら使える時もあるかもしれないが)実用不可なのでDolphinとSleipnirくらいしかまともに動かない。ICS標準ブラウザでは動作していたのにJelly BeanでChrome for Androidに変わったことでCSS 3D Transformsに関しては退化してしまったことになる。早急の改善をChrome for Androidにお願いしたい。</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/05/fabrication-cucumber/">FabricationとCucumberの連携</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-05T10:13:00+09:00" pubdate data-updated="true">Oct 5<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/10/05/fabrication-cucumber/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>前回Fabricationの続きで、Cucumberと連携する方法についてここに記載します。</p>
+
+<h2>Cucumber</h2>
+
+<h3>インストール</h3>
+
+<p>step_definitionsフォルダに便利な cucumber_steps を生成してくれるツールがgemの中にパッケージ化されている。
+Gemfileのdevelopment環境にcucumber系を含めている必要がある。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="err">$</span> <span class="n">rails</span> <span class="n">generate</span> <span class="n">fabrication</span><span class="ss">:cucumber_steps</span>
+</span><span class='line'><span class="c1"># =&gt; create  features/step_definitions/fabrication_steps.rb</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Step Definitions</h3>
+
+<p>WidgetモデルのFabricatorが定義されていれば、下記のように書くだけでFabricateできる。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">Given </span><span class="s">1</span><span class="nf"> widget</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Widgetモデルの属性を指定してFabricateすることもできる。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">Given </span><span class="nf">the following widget:</span>
+</span><span class='line'><span class="k">  |</span><span class="s"> name</span><span class="k">      |</span><span class="s"> widget_1</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="k">  |</span><span class="s"> color</span><span class="k">     |</span><span class="s"> red</span><span class="k">      |</span><span class="nf"></span>
+</span><span class='line'><span class="k">  |</span><span class="s"> adjective</span><span class="k"> |</span><span class="s"> awesome</span><span class="k">  |</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>複数も可</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">Given </span><span class="s">10</span><span class="nf"> widgets</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>属性付きで複数Fabricateする。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">Given </span><span class="nf">the following widgets:</span>
+</span><span class='line'><span class="k">  |</span><span class="s"> name</span><span class="k">     |</span><span class="s"> color</span><span class="k"> |</span><span class="s"> adjective</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="k">  |</span><span class="s"> widget_1</span><span class="k"> |</span><span class="s"> red</span><span class="k">   |</span><span class="s"> awesome</span><span class="k">   |</span><span class="nf"></span>
+</span><span class='line'><span class="k">  |</span><span class="s"> widget_2</span><span class="k"> |</span><span class="s"> blue</span><span class="k">  |</span><span class="s"> fantastic</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="nf">  ...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>既にFabricateされた&#8221;widget&#8221;に&#8221;wockets&#8221;を所属させる。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">And </span><span class="nf">that widget has </span><span class="s">10</span><span class="nf"> wockets</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>既にFabricateされた&#8221;widget&#8221;に&#8221;wockets&#8221;を属性を与えて所属させる。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">And </span><span class="nf">that widget has the following wocket</span>
+</span><span class='line'><span class="k">  |</span><span class="s"> title</span><span class="k">    |</span><span class="s"> Amazing</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="k">  |</span><span class="s"> category</span><span class="k"> |</span><span class="s"> fancy</span><span class="k">   |</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>既にFabricateされた&#8221;widget&#8221;と&#8221;wockets&#8221;を関連付ける。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">And </span><span class="nf">that wocket belongs to that widget</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>データベースにいくつのオブジェクトが保持されているか検証する。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">Then </span><span class="nf">I should see </span><span class="s">1</span><span class="nf"> widget in the database</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>オブジェクトの中身も検証できる。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">Then </span><span class="nf">I should see the following widget in the database</span>
+</span><span class='line'><span class="k">  |</span><span class="s"> name</span><span class="k">  |</span><span class="s"> Sprocket</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="k">  |</span><span class="s"> gears</span><span class="k"> |</span><span class="s"> 4</span><span class="k">        |</span><span class="nf"></span>
+</span><span class='line'><span class="k">  |</span><span class="s"> color</span><span class="k"> |</span><span class="s"> green</span><span class="k">    |</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Transforms</h3>
+
+<p>cucumberのステップでテーブルを変換できる。縦横のテーブルでカラムの値を再配置できる。
+spec/fabricatorsフォルダにおいておけば、何とでも設定しておける。</p>
+
+<p>例として、全てのフィールドの&#8221;company&#8221;に変換の定義をする。lambda には返り値の属性をセットしたい文字列を置く。
+その結果、&#8221;company&#8221;のインスタンスオブジェクトが生成される。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabrication</span><span class="o">::</span><span class="no">Transform</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="ss">:company</span><span class="p">,</span> <span class="nb">lambda</span><span class="p">{</span> <span class="o">|</span><span class="n">company_name</span><span class="o">|</span> <span class="no">Company</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="n">company_name</span><span class="p">)</span><span class="o">.</span><span class="n">first</span> <span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='cucumber'><span class='line'><span class="k">Scenario:</span><span class="nf"> a single object with transform to apply</span>
+</span><span class='line'><span class="k">  Given </span><span class="nf">the following company:</span>
+</span><span class='line'><span class="k">    |</span><span class="s"> name</span><span class="k"> |</span><span class="s"> Widgets Inc</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="nf">  </span><span class="k">Given </span><span class="nf">the following division:</span>
+</span><span class='line'><span class="k">    |</span><span class="s"> name</span><span class="k">    |</span><span class="s"> Southwest</span><span class="k">   |</span><span class="nf"></span>
+</span><span class='line'><span class="k">    |</span><span class="s"> company</span><span class="k"> |</span><span class="s"> Widgets Inc</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="nf">  </span><span class="k">Then </span><span class="nf">that division should reference that company</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">Scenario:</span><span class="nf"> multiple objects with transform to apply</span>
+</span><span class='line'><span class="k">  Given </span><span class="nf">the following company:</span>
+</span><span class='line'><span class="k">    |</span><span class="s"> name</span><span class="k"> |</span><span class="s"> Widgets Inc</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="nf">  </span><span class="k">Given </span><span class="nf">the following divisions:</span>
+</span><span class='line'><span class="k">    |</span><span class="s"> name</span><span class="k">      |</span><span class="s"> company</span><span class="k">     |</span><span class="nf"></span>
+</span><span class='line'><span class="k">    |</span><span class="s"> Southwest</span><span class="k"> |</span><span class="s"> Widgets Inc</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="k">    |</span><span class="s"> North</span><span class="k">     |</span><span class="s"> Widgets Inc</span><span class="k"> |</span><span class="nf"></span>
+</span><span class='line'><span class="nf">  </span><span class="k">Then </span><span class="nf">they should reference that company</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>divisions を生成したときに、lambdaによって&#8221;company&#8221;オブジェクトに渡されている。</p>
+
+<p>特定のモデルのスコープにだけ適用したい場合は、<strong>only_for</strong>を使う。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabrication</span><span class="o">::</span><span class="no">Transform</span><span class="o">.</span><span class="n">only_for</span><span class="p">(</span><span class="ss">:division</span><span class="p">,</span> <span class="ss">:company</span><span class="p">,</span> <span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">company_name</span><span class="o">|</span> <span class="no">Company</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="n">company_name</span><span class="p">)</span><span class="o">.</span><span class="n">first</span> <span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/04/fabrication/">Fabrication</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-04T12:02:00+09:00" pubdate data-updated="true">Oct 4<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/10/04/fabrication/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>ここでは、<a href="http://www.fabricationgem.org/">Fabrication</a> のサイトを日本語に直して、自己解釈して補完しながら説明していきます。</p>
+
+<h2>Fabricationとは</h2>
+
+<p>これはオブジェクト生成ライブラリで、
+オブジェクトの概略だけを定義し、素早くオブジェクトを使うことができるものである。
+サポートしているオブジェクトタイプは以下のものなどがある。</p>
+
+<ul>
+<li>ActiveRecord Models</li>
+<li>Mongoid Documents</li>
+<li>Sequel Models</li>
+<li>DataMapper Resources</li>
+<li>・・・</li>
+</ul>
+
+
+<h2>設定</h2>
+
+<p>Gemfile に Fabrication を記載し、bundle install すれば使える</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">gem</span> <span class="s1">&#39;fabrication&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>デフォルトでは以下にFabrication関連のソースを置くと、自動ロードされる。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>spec/fabricators/**/*fabricator.rb
+</span><span class='line'>test/fabricators/**/*fabricator.rb</span></code></pre></td></tr></table></div></figure>
+
+
+<p>設定を変更したい場合は以下のように、Fabrication.configureで設定変更できる。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabrication</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">fabricator_path</span> <span class="o">=</span> <span class="s1">&#39;data/fabricators&#39;</span> <span class="c1">#Fabrication関連の定義を置くパス</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">path_prefix</span> <span class="o">=</span> <span class="no">Rails</span><span class="o">.</span><span class="n">root</span> <span class="c1">#ファイルシステムへの許可範囲</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>引数</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Person</span><span class="p">;</span> <span class="k">end</span>
+</span><span class='line'><span class="no">Fabricator</span><span class="p">(</span><span class="ss">:person</span><span class="p">)</span> <span class="c1">#引数がFabricatiorオブジェクトになる。クラス名のシンボルである必要がある</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabricator</span><span class="p">(</span><span class="ss">:adult</span><span class="p">,</span> <span class="n">from</span><span class="p">:</span> <span class="ss">:person</span><span class="p">)</span> <span class="c1">#from: :symbolized_class_nameのクラス名を変えて:adultというFabricatiorオブジェクトが定義できる</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>属性</h2>
+
+<p>Fabricator ブロックには変数が必要ではないが、1つ提供される。属性リスト作成時に、宣言もされる。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabricator</span><span class="p">(</span><span class="ss">:person</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="nb">name</span> <span class="s1">&#39;Greg Graffin&#39;</span>
+</span><span class='line'>  <span class="n">profession</span> <span class="s1">&#39;Professor/Musician&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>属性には変数を渡すことができる</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabricator</span><span class="p">(</span><span class="ss">:person</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="nb">name</span> <span class="p">{</span> <span class="no">Faker</span><span class="o">::</span><span class="no">Name</span><span class="o">.</span><span class="n">name</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">profession</span> <span class="p">{</span> <span class="sx">%w(Butcher Baker Candlestick\ Maker)</span><span class="o">.</span><span class="n">sample</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>属性は処理順に宣言され、上記フィールドのブロック変数を用いることができる。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabricator</span><span class="p">(</span><span class="ss">:person</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="nb">name</span> <span class="p">{</span> <span class="no">Faker</span><span class="o">::</span><span class="no">Name</span><span class="o">.</span><span class="n">name</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">email</span> <span class="p">{</span> <span class="o">|</span><span class="n">attrs</span><span class="o">|</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">attrs</span><span class="o">[</span><span class="ss">:name</span><span class="o">].</span><span class="n">parameterize</span><span class="si">}</span><span class="s2">@example.com&quot;</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>予約語</h2>
+
+<p>予約語名をブロック変数と一緒に使うことで属性として参照できる</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabricator</span><span class="p">(</span><span class="ss">:person</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">f</span><span class="o">.</span><span class="n">alias</span> <span class="s1">&#39;James Bond&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>関連</h2>
+
+<p>他のFabricatorに関連付ける場合は、属性名を書くだけでいい。
+これで、「<strong>belongs_to</strong>」の関連を表現できる。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabricator</span><span class="p">(</span><span class="ss">:person</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">vehicle</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="err">↑↓等価</span>
+</span><span class='line'><span class="no">Fabricator</span><span class="p">(</span><span class="ss">:person</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">vehicle</span> <span class="p">{</span> <span class="no">Fabricate</span><span class="p">(</span><span class="ss">:vehicle</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabricator</span><span class="p">(</span><span class="ss">:person</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">ride</span><span class="p">(</span><span class="n">fabricator</span><span class="p">:</span> <span class="ss">:vehicle</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="err">↑↓等価</span>
+</span><span class='line'><span class="no">Fabricator</span><span class="p">(</span><span class="ss">:person</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">ride</span> <span class="p">{</span> <span class="no">Fabricate</span><span class="p">(</span><span class="ss">:vehicle</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>countパラメータを使うことで、配列オブジェクトを生成できる。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabricator</span><span class="p">(</span><span class="ss">:person</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">open_souce_projects</span><span class="p">(</span><span class="n">count</span><span class="p">:</span> <span class="mi">5</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">children</span><span class="p">(</span><span class="n">count</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">attrs</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span> <span class="no">Fabricate</span><span class="p">(</span><span class="ss">:person</span><span class="p">,</span> <span class="nb">name</span><span class="p">:</span> <span class="s2">&quot;Kid </span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>継承</h2>
+
+<p>他の Fabricators から属性を継承する場合は、「<strong>:from</strong>」 を使う</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabricator</span><span class="p">(</span><span class="ss">:llc</span><span class="p">,</span> <span class="n">from</span><span class="p">:</span> <span class="ss">:company</span><span class="p">)</span> <span class="k">do</span> <span class="c1">#クラスの属性とその値を全て継承する</span>
+</span><span class='line'>  <span class="n">type</span> <span class="s2">&quot;LLC&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Fabricator</span><span class="p">(</span><span class="ss">:llc</span><span class="p">,</span> <span class="n">class_name</span><span class="p">:</span> <span class="ss">:company</span><span class="p">)</span> <span class="k">do</span> <span class="c1"># class_name: でクラスの属性のみを継承する</span>
+</span><span class='line'>  <span class="n">type</span> <span class="s2">&quot;LLC&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>初期化</h2>
+
+<p>オブジェクトの初期化を通常の方法でしてほしくないときは、
+<strong>initialize_with</strong>を以下のようにオーバーライドすればよい。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabricator</span><span class="p">(</span><span class="ss">:car</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">initialize_with</span> <span class="p">{</span> <span class="no">Manufacturer</span><span class="o">.</span><span class="n">produce</span><span class="p">(</span><span class="ss">:new_car</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">color</span> <span class="s1">&#39;red&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>コールバック</h2>
+
+<p>Fabricationのビルドにフックするには、<strong>after_build</strong>、<strong>after_create</strong> を使う。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabricator</span><span class="p">(</span><span class="ss">:place</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">after_build</span> <span class="p">{</span> <span class="o">|</span><span class="n">place</span><span class="o">|</span> <span class="n">place</span><span class="o">.</span><span class="n">geolocate!</span> <span class="p">}</span> <span class="c1">#ビルド後=保存する前</span>
+</span><span class='line'>  <span class="n">after_create</span> <span class="p">{</span> <span class="o">|</span><span class="n">place</span><span class="o">|</span> <span class="no">Fabricate</span><span class="p">(</span><span class="ss">:restaurant</span><span class="p">,</span> <span class="n">place</span><span class="p">:</span> <span class="n">place</span><span class="p">)</span> <span class="p">}</span> <span class="c1">#保存した後</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>オブジェクトに引数を与えたときのコンストラクタでコールバックするときは、<strong>on_init</strong>を使う。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabricator</span><span class="p">(</span><span class="ss">:location</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">on_init</span> <span class="p">{</span> <span class="n">init_with</span><span class="p">(</span><span class="mi">30</span><span class="o">.</span><span class="mi">284167</span><span class="p">,</span> <span class="o">-</span><span class="mi">81</span><span class="o">.</span><span class="mi">396111</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>コールバックはスタックになっているので、並列にFabricatorを宣言できるし、継承しても大丈夫。</p>
+
+<h2>エイリアス</h2>
+
+<p>Fabricatior呼び出し時に<strong>:aliases</strong>オプションをつけるとエイリアスが付けれる。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabricator</span><span class="p">(</span><span class="ss">:thingy</span><span class="p">,</span> <span class="n">aliases</span><span class="p">:</span> <span class="o">[</span><span class="ss">:widget</span><span class="p">,</span> <span class="ss">:wocket</span><span class="o">]</span><span class="p">)</span> <span class="c1">#Fabricateを :thingy,:widget, :wocketどれでも呼び出せる</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>一時属性</h2>
+
+<p>Fabricator内で一時属性を変数として持てるが、クラス生成時にはセットされない。
+一時属性は、クラスが生成されるまでの間は普通の属性と同じように扱えるが、生成時に取り除かれる。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabricator</span><span class="p">(</span><span class="ss">:city</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">transient</span> <span class="ss">:asian</span>
+</span><span class='line'>  <span class="nb">name</span> <span class="p">{</span> <span class="o">|</span><span class="n">attrs</span><span class="o">|</span> <span class="n">attrs</span><span class="o">[</span><span class="ss">:asian</span><span class="o">]</span> <span class="p">?</span> <span class="s2">&quot;Tokyo&quot;</span> <span class="p">:</span> <span class="s2">&quot;Stockholm&quot;</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="no">Fabricate</span><span class="p">(</span><span class="ss">:city</span><span class="p">,</span> <span class="n">asian</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span>
+</span><span class='line'><span class="c1"># =&gt; &lt;City name: &#39;Tokyo&#39;&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Fabricator</span><span class="p">(</span><span class="ss">:the_count</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">transient</span> <span class="ss">:one</span><span class="p">,</span> <span class="ss">:two</span><span class="p">,</span> <span class="ss">:three</span> <span class="c1">#複数定義可</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>リロード</h2>
+
+<p>Fabricationがロードされた状態にリセットする</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabrication</span><span class="o">.</span><span class="n">clear_definitions</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>基本</h2>
+
+<p>Fabricateオブジェクトを作成する簡単な方法は、クラス名を渡すだけでいい。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabricate</span><span class="p">(</span><span class="ss">:person</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これで、PersonのインスタンスがFabricatorとして定義される。
+Fabricator作成時に、引数としてハッシュを渡せば、属性の追加や、上書きができる。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabricate</span><span class="p">(</span><span class="ss">:person</span><span class="p">,</span> <span class="n">first_name</span><span class="p">:</span> <span class="s2">&quot;Corbin&quot;</span><span class="p">,</span> <span class="n">last_name</span><span class="p">:</span> <span class="s2">&quot;Dallas&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Fabricating With Blocks</h2>
+
+<p>Fabricateのブロックの引数にハッシュ値を渡せば、オブジェクト生成時に定義され利用できる。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabricate</span><span class="p">(</span><span class="ss">:person</span><span class="p">,</span> <span class="nb">name</span><span class="p">:</span> <span class="s2">&quot;Franky Four Fingers&quot;</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">addiction</span> <span class="s2">&quot;Gambling&quot;</span>
+</span><span class='line'>  <span class="n">fingers</span><span class="p">(</span><span class="n">count</span><span class="p">:</span> <span class="mi">9</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ビルド</h2>
+
+<p>データベースにオブジェクトを持続させたくないときは Fabricate.build を使う。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabricate</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="ss">:person</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下記のように、Fabricate.build内でFabricateが呼ばれていてもオブジェクトは持続せず、buildのときの動作と同じになる。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabricate</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="ss">:person</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">cars</span> <span class="p">{</span> <span class="mi">2</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="no">Fabricate</span><span class="p">(</span><span class="ss">:car</span><span class="p">)</span> <span class="p">}</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>属性のハッシュ</h2>
+
+<p>オブジェクトを生成せずに、属性だけを生成してハッシュで返したい場合は以下のようにする。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabricate</span><span class="o">.</span><span class="n">attributes_for</span><span class="p">(</span><span class="ss">:company</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Sequences</h2>
+
+<p>Sequencesはそのプロセスにおいての、ユニークな連続した数値が得られる。
+Sequencesは指定がなければ、0からはじまる。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Fabricate</span><span class="o">.</span><span class="n">sequence</span> <span class="c1">#実行するたびにインクリメントされていく</span>
+</span><span class='line'><span class="c1"># =&gt; 0 #1回目</span>
+</span><span class='line'><span class="c1"># =&gt; 1 #2回目</span>
+</span><span class='line'><span class="c1"># =&gt; 2 #3回目</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Fabricate</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span> <span class="c1">#引数を渡せば独自の数値でインクリメントされる</span>
+</span><span class='line'><span class="c1"># =&gt; 0</span>
+</span><span class='line'><span class="c1"># =&gt; 1</span>
+</span><span class='line'><span class="c1"># =&gt; 2</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Fabricate</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="ss">:number</span><span class="p">,</span> <span class="mi">99</span><span class="p">)</span> <span class="c1">#第2引数の数値は開始の数値</span>
+</span><span class='line'><span class="c1"># =&gt; 99</span>
+</span><span class='line'><span class="c1"># =&gt; 100</span>
+</span><span class='line'><span class="c1"># =&gt; 101</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Fabricate</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="s2">&quot;Name </span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">}</span> <span class="c1">#ブロックで渡してもインクリメントされる</span>
+</span><span class='line'><span class="c1"># =&gt; &quot;Name 0&quot;</span>
+</span><span class='line'><span class="c1"># =&gt; &quot;Name 1&quot;</span>
+</span><span class='line'><span class="c1"># =&gt; &quot;Name 2&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Fabricate</span><span class="p">(</span><span class="ss">:person</span><span class="p">)</span> <span class="k">do</span> <span class="c1">#例</span>
+</span><span class='line'>  <span class="n">ssn</span> <span class="p">{</span> <span class="n">sequence</span><span class="p">(</span><span class="ss">:ssn</span><span class="p">,</span> <span class="mi">111111111</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">email</span> <span class="p">{</span> <span class="n">sequence</span><span class="p">(</span><span class="ss">:email</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="s2">&quot;user</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">@example.com&quot;</span> <span class="p">}</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="c1"># =&gt; &lt;Person ssn: 111111111, email: &quot;user0@example.com&quot;&gt;</span>
+</span><span class='line'><span class="c1"># =&gt; &lt;Person ssn: 111111112, email: &quot;user1@example.com&quot;&gt;</span>
+</span><span class='line'><span class="c1"># =&gt; &lt;Person ssn: 111111113, email: &quot;user2@example.com&quot;&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>Rails 3</h1>
+
+<p>Rails 3でFabricatorsをモデル生成時に一緒に生成したい場合は、config/application.rb に設定を書く。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># rspecの場合</span>
+</span><span class='line'><span class="n">config</span><span class="o">.</span><span class="n">generators</span> <span class="k">do</span> <span class="o">|</span><span class="n">g</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">g</span><span class="o">.</span><span class="n">test_framework</span>      <span class="ss">:rspec</span><span class="p">,</span> <span class="n">fixture</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="n">g</span><span class="o">.</span><span class="n">fixture_replacement</span> <span class="ss">:fabrication</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="c1"># test/unitの場合</span>
+</span><span class='line'><span class="n">config</span><span class="o">.</span><span class="n">generators</span> <span class="k">do</span> <span class="o">|</span><span class="n">g</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">g</span><span class="o">.</span><span class="n">test_framework</span>      <span class="ss">:test_unit</span><span class="p">,</span> <span class="n">fixture_replacement</span><span class="p">:</span> <span class="ss">:fabrication</span>
+</span><span class='line'>  <span class="n">g</span><span class="o">.</span><span class="n">fixture_replacement</span> <span class="ss">:fabrication</span><span class="p">,</span> <span class="n">dir</span><span class="p">:</span> <span class="s2">&quot;test/fabricators&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="c1"># minitestの場合</span>
+</span><span class='line'><span class="n">config</span><span class="o">.</span><span class="n">generators</span> <span class="k">do</span> <span class="o">|</span><span class="n">g</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">g</span><span class="o">.</span><span class="n">test_framework</span>      <span class="ss">:mini_test</span><span class="p">,</span> <span class="n">fixture_replacement</span><span class="p">:</span> <span class="ss">:fabrication</span>
+</span><span class='line'>  <span class="n">g</span><span class="o">.</span><span class="n">fixture_replacement</span> <span class="ss">:fabrication</span><span class="p">,</span> <span class="n">dir</span><span class="p">:</span> <span class="s2">&quot;test/fabricators&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上記設定後、下記コマンドでFabricationのファイルができる。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="err">$</span> <span class="n">rails</span> <span class="n">generate</span> <span class="n">model</span> <span class="n">widget</span> <span class="c1">#コマンド</span>
+</span><span class='line'><span class="n">spec</span><span class="o">/</span><span class="n">fabricators</span><span class="o">/</span><span class="n">widget_fabricator</span><span class="o">.</span><span class="n">rb</span>
+</span><span class='line'> <span class="no">Fabricator</span><span class="p">(</span><span class="ss">:widget</span><span class="p">)</span> <span class="k">do</span> <span class="c1">#中身</span>
+</span><span class='line'> <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>参考リンク</h3>
+
+<ul>
+<li><a href="http://www.fabricationgem.org/">Fabrication:本家</a></li>
+<li><a href="http://d.hatena.ne.jp/hibariya/20101010/1286713523">Fabricationを使ってみた - のどをRubyでいっぱいにして</a></li>
+<li><a href="http://aligach.net/diary/20101220.html">あーありがち - 素の Ruby 環境で Fabrication</a></li>
+<li><a href="http://www.slideshare.net/KenichiTachibana/fabrication-10499288">Fabrication:SlideShare</a></li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -297,501 +2197,9 @@ shouldを用いたときにその振る舞いは発揮されますが、should_n
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/02/rspec-mock/">RSpecまとめ(2)～Mock(double/stub/mock)～</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-02T13:59:00+09:00" pubdate data-updated="true">Oct 2<span>nd</span>, 2012</time>
-        
-         | <a href="/blog/2012/10/02/rspec-mock/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><a href="/blog/2012/09/27/rspec_basic/">前回</a>はRSpecの基本メソッドについてまとめました。今回はMockについてまとめます。</p>
-
-<h3>テストダブルとは</h3>
-
-<p>テスト対象が依存しているモジュールやリソースの代役のこと。結合テストのような複雑な環境を事前に用意せずとも目的の機能をテスト可能となるように振る舞いをシミュレートする。</p>
-
-<p>irb,pry等でMockを試したい時、</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;rspec/mocks/standalone&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>をrequireすると試せるのでやってみると良い</p>
-
-<h3>double/stub/mock/stub_chain</h3>
-
-<p>おすすめの使い方で説明。他にも色々出来るとは思う</p>
-
-<ul>
-<li><strong>double</strong> - ダミーオブジェクト作成</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># ダミーオブジェクト作る。第1引数省略可能だが、なんかエラーとか出たら表示されるので入れておくと良い</span>
-</span><span class='line'><span class="n">book</span> <span class="o">=</span> <span class="n">double</span><span class="p">(</span><span class="s2">&quot;book&quot;</span><span class="p">)</span>
-</span><span class='line'><span class="c1"># book.title呼んだら&quot;The RSpec Book&quot;と返ってくるダミーオブジェクト</span>
-</span><span class='line'><span class="n">book</span> <span class="o">=</span> <span class="n">double</span><span class="p">(</span><span class="s2">&quot;book&quot;</span><span class="p">,</span> <span class="ss">:title</span> <span class="o">=&gt;</span> <span class="s2">&quot;The RSpec Book&quot;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><strong>stub</strong> - ダミーメソッド作成</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># 全部同じ。book.title呼んだら&quot;The RSpec Book&quot;と返ってくるダミーオブジェクト</span>
-</span><span class='line'><span class="n">book</span><span class="o">.</span><span class="n">stub</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span> <span class="p">{</span> <span class="s2">&quot;The RSpec Book&quot;</span> <span class="p">}</span>
-</span><span class='line'><span class="n">book</span><span class="o">.</span><span class="n">stub</span><span class="p">(</span><span class="ss">:title</span> <span class="o">=&gt;</span> <span class="s2">&quot;The RSpec Book&quot;</span><span class="p">)</span>
-</span><span class='line'><span class="n">book</span><span class="o">.</span><span class="n">stub</span><span class="p">(</span><span class="ss">:title</span><span class="p">)</span><span class="o">.</span><span class="n">and_return</span><span class="p">(</span><span class="s2">&quot;The RSpec Book&quot;</span><span class="p">)</span>
-</span><span class='line'><span class="c1"># doubleで作ったダミーオブジェクトでなくてもダミーメソッドを定義できる</span>
-</span><span class='line'><span class="nb">String</span><span class="o">.</span><span class="n">stub</span><span class="p">(</span><span class="ss">:test</span><span class="p">)</span><span class="o">.</span><span class="n">and_return</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><strong>mock</strong> - メソッドの振る舞いを評価するためのダミーオブジェクト作成</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># logger.log(&#39;... Statement generated for Aslak ...&#39;) が呼ばれることを確認したい</span>
-</span><span class='line'><span class="n">it</span> <span class="s2">&quot;logs a message on generate()&quot;</span> <span class="k">do</span>
-</span><span class='line'>  <span class="c1"># テストの為にcustomer.nameで&#39;Aslak&#39;を返しておきたいのでdouble/stub</span>
-</span><span class='line'>  <span class="n">customer</span> <span class="o">=</span> <span class="n">double</span><span class="p">(</span><span class="s1">&#39;customer&#39;</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">customer</span><span class="o">.</span><span class="n">stub</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span><span class="o">.</span><span class="n">and_return</span><span class="p">(</span><span class="s1">&#39;Aslak&#39;</span><span class="p">)</span>
-</span><span class='line'>  <span class="c1"># 今回の評価対象なのでmock</span>
-</span><span class='line'>  <span class="n">logger</span> <span class="o">=</span> <span class="n">mock</span><span class="p">(</span><span class="s1">&#39;logger&#39;</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">statement</span> <span class="o">=</span> <span class="no">Statement</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">customer</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
-</span><span class='line'>  <span class="c1"># logger.log(&#39;... Statement generated for Aslak ...&#39;) が呼ばれることを期待</span>
-</span><span class='line'>  <span class="n">logger</span><span class="o">.</span><span class="n">should_receive</span><span class="p">(</span><span class="ss">:log</span><span class="p">)</span><span class="o">.</span><span class="n">with</span><span class="p">(</span><span class="sr">/Statement generated for Aslak/</span><span class="p">)</span>
-</span><span class='line'>  <span class="c1"># テスト対象を実行して期待通りかテスト </span>
-</span><span class='line'>  <span class="n">statement</span><span class="o">.</span><span class="n">generate</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><strong>stub_chain</strong> - メソッドチェインの簡単な作成</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Article</span><span class="o">.</span><span class="n">recent</span><span class="o">.</span><span class="n">published</span><span class="o">.</span><span class="n">authored_by</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:author_id</span><span class="o">]</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上記のメソッドチェインをまとめてstub化できる:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">article</span> <span class="o">=</span> <span class="n">double</span><span class="p">()</span>
-</span><span class='line'><span class="no">Article</span><span class="o">.</span><span class="n">stub_chain</span><span class="p">(</span><span class="ss">:recent</span><span class="p">,</span> <span class="ss">:published</span><span class="p">,</span> <span class="ss">:authored_by</span><span class="p">)</span><span class="o">.</span><span class="n">and_return</span><span class="p">(</span><span class="n">article</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>stubとmockの違い</h3>
-
-<p>doubleもstubもmockもSpec::Mocks::Mockのインスタンスを作成します。テスト用途によって利用方法を振り分けます。</p>
-
-<ul>
-<li><strong>stub</strong> - 呼び出しに対して決められた値を返します。結合すると環境構築が面倒だったり外部のサーバ状況に依っては失敗してしまうようなモジュール境界、ランダム値が返るオブジェクト等でダミーで返したい時に利用</li>
-<li><strong>mock</strong> - どのように呼び出しされるか、そのダミーオブジェクトの振る舞い自体を評価したい場合に使用</li>
-</ul>
-
-
-<h3>rspec-railsでのMock拡張</h3>
-
-<ul>
-<li><strong>mock_model</strong> - ダミーのmodelオブジェクトを作成します。ActiveRecordオブジェクトではなく、最低限のメソッドのみ対応しています。Controllerテストの様に正しくモデルを呼び出されているかチェックする時に利用します</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># 評価対象はUser</span>
-</span><span class='line'><span class="n">user</span> <span class="o">=</span> <span class="n">mock_model</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
-</span><span class='line'><span class="c1"># User.find_by_idが呼ばれた時にmockを返しておく</span>
-</span><span class='line'><span class="no">User</span><span class="o">.</span><span class="n">stub</span><span class="p">(</span><span class="n">find_by_id</span><span class="p">:</span> <span class="n">user</span><span class="p">)</span>
-</span><span class='line'><span class="c1"># user.saveが呼ばれることを期待</span>
-</span><span class='line'><span class="n">user</span><span class="o">.</span><span class="n">should_receive</span><span class="p">(</span><span class="ss">:save</span><span class="p">)</span><span class="o">.</span><span class="n">and_return</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
-</span><span class='line'><span class="c1"># 期待通りに振る舞うかリクエスト</span>
-</span><span class='line'><span class="n">put</span> <span class="s1">&#39;/users/1&#39;</span><span class="p">,</span> <span class="n">login</span><span class="p">:</span> <span class="s1">&#39;zdenis&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># 保存前のダミーモデルオブジェクトとして振る舞う</span>
-</span><span class='line'><span class="n">new_user</span> <span class="o">=</span> <span class="n">mock_model</span><span class="p">(</span><span class="no">User</span><span class="p">)</span><span class="o">.</span><span class="n">as_new_record</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><strong>stub_model</strong> - ActiveRecordオブジェクト本物をダミーとして作成します。Viewテストの様にModelを操作することが重要ではなく、値を参照して処理した結果、意図通りの生成結果となったかチェックする時に利用します</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># @userに@user.loginが&#39;zdennis&#39;、@user.emailが&#39;zdennis@example.com&#39;のUserオブジェクトを登録</span>
-</span><span class='line'><span class="n">assign</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="n">stub_model</span><span class="p">(</span><span class="no">User</span><span class="p">,</span> <span class="n">login</span><span class="p">:</span> <span class="s1">&#39;zdennis&#39;</span><span class="p">,</span> <span class="n">email</span><span class="p">:</span> <span class="s1">&#39;zdennis@example.com&#39;</span><span class="p">))</span>
-</span><span class='line'><span class="n">render</span>
-</span><span class='line'><span class="n">renderd</span><span class="o">.</span><span class="n">should</span> <span class="n">have_selector</span><span class="p">(</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>参考リンク</h3>
-
-<ul>
-<li>【書籍】<a href="http://www.amazon.co.jp/RSpec-Book-Professional-Ruby-Series/dp/4798121932/ref=sr_1_1?ie=UTF8&amp;qid=1349182365&amp;sr=8-1">The RSpec Book</a> - RSpecの仕様書に留まらず、なぜBDDなのかが深く理解出来る良書になっています</li>
-<li><a href="https://github.com/rspec/rspec">rspec/rspec-mocks</a> - 本家</li>
-<li><a href="http://d.hatena.ne.jp/maeshima/20100620/1277051360">Chapter 14 Spec::Mocks - maeshimaの日記</a></li>
-<li><a href="http://blogs.ricollab.jp/webtech/2009/09/mock_and_stub/">ricollab Web Tech Blog » Blog Archive » Mock と Stub について</a></li>
-</ul>
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/27/rspec_basic/">RSpecまとめ(1)～基本メソッド～</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-27T01:53:00+09:00" pubdate data-updated="true">Sep 27<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/09/27/rspec_basic/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>RSpecで使う基本メソッド(describe/context/it/its/before/after/subject/let/shared_examples_for)をまとめてみる。</p>
-
-<h3>参考リンク</h3>
-
-<ul>
-<li><a href="http://kerryb.github.com/iprug-rspec-presentation/">RSpec</a> - 本記事はここのほぼ抜粋です。よくまとまっています</li>
-<li><a href="http://developer.aiming-inc.com/rails/rspec-references/">RSpec を使い始める人が読むべき N 個のドキュメント | Aiming 開発者ブログ</a> - 参考リンクがいっぱいあります。上の記事もここで見つけた</li>
-</ul>
-
-
-<h3>基本メソッド</h3>
-
-<ul>
-<li><strong>describe/context</strong> - テスト名。テスト対象自身のオブジェクト(subject代わり)でもOK</li>
-<li><strong>before</strong> - 事前条件。example(it)の前に実行される。<em>before :each</em> はexample毎、<em>before :all</em> はdescribe毎に呼ばれる</li>
-<li><strong>after</strong> - 事後処理。以後のテストに影響が出ないように後始末が必要な時に記述する</li>
-<li><strong>subject</strong> - 評価対象。shouldの前のオブジェクトを指定することでit内のオブジェクトを省略できる</li>
-<li><strong>it</strong> - テスト仕様。マッチャーを使って評価する</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># 一番上のdescribeはテスト対象にしておくといい。subjectにもなる</span>
-</span><span class='line'><span class="n">describe</span> <span class="no">Controller</span> <span class="k">do</span>
-</span><span class='line'>  <span class="c1"># contextはdescribeのalias。テスト対象にgetのときとか事前条件変えるときはこっちの方が読みやすいかも</span>
-</span><span class='line'>  <span class="n">context</span> <span class="s2">&quot;handling AccessDenied exceptions&quot;</span> <span class="k">do</span>
-</span><span class='line'>    <span class="c1"># デフォルトはbefore :each</span>
-</span><span class='line'>    <span class="c1"># 事前条件はitにも書けるけど、なるべく分けるように</span>
-</span><span class='line'>    <span class="n">before</span> <span class="p">{</span> <span class="n">get</span> <span class="ss">:index</span> <span class="p">}</span> <span class="c1"># 1行になるべく書く</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1"># itのテスト対象。shouldの前を省ける</span>
-</span><span class='line'>    <span class="n">subject</span> <span class="p">{</span> <span class="n">response</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1"># itの後に概要書けるけど、マッチャーだけで意味通るなら省略する</span>
-</span><span class='line'>    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">redirect_to</span><span class="p">(</span><span class="s2">&quot;/401.html&quot;</span><span class="p">)</span> <span class="p">}</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><strong>it(context, tags)</strong> - タグが付けられる</li>
-</ul>
-
-
-<pre>$ rspec --tag ruby:1.8</pre>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">describe</span> <span class="s2">&quot;Something&quot;</span> <span class="k">do</span>
-</span><span class='line'>  <span class="c1"># ruby:1.8</span>
-</span><span class='line'>  <span class="n">it</span> <span class="s2">&quot;behaves one way in Ruby 1.8&quot;</span><span class="p">,</span> <span class="ss">:ruby</span> <span class="o">=&gt;</span> <span class="s2">&quot;1.8&quot;</span> <span class="k">do</span>
-</span><span class='line'>    <span class="o">.</span><span class="n">.</span><span class="o">.</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1"># ruby:1.9</span>
-</span><span class='line'>  <span class="n">it</span> <span class="s2">&quot;behaves another way in Ruby 1.9&quot;</span><span class="p">,</span> <span class="ss">:ruby</span> <span class="o">=&gt;</span> <span class="s2">&quot;1.9&quot;</span> <span class="k">do</span>
-</span><span class='line'>    <span class="o">.</span><span class="n">.</span><span class="o">.</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><strong>its(method)</strong> - subjectのメソッドが呼べる</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">describe</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="o">]</span> <span class="k">do</span>
-</span><span class='line'>  <span class="c1"># [1,2,3,3].size.should == 4</span>
-</span><span class='line'>  <span class="n">its</span><span class="p">(</span><span class="ss">:size</span><span class="p">)</span> <span class="p">{</span> <span class="n">should</span> <span class="o">==</span> <span class="mi">4</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1"># [1,2,3,3].uniq.size.should == 3</span>
-</span><span class='line'>  <span class="n">its</span><span class="p">(</span><span class="s2">&quot;uniq.size&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="n">should</span> <span class="o">==</span> <span class="mi">3</span> <span class="p">}</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><strong>let</strong> - example内で同じオブジェクトの使い回し</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">describe</span> <span class="no">BowlingGame</span> <span class="k">do</span>
-</span><span class='line'>  <span class="c1"># example毎に呼ばれる。でも遅延評価。使わなかったら呼ばれない</span>
-</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:game</span><span class="p">)</span> <span class="p">{</span> <span class="no">BowlingGame</span><span class="o">.</span><span class="n">new</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">it</span> <span class="s2">&quot;scores all gutters with 0&quot;</span> <span class="k">do</span>
-</span><span class='line'>    <span class="mi">20</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="n">game</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">}</span>
-</span><span class='line'>    <span class="n">game</span><span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="mi">0</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">it</span> <span class="s2">&quot;scores all 1s with 20&quot;</span> <span class="k">do</span>
-</span><span class='line'>    <span class="mi">20</span><span class="o">.</span><span class="n">times</span> <span class="p">{</span> <span class="n">game</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">}</span>
-</span><span class='line'>    <span class="n">game</span><span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="mi">20</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><strong>shared_examples_for</strong> - exampleの共通化</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">shared_examples_for</span> <span class="s2">&quot;a single-element array&quot;</span> <span class="k">do</span>
-</span><span class='line'>  <span class="c1"># letやbeforeやafterも書ける。要はなんでも共通化</span>
-</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:xxx</span><span class="p">)</span> <span class="p">{</span> <span class="no">Obj</span><span class="o">.</span><span class="n">new</span> <span class="p">}</span>
-</span><span class='line'>  <span class="n">before</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s1">&#39;before&#39;</span> <span class="p">}</span>
-</span><span class='line'>  <span class="n">after</span> <span class="p">{</span> <span class="nb">puts</span> <span class="s1">&#39;after&#39;</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1"># subjectやletを渡せる</span>
-</span><span class='line'>  <span class="n">it</span> <span class="p">{</span> <span class="n">should_not</span> <span class="n">be_empty</span> <span class="p">}</span>
-</span><span class='line'>  <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">have</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">element</span> <span class="p">}</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">describe</span> <span class="o">[</span><span class="s2">&quot;foo&quot;</span><span class="o">]</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">it_behaves_like</span> <span class="s2">&quot;a single-element array&quot;</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">describe</span> <span class="o">[</span><span class="mi">42</span><span class="o">]</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">it_behaves_like</span> <span class="s2">&quot;a single-element array&quot;</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><strong>shared_context</strong> - 事前条件の共通化</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">shared_context</span> <span class="s1">&#39;要素がふたつpushされている&#39;</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:latest_value</span><span class="p">)</span> <span class="p">{</span> <span class="s1">&#39;value2&#39;</span> <span class="p">}</span>
-</span><span class='line'>  <span class="n">before</span> <span class="k">do</span>
-</span><span class='line'>    <span class="vi">@stack</span> <span class="o">=</span> <span class="no">Stack</span><span class="o">.</span><span class="n">new</span>
-</span><span class='line'>    <span class="vi">@stack</span><span class="o">.</span><span class="n">push</span> <span class="s1">&#39;value1&#39;</span>
-</span><span class='line'>    <span class="vi">@stack</span><span class="o">.</span><span class="n">push</span> <span class="n">latest_value</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">describe</span> <span class="no">Stack</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">describe</span> <span class="s1">&#39;#size&#39;</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">include_context</span> <span class="s1">&#39;要素がふたつpushされている&#39;</span>
-</span><span class='line'>    <span class="n">subject</span> <span class="p">{</span> <span class="vi">@stack</span><span class="o">.</span><span class="n">size</span> <span class="p">}</span>
-</span><span class='line'>    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">eq</span> <span class="mi">2</span> <span class="p">}</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">describe</span> <span class="s1">&#39;#pop&#39;</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">include_context</span> <span class="s1">&#39;要素がふたつpushされている&#39;</span>
-</span><span class='line'>    <span class="n">subject</span> <span class="p">{</span> <span class="vi">@stack</span><span class="o">.</span><span class="n">pop</span> <span class="p">}</span>
-</span><span class='line'>    <span class="n">it</span> <span class="p">{</span> <span class="n">should</span> <span class="n">eq</span> <span class="n">latest_value</span> <span class="p">}</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>次回はMockについてまとめてみます。</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/3/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -806,50 +2214,50 @@ shouldを用いたときにその振る舞いは発揮されますが、should_n
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/01/22/rails-i18n/">Rails Internationalization (I18n) APIについて</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/21/ruby-refinements/">refinements</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/17/ruby-percent-i/">%i: シンボルの配列のリテラル</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/17/ruby-prepend/">Module#prepend</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/17/ruby-keyword-arguments/">Ruby 2.0 キーワード引数</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/09/assets-pipeline/">Assets Pipeline</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/19/ruby-require-load/">Rubyのrequire/load/autoload/include/extendについて</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/18/rails-routes/">Rails3 のroutes.rb</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/18/ruby-lazy/">enumerable::lazyをちょっとだけ</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/11/12/webstorage/">Web Storageの使い方</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/08/git/">gitでよく使う21コマンドまとめ</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/07/rspec-raise/">RSpecで例外のテストをする</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/07/capybara-driver/">Capybaraのドライバ</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/11/07/actionscript/">ActionScript 3.0</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/22/internationalization-i18n/">i18n(Internationalization)</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/09/rails-filter/">Railsのbefore_filterとメソッド返り値</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/08/nexus7/">Nexus 7(Jelly Bean)のUser AgentとCSS 3D Transforms対応状況を調べてみた</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/05/fabrication-cucumber/">FabricationとCucumberの連携</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/04/fabrication/">Fabrication</a>
       </li>
     
   </ul>
 </section>
 <section>
   <h1>Categories</h1>
-    <ul id="category-list"><li><a href='/blog/categories/actionscript'>ActionScript (1)</a></li><li><a href='/blog/categories/android'>Android (1)</a></li><li><a href='/blog/categories/capybara'>capybara (1)</a></li><li><a href='/blog/categories/capybara-webkit'>capybara-webkit (1)</a></li><li><a href='/blog/categories/css3'>CSS3 (1)</a></li><li><a href='/blog/categories/cucumber'>Cucumber (1)</a></li><li><a href='/blog/categories/fabrication'>Fabrication (2)</a></li><li><a href='/blog/categories/git'>git (1)</a></li><li><a href='/blog/categories/html5'>HTML5 (1)</a></li><li><a href='/blog/categories/i18n'>i18n (1)</a></li><li><a href='/blog/categories/rspec'>RSpec (4)</a></li><li><a href='/blog/categories/ruby'>Ruby (5)</a></li></ul>
+    <ul id="category-list"><li><a href='/blog/categories/actionscript'>ActionScript (1)</a></li><li><a href='/blog/categories/android'>Android (1)</a></li><li><a href='/blog/categories/assets'>assets (1)</a></li><li><a href='/blog/categories/capybara'>capybara (1)</a></li><li><a href='/blog/categories/capybara-webkit'>capybara-webkit (1)</a></li><li><a href='/blog/categories/css3'>CSS3 (1)</a></li><li><a href='/blog/categories/cucumber'>Cucumber (1)</a></li><li><a href='/blog/categories/fabrication'>Fabrication (2)</a></li><li><a href='/blog/categories/git'>git (1)</a></li><li><a href='/blog/categories/html5'>HTML5 (1)</a></li><li><a href='/blog/categories/i18n'>i18n (1)</a></li><li><a href='/blog/categories/rails'>Rails (2)</a></li><li><a href='/blog/categories/rails-i18n'>Rails,i18n (1)</a></li><li><a href='/blog/categories/rspec'>RSpec (4)</a></li><li><a href='/blog/categories/ruby'>ruby (4)</a></li><li><a href='/blog/categories/ruby'>Ruby (7)</a></li></ul>
 </section>
 
   
@@ -858,7 +2266,7 @@ shouldを用いたときにその振る舞いは発揮されますが、should_n
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2012 - Team web-k -
+  Copyright &copy; 2013 - Team web-k -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

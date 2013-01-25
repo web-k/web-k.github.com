@@ -1,0 +1,550 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Rubyのrequire/load/autoload/include/extendについて - web-k.log</title>
+  <meta name="author" content="Team web-k">
+
+  
+  <meta name="description" content="require/load/autoload/include/extend の違いについて まず、ファイルをロードする require/load/autoload と ロードしない include/extend に分けられる。
+違いについては、次で個別に説明した後に表にしてまとめる。 require &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://web-k.github.com/blog/2012/12/19/ruby-require-load/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="web-k.log" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35251356-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">web-k.log</a></h1>
+  
+    <h2>RubyやWebをメインに技術情報をのせていきます</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS"><span class="text">RSS</span></a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:web-k.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Rubyのrequire/load/autoload/include/extendについて</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-19T09:14:00+09:00" pubdate data-updated="true">Dec 19<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>require/load/autoload/include/extend の違いについて</h3>
+
+<p>まず、ファイルをロードする require/load/autoload と ロードしない include/extend に分けられる。
+違いについては、次で個別に説明した後に表にしてまとめる。</p>
+
+<h4>require</h4>
+
+<ul>
+<li>Kernelモジュールのメソッド</li>
+<li>同じファイルは複数回ロードされない</li>
+<li>Rubyライブラリをロードする
+
+<ul>
+<li>RubyライブラリはRubyスクリプト(*.rb)と拡張ライブラリ(*.so,*.o,*.dllなど)を指す</li>
+</ul>
+</li>
+<li>ロードするファイルパスは、絶対パスでも相対パスでも可</li>
+<li>ロードするファイル名の拡張子は自動補完してくれるため、省略可(*.rb 優先)</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;ファイル名&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>load</h4>
+
+<ul>
+<li>Kernelモジュールのメソッド</li>
+<li>同じファイルを再ロードできる</li>
+<li>ロードするファイルパスは、絶対パスでも相対パスでも可</li>
+<li>ロードするファイル名の拡張子は省略できない</li>
+<li>拡張ライブラリは読み込み対象ではない(できないかは不明)</li>
+<li>.txtのようなファイルでもロードできる</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">load</span> <span class="s1">&#39;ファイル名&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>autoload</h4>
+
+<ul>
+<li>Kernelモジュール(トップレベル)、Moduleクラス の2種類のメソッドがある</li>
+<li>autoloadと書いた段階では、ファイルはロードされない
+
+<ul>
+<li>定数const_nameを参照したときに、はじめて第2引数であるファイルが require される</li>
+<li>定数const_nameには&#8221;::&#8221;演算子が使えないため、ネストする場合は2種類のメソッドを組み合わせて使用する</li>
+</ul>
+</li>
+<li>いずれ廃止されそうなメソッド
+
+<ul>
+<li><a href="http://www.ruby-forum.com/topic/3036681">autoload will be dead - Ruby Forum</a></li>
+</ul>
+</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">autoload</span><span class="p">(</span><span class="n">const_name</span><span class="p">,</span> <span class="s1">&#39;ファイル名&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>include</h4>
+
+<ul>
+<li>Moduleクラスのメソッド
+
+<ul>
+<li>Moduleクラスはクラスとモジュールを表し、ClassクラスはModuleのサブクラスになる</li>
+</ul>
+</li>
+<li>クラスやモジュールに他のモジュールをインクルード（Mix-in）する
+
+<ul>
+<li>引数に指定できるのはモジュールのみ</li>
+<li>引数に複数のモジュール指定可</li>
+</ul>
+</li>
+<li>includeしたクラスのインスタンスメソッドとして使用可能</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="kp">include</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>extend</h4>
+
+<ul>
+<li>Objectクラスのメソッド</li>
+<li>オブジェクトの特異クラスに引数に指定したモジュールを取り込み、モジュールのメソッドを特異メソッドとして使えるようにする
+
+<ul>
+<li>特異メソッドは特定のインスタンス固有のメソッドのこと
+
+<ul>
+<li>クラスを作った後にメソッドを追加すると特異メソッドになる</li>
+</ul>
+</li>
+<li>特異クラスは特定のインスタンスのために用意されるクラスのこと
+
+<ul>
+<li>特異クラスは特異メソッドをまとめて定義するときなどに使用される</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>extendしたクラスのクラスメソッドとして使用可能(インスタンスメソッドではない)</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="kp">extend</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>extendは使用したことがなかったので、具体例を以下に示す。</p>
+
+<figure class='code'><figcaption><span>extendの具体例 </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">Test</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">test</span>
+</span><span class='line'>    <span class="nb">puts</span> <span class="nb">self</span> <span class="o">+</span> <span class="s2">&quot;Test&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="n">str</span> <span class="o">=</span> <span class="s2">&quot;Hoge&quot;</span>
+</span><span class='line'><span class="n">str</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="no">Test</span><span class="p">)</span>
+</span><span class='line'><span class="n">str</span><span class="o">.</span><span class="n">test</span>
+</span><span class='line'><span class="o">&gt;&gt;</span> <span class="no">HogeTest</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>require/load/autoload の違い</h3>
+
+<table>
+<thead>
+<tr>
+<th>　 </th>
+<th> require  </th>
+<th> load     </th>
+<th> autoload</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>メソッドの定義元 </td>
+<td> Kernelモジュール </td>
+<td> Kernelモジュール </td>
+<td> Kernelモジュール or Moduleクラス</td>
+</tr>
+<tr>
+<td>複数回ロード </td>
+<td> されない </td>
+<td> される </td>
+<td> されない(requireに従うので以下省略)</td>
+</tr>
+<tr>
+<td>ロード時の拡張子省略 </td>
+<td> 可 </td>
+<td> 不可 </td>
+<td></td>
+</tr>
+<tr>
+<td>ロード可能ライブラリ </td>
+<td> Rubyスクリプト+拡張ライブラリ </td>
+<td> Rubyスクリプト </td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+
+<p>requireはライブラリのロードをしたいとき、loadは設定ファイルなど再読み込み可能にしたいとき、というように使い分けられる。
+また、拡張子が.rbや.soなどではない.txt(中身はruby)ファイルをロードしたいときにも load を使用する。</p>
+
+<h3>include/extend の違い</h3>
+
+<table>
+<thead>
+<tr>
+<th>　 </th>
+<th> include  </th>
+<th> extend</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>メソッドの定義元 </td>
+<td> Moduleクラス </td>
+<td> Objectクラス</td>
+</tr>
+<tr>
+<td>振る舞い </td>
+<td> includeしたクラスのインスタンスメソッドとして使用 </td>
+<td> extendしたクラスのクラスメソッドとして使用</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>振る舞いの違いがわかりにくいので、以下に例を示す。</p>
+
+<figure class='code'><figcaption><span>include/extendの例 </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">Hoge</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">test</span>
+</span><span class='line'>    <span class="nb">puts</span> <span class="s2">&quot;HogeTest&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">IncludeTest</span>
+</span><span class='line'>  <span class="kp">include</span> <span class="no">Hoge</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">ExtendTest</span>
+</span><span class='line'>  <span class="kp">extend</span> <span class="no">Hoge</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">IncludeTest</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">test</span> <span class="c1">#インスタンスメソッド</span>
+</span><span class='line'><span class="o">&gt;&gt;</span> <span class="no">HogeTest</span>
+</span><span class='line'><span class="no">ExtendTest</span><span class="o">.</span><span class="n">test</span> <span class="c1">#クラスメソッド</span>
+</span><span class='line'><span class="o">&gt;&gt;</span> <span class="no">HogeTest</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>参考</h3>
+
+<ul>
+<li><a href="http://doc.ruby-lang.org/ja/1.9.3/doc/index.html">オブジェクト指向スクリプト言語 Ruby リファレンスマニュアル</a></li>
+<li><a href="http://ref.xaio.jp/ruby">Rubyリファレンス</a></li>
+<li><a href="http://qa.atmarkit.co.jp/q/2034">Rubyでrequireよりloadを使うべき場面は？ - QA@IT</a></li>
+<li><a href="http://blog.livedoor.jp/faulist/archives/1220074.html">requireとincludeとextendとmodule_function(1) - As Sloth As Possible</a></li>
+<li><a href="http://blog.livedoor.jp/sasata299/archives/51268600.html">Rubyで自作の外部モジュールを読み込む方法 - include と extend と module_function - (ﾟ∀ﾟ)o彡 sasata299&#8217;s blog</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">ntth</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-19T09:14:00+09:00" pubdate data-updated="true">Dec 19<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ruby/'>Ruby</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://web-k.github.com/blog/2012/12/19/ruby-require-load/" data-via="" data-counturl="http://web-k.github.com/blog/2012/12/19/ruby-require-load/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/12/18/rails-routes/" title="Previous Post: Rails3 のroutes.rb">&laquo; Rails3 のroutes.rb</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/01/09/assets-pipeline/" title="Next Post: Assets Pipeline">Assets Pipeline &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/01/22/rails-i18n/">Rails Internationalization (I18n) APIについて</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/21/ruby-refinements/">refinements</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/17/ruby-percent-i/">%i: シンボルの配列のリテラル</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/17/ruby-prepend/">Module#prepend</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/17/ruby-keyword-arguments/">Ruby 2.0 キーワード引数</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/09/assets-pipeline/">Assets Pipeline</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/19/ruby-require-load/">Rubyのrequire/load/autoload/include/extendについて</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/18/rails-routes/">Rails3 のroutes.rb</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/18/ruby-lazy/">enumerable::lazyをちょっとだけ</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/12/webstorage/">Web Storageの使い方</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list"><li><a href='/blog/categories/actionscript'>ActionScript (1)</a></li><li><a href='/blog/categories/android'>Android (1)</a></li><li><a href='/blog/categories/assets'>assets (1)</a></li><li><a href='/blog/categories/capybara'>capybara (1)</a></li><li><a href='/blog/categories/capybara-webkit'>capybara-webkit (1)</a></li><li><a href='/blog/categories/css3'>CSS3 (1)</a></li><li><a href='/blog/categories/cucumber'>Cucumber (1)</a></li><li><a href='/blog/categories/fabrication'>Fabrication (2)</a></li><li><a href='/blog/categories/git'>git (1)</a></li><li><a href='/blog/categories/html5'>HTML5 (1)</a></li><li><a href='/blog/categories/i18n'>i18n (1)</a></li><li><a href='/blog/categories/rails'>Rails (2)</a></li><li><a href='/blog/categories/rails-i18n'>Rails,i18n (1)</a></li><li><a href='/blog/categories/rspec'>RSpec (4)</a></li><li><a href='/blog/categories/ruby'>ruby (4)</a></li><li><a href='/blog/categories/ruby'>Ruby (7)</a></li></ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Team web-k -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'web-k';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://web-k.github.com/blog/2012/12/19/ruby-require-load/';
+        var disqus_url = 'http://web-k.github.com/blog/2012/12/19/ruby-require-load/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

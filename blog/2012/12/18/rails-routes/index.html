@@ -1,0 +1,532 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Rails3 のroutes.rb - web-k.log</title>
+  <meta name="author" content="Team web-k">
+
+  
+  <meta name="description" content="Rails3になってルーティングの書き方がずいぶん変ったので使い方をメモ。 基本 Rails3 でのアプリケーション作り始めにて、 1
+rails g scaffold article title:string などと打つと、色々なファイルが生成され、その中にはroutes.rbも含まれている。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://web-k.github.com/blog/2012/12/18/rails-routes/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="web-k.log" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35251356-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">web-k.log</a></h1>
+  
+    <h2>RubyやWebをメインに技術情報をのせていきます</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS"><span class="text">RSS</span></a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:web-k.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Rails3 のroutes.rb</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-18T23:14:00+09:00" pubdate data-updated="true">Dec 18<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Rails3になってルーティングの書き方がずいぶん変ったので使い方をメモ。</p>
+
+<h3>基本</h3>
+
+<p>Rails3 でのアプリケーション作り始めにて、</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rails g scaffold article title:string</span></code></pre></td></tr></table></div></figure>
+
+
+<p>などと打つと、色々なファイルが生成され、その中にはroutes.rbも含まれている。routes.rbの覗いてみると、</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">resources</span> <span class="ss">:articles</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>という記載がある。
+これはリソースCRUD操作を行うためのURLとアクションを自動で設定してくれる。
+RailsでCRUDを行うために用意されている7つのアクション(index, new, create, show, edit, update, destroy)とURLとの紐付けをresourcesを使うことによって一度にすることができる。
+なお、routes.rbにresources, resourceなどと書いていくわけだが、ルーティングの優先順位は上から順となっている。</p>
+
+<p>現在設定されているルーティングを確認するには、rake routesコマンド用いる。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vg">$rake</span> <span class="n">routes</span>
+</span><span class='line'><span class="no">GET</span>             <span class="sr">/articles                 index        articles_path </span>
+</span><span class='line'><span class="sr">GET             /</span><span class="n">articles</span><span class="o">/</span><span class="kp">new</span>             <span class="kp">new</span>          <span class="n">new_article_path</span>
+</span><span class='line'><span class="no">POST</span>            <span class="sr">/articles                 create       articles_path</span>
+</span><span class='line'><span class="sr">GET             /</span><span class="n">articles</span><span class="o">/</span><span class="ss">:id</span>             <span class="n">show</span>         <span class="n">article_path</span><span class="p">(</span><span class="ss">:id</span><span class="p">)</span>
+</span><span class='line'><span class="no">GET</span>             <span class="sr">/articles/</span><span class="ss">:id</span><span class="o">/</span><span class="n">edit</span>        <span class="n">edit</span>         <span class="n">edit_article_path</span><span class="p">(</span><span class="ss">:id</span><span class="p">)</span>
+</span><span class='line'><span class="no">PUT</span>             <span class="sr">/articles/</span><span class="ss">:id</span>             <span class="n">update</span>       <span class="n">article_path</span><span class="p">(</span><span class="ss">:id</span><span class="p">)</span>
+</span><span class='line'><span class="no">DELETE</span>          <span class="sr">/articles/</span><span class="ss">:id</span>             <span class="n">destroy</span>      <span class="n">article_path</span><span class="p">(</span><span class="ss">:id</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>id不要の場合</h3>
+
+<p>基本で記載したresourcesを用いた場合は、</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">GET</span>             <span class="sr">/articles/</span><span class="ss">:id</span>             <span class="n">show</span>         <span class="n">article_path</span><span class="p">(</span><span class="ss">:id</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>のように、URLにidが付加されている。
+しかし、ユーザのプロフィール設定画面などidが不要な場合もあるので、そのような場合はresourcesではなく、resourceを用いる。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">resource</span> <span class="ss">:profile</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>7つのCRUDアクションの内、indexは生成されなくなる。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vg">$rake</span> <span class="n">routes</span>
+</span><span class='line'><span class="no">GET</span>        <span class="sr">/profile/ne</span><span class="n">w</span>      <span class="kp">new</span>       <span class="n">new_profile_path</span>
+</span><span class='line'><span class="no">POST</span>       <span class="sr">/profile          create    profile_path</span>
+</span><span class='line'><span class="sr">GET        /</span><span class="n">profile</span>          <span class="n">show</span>      <span class="n">profile_path</span>
+</span><span class='line'><span class="no">GET</span>        <span class="sr">/profile/e</span><span class="n">dit</span>     <span class="n">edit</span>      <span class="n">edit_profile_path</span>
+</span><span class='line'><span class="no">PUT</span>        <span class="sr">/profile          update    profile_path</span>
+</span><span class='line'><span class="sr">DELETE     /</span><span class="n">profile</span>          <span class="n">destroy</span>   <span class="n">profile_path</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ルーティングの制限</h3>
+
+<p>デフォルトのアクション7つのうち、不要なURLを生成したくない場合、:only 又は :except オプションを使用する。</p>
+
+<p>:onlyオプションを用いると、指定したアクションのみ生成される。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">resources</span> <span class="ss">:articles</span><span class="p">,</span> <span class="ss">:only</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:index</span><span class="p">,</span> <span class="ss">:new</span><span class="p">,</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">:show</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>:exceptオプションを用いると、指定したアクションは生成されない。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">resources</span> <span class="ss">:articles</span><span class="p">,</span> <span class="ss">:except</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:destroy</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ルーティングの追加</h3>
+
+<p>ルーティングの追加方法はリソースのidがURLに付くかどうかで、2つの方法がある。リソースidが付く方(/articles/1/preview みたいなの)をメンバールーティング、付かない方(/articles/preview みたいなの)をコレクションルーティングと呼ぶ。</p>
+
+<p>メンバールーティングの追加</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">resources</span> <span class="ss">:articles</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">member</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">get</span> <span class="s1">&#39;preview&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="c1"># 又は</span>
+</span><span class='line'><span class="n">resources</span> <span class="ss">:articles</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">get</span> <span class="s1">&#39;preview&#39;</span><span class="p">,</span> <span class="ss">:on</span> <span class="o">=&gt;</span> <span class="ss">:member</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>コレクションルーティングの追加</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">resources</span> <span class="ss">:articles</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">collection</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">get</span> <span class="s1">&#39;preview&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="c1"># 又は</span>
+</span><span class='line'><span class="n">resources</span> <span class="ss">:articles</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">get</span> <span class="s1">&#39;preview&#39;</span><span class="p">,</span> <span class="ss">:on</span> <span class="o">=&gt;</span> <span class="ss">:collection</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>URLをピンポイントで指定</h3>
+
+<p>ログアウトのリンクなど、どのユーザでも変らないURLをピンポイントで指定するには次のようにmatchを用いる。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">match</span> <span class="s2">&quot;/authentication/logout&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;authentication#logout&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>メソッドの指定</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">get</span> <span class="s2">&quot;/authentication/logout&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;authentication#logout&quot;</span>
+</span><span class='line'><span class="c1"># 又は :viaオプションを用いて</span>
+</span><span class='line'><span class="n">match</span> <span class="s2">&quot;/authentication/logout&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;authentication#logout&quot;</span><span class="p">,</span> <span class="ss">:via</span> <span class="o">=&gt;</span> <span class="ss">:get</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Named helperの設定</h3>
+
+<p>Named helperとはprofile_pathなどと書いているもののこと。
+これを設定するには、:as オプションを使って、ルーティングのための名前を指定する。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">match</span> <span class="s2">&quot;/authentication/logout&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;authentication#logout&quot;</span><span class="p">,</span> <span class="ss">:as</span> <span class="o">=&gt;</span> <span class="ss">:logout</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これでlogout_pathやlogout_urlが使えるようになる。</p>
+
+<h3>ネストしたURL</h3>
+
+<p>リソースが１対他の関係にある場合、URLをネストさせることができる。
+例えば、1つの記事(article)にいくつかのコメント(comment)がある場合には次のように書くことができる。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">resources</span> <span class="ss">:articles</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">resources</span> <span class="ss">:comments</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>便利だが、ネストしすぎると混乱を招きそうなので、1回くらいにしておくとよい。
+2回、3回とネストしなければならない場合、設計を見直す機会かもしれない。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vg">$rake</span> <span class="n">routes</span>
+</span><span class='line'><span class="no">GET</span>             <span class="sr">/articles/</span><span class="ss">:article_id</span><span class="o">/</span><span class="n">comments</span>                 <span class="n">index</span>        <span class="n">article_comments_path</span>
+</span><span class='line'><span class="no">GET</span>             <span class="sr">/articles/</span><span class="ss">:article_id</span><span class="o">/</span><span class="n">comments</span><span class="o">/</span><span class="ss">:id</span>             <span class="n">show</span>         <span class="n">article_comment_path</span><span class="p">(</span><span class="ss">:id</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>トップページ(root)</h3>
+
+<p>デフォルトで用意されているpublic/index.htmlを消去してから、次のように記載する。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">root</span> <span class="ss">:to</span> <span class="o">=&gt;</span> <span class="s2">&quot;articles#index&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Non-Resourceful Routes</h3>
+
+<p>Non-Resourceful Routesとは、任意のURLをアクションにルーティングするためのサポート。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">match</span> <span class="s1">&#39;:controller(/:action(/:id))&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>というように書く。これで、GET articles/edit/1 すると、パラメータは次のようになる。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="p">{</span><span class="ss">:controller</span> <span class="o">=&gt;</span> <span class="s2">&quot;articles&quot;</span><span class="p">,</span> <span class="ss">:action</span> <span class="o">=&gt;</span> <span class="s2">&quot;edit&quot;</span><span class="p">,</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="s2">&quot;1&quot;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>URLに特定の文字列を含む場合は、</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">match</span> <span class="s1">&#39;:controller/:action/:id/with_user/:user_id&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>として、GET /articles/show/1/with_user/2すると</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="p">{</span><span class="ss">:controller</span> <span class="o">=&gt;</span> <span class="s2">&quot;articles&quot;</span><span class="p">,</span> <span class="ss">:action</span> <span class="o">=&gt;</span> <span class="s2">&quot;show&quot;</span><span class="p">,</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="ss">:user_id</span> <span class="o">=&gt;</span> <span class="s2">&quot;2&quot;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>となる。</p>
+
+<p>参考サイト：<a href="http://wiki.usagee.co.jp/ruby/rails/RailsGuides%E3%82%92%E3%82%86%E3%81%A3%E3%81%8F%E3%82%8A%E5%92%8C%E8%A8%B3%E3%81%97%E3%81%A6%E3%81%BF%E3%81%9F%E3%82%88/Rails%20Routing%20from%20the%20Outside%20In">ruby/rails/RailsGuidesをゆっくり和訳してみたよ/Rails Routing from the Outside In - 株式会社ウサギィwiki</a></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">aizawa1126</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-18T23:14:00+09:00" pubdate data-updated="true">Dec 18<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/rails/'>Rails</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://web-k.github.com/blog/2012/12/18/rails-routes/" data-via="" data-counturl="http://web-k.github.com/blog/2012/12/18/rails-routes/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/12/18/ruby-lazy/" title="Previous Post: enumerable::lazyをちょっとだけ">&laquo; enumerable::lazyをちょっとだけ</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/12/19/ruby-require-load/" title="Next Post: Rubyのrequire/load/autoload/include/extendについて">Rubyのrequire/load/autoload/include/extendについて &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/01/22/rails-i18n/">Rails Internationalization (I18n) APIについて</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/21/ruby-refinements/">refinements</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/17/ruby-percent-i/">%i: シンボルの配列のリテラル</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/17/ruby-prepend/">Module#prepend</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/17/ruby-keyword-arguments/">Ruby 2.0 キーワード引数</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/09/assets-pipeline/">Assets Pipeline</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/19/ruby-require-load/">Rubyのrequire/load/autoload/include/extendについて</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/18/rails-routes/">Rails3 のroutes.rb</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/18/ruby-lazy/">enumerable::lazyをちょっとだけ</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/12/webstorage/">Web Storageの使い方</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list"><li><a href='/blog/categories/actionscript'>ActionScript (1)</a></li><li><a href='/blog/categories/android'>Android (1)</a></li><li><a href='/blog/categories/assets'>assets (1)</a></li><li><a href='/blog/categories/capybara'>capybara (1)</a></li><li><a href='/blog/categories/capybara-webkit'>capybara-webkit (1)</a></li><li><a href='/blog/categories/css3'>CSS3 (1)</a></li><li><a href='/blog/categories/cucumber'>Cucumber (1)</a></li><li><a href='/blog/categories/fabrication'>Fabrication (2)</a></li><li><a href='/blog/categories/git'>git (1)</a></li><li><a href='/blog/categories/html5'>HTML5 (1)</a></li><li><a href='/blog/categories/i18n'>i18n (1)</a></li><li><a href='/blog/categories/rails'>Rails (2)</a></li><li><a href='/blog/categories/rails-i18n'>Rails,i18n (1)</a></li><li><a href='/blog/categories/rspec'>RSpec (4)</a></li><li><a href='/blog/categories/ruby'>ruby (4)</a></li><li><a href='/blog/categories/ruby'>Ruby (7)</a></li></ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Team web-k -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'web-k';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://web-k.github.com/blog/2012/12/18/rails-routes/';
+        var disqus_url = 'http://web-k.github.com/blog/2012/12/18/rails-routes/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

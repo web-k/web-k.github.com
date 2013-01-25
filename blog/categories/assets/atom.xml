@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: assets | web-k.log]]></title>
+  <link href="http://web-k.github.com/blog/categories/assets/atom.xml" rel="self"/>
+  <link href="http://web-k.github.com/"/>
+  <updated>2013-01-25T11:49:22+09:00</updated>
+  <id>http://web-k.github.com/</id>
+  <author>
+    <name><![CDATA[Team web-k]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Assets Pipeline]]></title>
+    <link href="http://web-k.github.com/blog/2013/01/09/assets-pipeline/"/>
+    <updated>2013-01-09T00:51:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2013/01/09/assets-pipeline</id>
+    <content type="html"><![CDATA[<h2>この記事は</h2>
+
+<p>基本は<a href="http://guides.rubyonrails.org/asset_pipeline.html">Ruby on Rails Guides: Asset Pipeline</a>の訳ですが簡略化や自分の解釈で意訳した部分が多々あります。気になる点あったらコメントください。</p>
+
+<h2>Assets Pipelineとは</h2>
+
+<p>Asset(アセット)とは、訳すと「資産」のこと。Assets Pipelineは画像やJavaScript、CSSを高速でリクエストを捌けるようにしたRails 3.1より標準搭載された仕組みです。</p>
+
+<h2>Assets Pipelineで出来ること</h2>
+
+<ul>
+<li>Fingerprinting
+
+<ul>
+<li>コンテンツベースのファイル名に更新することによるキャッシュ支援</li>
+</ul>
+</li>
+<li>Precompileを利用した高レベル言語でのコーディング
+
+<ul>
+<li>CSSに対してSass/SCSS/LESS、JavaScriptに対してCoffeeScript等の中間言語が使用可能</li>
+<li>ERBも使用可能</li>
+</ul>
+</li>
+<li>Assetの連結
+
+<ul>
+<li>複数のJavascriptやCSSをまとめてリクエスト数を減らす</li>
+</ul>
+</li>
+<li>Assetの最小化と圧縮
+
+<ul>
+<li>CSSは空白削除、JavaScriptはif-elseを三項演算子化など、サイズ縮小のために最適化</li>
+</ul>
+</li>
+</ul>
+
+
+<p>Assets Pipelineはデフォルトで有効です。無効にしたければconfig/application.rbにて</p>
+
+<p><code>
+config.assets.enabled = false
+</code></p>
+
+<p>を設定してください。また、アプリケーション作成時であれば</p>
+
+<p><code>
+rails new appname --skip-sprockets
+</code></p>
+
+<p>と--skip-sporocketsオプションを付ける事でも無効にできます。ただし、何らかの理由が無ければ、デフォルトの状態で有効にしておくと高速化の面でも有利ですのでそのままにしておくべきでしょう。</p>
+
+<h2>Assets Pipelineの使い方</h2>
+
+<p>app/assetsディレクトリの中にAssetを配置します。今まではpublicに全て配置していて、利用は可能ですが、全て静的ファイルとしてのみ扱われます。</p>
+
+<p>production環境のデフォルトでは事前にプリコンパイルを行い、public/assetsに配置して動作時にapp/assetsから直接出力せずパフォーマンスに配慮したデプロイを行います。</p>
+
+<p>Assetの配置場所は</p>
+
+<ul>
+<li>app/assets</li>
+<li>lib/assets</li>
+<li>vendor/assets</li>
+</ul>
+
+
+<p>の三箇所があります。appはアプリケーション固有のもの、libは複数のアプリケーションでも利用できるもの、vendorはサードベンダーのJSプラグインやCSSフレームワークといったように使い分けると良いでしょう。</p>
+
+<h3>Asset Pathの検索</h3>
+
+<p>マニフェストやヘルパーよりファイルを参照すると、デフォルトではimages、javascripts、stylesheetsのサブディレクトリ内からファイルを探します。例えば、</p>
+
+<p><code>
+app/assets/javascripts/home.js
+lib/assets/javascripts/moovinator.js
+vendor/assets/javascripts/slider.js
+</code></p>
+
+<p>をJSマニフェストから参照するとすると</p>
+
+<p><code>
+//= require home
+//= require moovinator
+//= require slider
+</code></p>
+
+<p>ヘルパからだと</p>
+
+<p><code>
+&lt;%= javascript_include_tag "home" %&gt;
+&lt;%= javascript_include_tag "moovinator" %&gt;
+&lt;%= javascript_include_tag "slider" %&gt;
+</code></p>
+
+<p>にて参照できます。</p>
+
+<p>indexファイルはフォルダ名指定でlib/assets/library_name/index.jsを</p>
+
+<p><code>
+//= require library_name
+</code></p>
+
+<p>と参照可能です。ちなみにRails.application.config.assets.pathsを見るとAsset検索Pathが分かります。また、以下のようにconfig/application.rbにパスを追加できます</p>
+
+<p><code>
+config.assets.paths &lt;&lt; Rails.root.join("app", "assets", "flash")
+</code></p>
+
+<p>重要なことは、検索したいファイルはプリコンパイル対象となっていることです。そうしないとproduction環境では利用できなくなってしまいます。</p>
+
+<h2>Fingerprintingとは</h2>
+
+<p>Fingerprintingとはファイル内容も加味されたファイルネーミングの仕組みです。ファイルの中身が変更されるとファイル名も更新されます。</p>
+
+<p>これにより、CDNであったり、複数の別のサーバー上に配置したとしても、ファイル名によってコンテンツ内容が一意である事が分かり、キャッシュ最適化を行う事が可能になります。</p>
+
+<p>Assets Pipelineではファイル名にMD5ハッシュが挿入されます。global.cssが元ファイルとすると、global-908e25f4bf641868d8683022a5b62f54.cssのようなファイル名となります。</p>
+
+<p>Assets Pipeline導入前のRailsは時間ベースの文字列クエリを付加していましたが、以下のデメリットがありました：</p>
+
+<ul>
+<li>クエリだと確実にキャッシュする事を保証出来ない
+
+<ul>
+<li>CDN等でリクエストがキャッシュされないケースがあった</li>
+</ul>
+</li>
+<li>複数のサーバに静的コンテンツを配置するとファイル名が異なる
+
+<ul>
+<li>ファイル時間が同一ファイルでも異なる事があるために無駄に読み込みがかかるケースがあった</li>
+</ul>
+</li>
+<li>同一のファイルでも再度デプロイしたらキャッシュが利用されないことがある
+
+<ul>
+<li>更新日時が変更されたら再度読み込みを強いることになる</li>
+</ul>
+</li>
+</ul>
+
+
+<p>これらのデメリットをファイル内容に基づくファイル名の付加によって解消されました。</p>
+
+<p>Fingerprintingはproduction環境で有効、その他の環境は無効にデフォルトはなっています。替えたい場合はconfig.assets.digest設定を変更して下さい。</p>
+
+<h3>Assetへのリンク</h3>
+
+<p>Assets Pipelineでは通常のリンクヘルパを利用すればOKです</p>
+
+<p><code>
+&lt;%= stylesheet_link_tag "application" %&gt;
+&lt;%= javascript_include_tag "application" %&gt;
+&lt;%= image_tag "rails.png" %&gt;
+</code></p>
+
+<p>accetsパスへの検索、production環境であればMD5をファイル名に付加更新もここで行われます</p>
+
+<p><code>
+rails-af27b6a414e6da00003503148be9b409.png
+</code></p>
+
+<h4>CSS/JavaScript/ERB</h4>
+
+<p>Assets PipelineはERBにて評価可能です。application.css.erbのようにerbの拡張子を付加すれば次のように利用できます。</p>
+
+<p><code>
+.class { background-image: url(&lt;%= asset_path 'image.png' %&gt;) }
+</code></p>
+
+<p>Base64形式として埋め込みヘルパもあります</p>
+
+<p>```</p>
+
+<h1>logo { background: url(&lt;%= asset_data_uri 'logo.png' %>) }</h1>
+
+<p>```</p>
+
+<p>application.js.cooffee.erbのようにCoffeeScriptにも利用できます</p>
+
+<p><code>
+$('#logo').attr src: "&lt;%= asset_path('logo.png') %&gt;"
+</code></p>
+
+<h3>アセットの依存関係と連結～マニフェストファイルとディレクティブ</h3>
+
+<p>どのアセットを利用するかを決定するのにマニフェストファイルを利用します。CSS/JavaScriptにコメントにてディレクティブを記述します。また、Rails.application.config.assets.compressがtrueであれば連結します。連結することに単一ファイルになるのでリクエスト時間を減らせます。例えばapp/assets/javascripts/application.jsに以下のように記述します</p>
+
+<p><code>
+// ...
+//= require jquery
+//= require jquery_ujs
+//= require_tree .
+</code></p>
+
+<p>//=で行を始めてディレクティブを記載します。jquery.jsとjquery_ujs.jsはjquery-rails gemが提供しています。</p>
+
+<p>require_treeは再帰検索を行います。対象パスのサブディレクトリも検索してすべてのファイルを出力します。サブディレクトリを検索しないで特定のディレクトリを指定したい場合はrequire_directoryを利用して下さい。</p>
+
+<p>requireは上から順に処理されますが、require_treeは何処に記載しても順序は関係無いです。連結した場合でも、特定のJavascriptが一番最初に来るように保証したいのであれば、requireも一番最初に記述してください</p>
+
+<p>CSSの例は以下のようになります</p>
+
+<p><code>
+/* ...
+*= require_self
+*= require_tree .
+*/
+</code></p>
+
+<p>requre_selfはこれが呼び出された順序で自分のCSSを読み込むようになります。require_treeを使うとJSと同様に現在のディレクトリのすべてのスタイルシートを読み込みます。</p>
+
+<p>複数のSassファイルを利用する時はSassの@importルールを使用スべきです。ディレクティブで記載してしまうと全Sassファイルはそれぞれのスコープ下に存在することになって変数やmixinが定義されたドキュメント内でしか利用できなくなります。</p>
+
+<h3>Preprocessing</h3>
+
+<p>Assetの拡張子で前処理が決まります。projects.js.coffeeとすればCoffeeScriptが、projects.css.scssとすればSCSSが処理されます。</p>
+
+<p>複数の拡張子を付加すれば前処理の多重化も可能です。projects.css.scss.erbとすれば、拡張子は右側からERB、SCSSと処理され、最終的にCSSとして応答します。</p>
+
+<p>この拡張子の処理順序は重要で、projects.js.erb.coffeeと記載してしまうと、ERB記述のままCoffeeScriptインタプリタが処理されてしまいエラーとなってしまいます。projects.js.coffee.erbの順で記載してください。</p>
+
+<h3>JavaScriptの圧縮</h3>
+
+<p>JavaScriptは:closure :uglifier :yuiの3種類が選べます。closure-compiler・uglifier・yui-compressorの各gemが必要です。Gemfileにはデフォルトでuglifierがあります。ホワイトスペースを削除し、if-else文を三項演算子に変更するなどの最適化をします。</p>
+
+<p><code>
+config.assets.js_compressor = :uglifier
+</code></p>
+
+<p>JS圧縮を有効にするには以下の設定が必要です</p>
+
+<p><code>
+config.assets.compress = true
+</code></p>
+
+<h3>Development環境</h3>
+
+<p>development環境では連結されずに別々のファイルとなります</p>
+
+<p><code>
+//= require core
+//= require projects
+//= require tickets
+</code></p>
+
+<p>の記載では</p>
+
+<p>```</p>
+
+<script src="http://web-k.github.com/assets/core.js?body=1" type="text/javascript"></script>
+
+
+<script src="http://web-k.github.com/assets/projects.js?body=1" type="text/javascript"></script>
+
+
+<script src="http://web-k.github.com/assets/tickets.js?body=1" type="text/javascript"></script>
+
+
+<p>```</p>
+
+<p>となります。但し、</p>
+
+<p><code>
+config.assets.debug = false
+</code></p>
+
+<p>と、デバッグモードをオフにすれば連結状態になります。</p>
+
+<p>サーバに初回リクエストにてアセットはコンパイル・キャッシュされ、304を返すようになります。マニフェスト記載のどれかが変更があると新しくコンパイルしてファイルを応答します。</p>
+
+<p>デバッグモードは以下でも有効に出来ます。</p>
+
+<p><code>
+&lt;%= stylesheet_link_tag "application", :debug =&gt; true %&gt;
+&lt;%= javascript_include_tag "application", :debug =&gt; true %&gt;
+</code></p>
+
+<p>パフォーマンス的にはデバッグモードは不利なので切り替えが提供されています</p>
+
+<h3>Production環境</h3>
+
+<p>production環境ではFingerprintを利用します。プリコンパイル時にファイル内容に応じてMD5値が生成されてファイル名が更新されてディスクに格納されます。挿入された名前はマニフェスト、ヘルパーで補完されます。</p>
+
+<p><code>
+&lt;%= javascript_include_tag "application" %&gt;
+&lt;%= stylesheet_link_tag "application" %&gt;
+</code></p>
+
+<p>にて</p>
+
+<p>```</p>
+
+<script src="http://web-k.github.com/assets/application-908e25f4bf641868d8683022a5b62f54.js" type="text/javascript"></script>
+
+
+<p><link href="http://web-k.github.com/assets/application-4dd5b109ee3439da54f5bdfd78a80473.css" media="screen" rel="stylesheet" type="text/css" />
+```</p>
+
+<p>となります。</p>
+
+<p>config.assets.digest設定にてFingerprintのON/OFFを切り替えられます。production環境で有効、その他は無効になっています。通常はこのデフォルト設定は変更すべきではありません。キャッシュ制御がクライアント側で困難になるからです。</p>
+
+<h3>Assetsのプリコンパイル</h3>
+
+<p>development環境のデフォルトでは動的にAssetファイルがコンパイルされますが、production環境のデフォルトでは高速化を図るため、事前にコンパイルして静的ファイルとして配置するようになっています。これをプリコンパイルといいます。Railsではrakeタスクとして配布されています。</p>
+
+<p>コンパイルされたAssetはconfig.assets.prefixに設定されたディレクトリに格納されます。デフォルトはpublic/assetsディレクトリです。</p>
+
+<p>デプロイサーバー上でのプリコンパイルも可能ですが、ファイル書き込み権限が無い等、rakeタスクを直接実行出来ない時はローカルでrakeタスクを実行してください。実行するrakeタスクは、以下のようになります。</p>
+
+<p><code>
+bundle exec rake assets:precompile
+</code></p>
+
+<p>プリコンパイルの実行速度を早めるためにconfig.assets.initialize_on_precompile設定をfalseに設定してRailsアプリケーションのロードをプリコンパイル時には部分的に行うようにすることが可能となります。Herokuではこの設定は必須となっています。</p>
+
+<p>config.assets.initialize_on_precompile設定をfalseにした際は、ローカルでプリコンパイルが正しく実行出来るか確認してからでプロイして下さい。アプリケーションのオブジェクトやメソッドを参照していたりするとエラーが発生する場合があるので注意する必要があります。</p>
+
+<p>Capistano(v2.8.0以降)にはプリコンパイル実行を制御するレシピが用意されています。以下の行をCapfileに追加してください。</p>
+
+<p><code>
+load 'deploy/assets'
+</code></p>
+
+<p>これによって、config.assets.prefixはshared/assetsディレクトリに設定されます。既にこのフォルダを利用していた場合は独自にrakeタスクを作成して下さい。</p>
+
+<p>また、重要な点として、古いプリコンパイルされたAssetsファイルがページキャッシュ有効な間は正しく参照可能となるようにこのsharedフォルダはデプロイサーバー間で共有されている必要があります。</p>
+
+<p>Assetsファイルをローカルでプリコンパイルする時は、デプロイ環境ではAsset関連のgemが必要なくなるので、以下のコマンドでassetsグループのgemを除外すると良いでしょう。</p>
+
+<p><code>
+bundle install --without assets
+</code></p>
+
+<p>プリコンパイルを行うファイルとして、application.js、application.cssとJS/CSSファイルではない全てのファイルが含まれます。もし、他にも独自のJS/CSSファイルを読み込みたい場合は以下のように追加設定する必要があります。</p>
+
+<p><code>
+config.assets.precompile += ['admin.js', 'admin.css', 'swfObject.js']
+</code></p>
+
+<p>この設定により、rakeタスクによるmanifest.ymlにはassetsファイルとそのFingerprintsの対応付けが行われ、ヘルパを呼び出すたびにSprocketsによるFingerprintへのマッピングリクエストを回避する事が出来ます。マニフェストファイルの例は以下のような感じです。</p>
+
+<h2>```</h2>
+
+<p>rails.png: rails-bd9ad5a560b5a3a7be0808c5cd76a798.png
+jquery-ui.min.js: jquery-ui-7e33882a28fc84ad0e0e47e46cbf901c.min.js
+jquery.min.js: jquery-8a50feed8d29566738ad005e19fe1c2d.min.js
+application.js: application-3fdab497b8fb70d20cfc5495239dfc29.js
+application.css: application-8af74128f904600e41a6e39241464e03.css
+```</p>
+
+<p>マニフェストファイルの配置場所はconfig.assets.prefixのルートディレクトリに配置されます。変更したい場合は以下にて設定出来ます。</p>
+
+<p><code>
+config.assets.manifest = '/path/to/some/other/location'
+</code></p>
+
+<p>Production環境でプリコンパイルされたファイルが見つからなければ、存在しないファイル名と共にSprockets::Helpers::RailsHelper::AssetPaths::AssetNotPrecompiledError の例外がRaiseされます。</p>
+
+<h4>サーバーの設定</h4>
+
+<p>プリコンパイルされたAssetファイルはファイルシステム上に静的ファイルとして配置され、Webサーバーより直接提供出来ます。Fingerprintingのメリットを十分に生かすため、以下のようにサーバー設定を行う事が推奨されます。</p>
+
+<p>Apache:</p>
+
+<p><code>
+&lt;LocationMatch "^/assets/.*$"&gt;
+  Header unset ETag
+  FileETag None
+  # RFC says only cache for 1 year
+  ExpiresActive On
+  ExpiresDefault "access plus 1 year"
+&lt;/LocationMatch&gt;
+</code></p>
+
+<p>nginx:</p>
+
+<p>```
+location ~ ^/assets/ {
+  expires 1y;
+  add_header Cache-Control public;</p>
+
+<p>  add_header ETag "";
+  break;
+}
+```</p>
+
+<p>プリコンパイル時、gzip圧縮(.gz)ファイルも同時に作成されます。WebサーバーではしばしばGzip圧縮転送の設定を行って転送量の軽減を図りますが、動的な圧縮だと、CPUの使用も懸念して圧縮率に妥協をすることがあります。この問題を解決するために事前に最小サイズとなるようにgzip圧縮ファイルを高圧縮率で作成した物を直接ディスクより提供する事でサーバー負荷を低減させるように設定する事もできます。</p>
+
+<p>Nginxではgzip_staticを有効にする事により可能になります。設定は以下の通り。</p>
+
+<p><code>
+location ~ ^/(assets)/  {
+  root /path/to/public;
+  gzip_static on; # to serve pre-gzipped version
+  expires max;
+  add_header Cache-Control public;
+}
+</code></p>
+
+<p>このディレクティブは大凡のコンパイル済みWebサーバーで利用出来ますが、出来ない場合はモジュールを追加してコンパイルする必要がある場合があります</p>
+
+<p><code>
+./configure --with-http_gzip_static_module
+</code></p>
+
+<p>Phusion Passengerと一緒にnginxをコンパイルする場合はこのオプションを指定する必要があります。</p>
+
+<p>Apacheでも可能ですがやや困難です。トライしたいならググってください。</p>
+
+<h3>動的コンパイル(Live Compilation)</h3>
+
+<p>動的コンパイルをやりたい環境がある場合はSprocketsに全てのリクエストを投げる事も出来ます。以下のように設定します</p>
+
+<p><code>
+config.assets.compile = true
+</code></p>
+
+<p>Assetの初回アクセス時にコンパイルされdevelopment環境よりも上位環境ではキャッシュされてMD5ハッシュ化されたファイル名が使用されます。</p>
+
+<p>SprocketsはCache-Controlヘッダにmax-age=31536000を設定してきます。これはサーバー、クライアント間でリクエストされたデータは1年間キャッシュしても良いという取り決めになります。この事によりブラウザ等でのローカルキャッシュや中間キャッシュを行うことができるようになり、サーバーへのリクエスト削減が期待出来ます。</p>
+
+<p>しかしながら、動的コンパイルは多くのメモリやサーバ負荷となり得るのでお勧め出来ません。</p>
+
+<p>もし、JavaScriptランタイムが導入されていないproduction環境のサーバーデプロイしたい場合は以下をGemfileに追加してください</p>
+
+<p><code>
+group :production do
+  gem 'therubyracer'
+end
+</code></p>
+
+<h2>パイプラインのカスタマイズ</h2>
+
+<h3>CSS圧縮</h3>
+
+<p>現在CSS圧縮エンジンとしてYUIがあります。YUIはCSSの最小化を行います。</p>
+
+<p><code>
+config.assets.css_compressor = :yui
+</code></p>
+
+<p>config.assets.compressはtrueにしておく必要があります。</p>
+
+<h3>JavaScript圧縮</h3>
+
+<p>JS圧縮は:closure、:uglifierand、:yuiの3種類から選択出来ます。それぞれ、closure-compiler、uglifier、yui-compressorのgemが必要になります。</p>
+
+<p>デフォルトでGemfileにはuglifierが指定されています。これはNodeJSで書かれたUglifierJSのRubyラッパーです。スペース削減やif文を3項演算子に変換する等JSの論理変換を行ってサイズ最小化が行われます。以下のように指定してください</p>
+
+<p><code>
+config.assets.js_compressor = :uglifier
+</code></p>
+
+<p>JS圧縮指定時もconfig.assets.compressは有効である必要があります。</p>
+
+<p>uglifierにはJSランタイムであるExecJSが必要になります。MacOSXやWindowsにはインストールされています。サポートされているOSに関してはExecJSのドキュメントをチェックして下さい。</p>
+
+<h3>独自圧縮ロジックの定義</h3>
+
+<p>自分で圧縮ロジックを定義する事もできます。compressメソッドで変換結果をリターンして下さい。</p>
+
+<p>```
+class Transformer
+  def compress(string)</p>
+
+<pre><code>do_something_returning_a_string(string)
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>利用するにはオブジェクトを指定します</p>
+
+<p><code>
+config.assets.css_compressor = Transformer.new
+</code></p>
+
+<h3>assetsパスの変更</h3>
+
+<p>Asset公開パスのデフォルトは /assets です。3.1にアップデートする際に既にこのURIが利用されていた等の際には以下にてパスを変更する事も出来ます</p>
+
+<p><code>
+config.assets.prefix = "/some_other_path"
+</code></p>
+
+<h3>X-Sendfileヘッダ</h3>
+
+<p>X-SendfileヘッダはWebサーバー自身がアプリケーションからのレスポンスをカスタマイズしてファイルをディスク上から直接読み込んで代わりにデータの受け渡しをします。デフォルトはオフですが、サポートされているなら有効にすることによりファイル提供の転送速度向上が期待できます。</p>
+
+<p>Apache、nginxでサポートされており、以下をconfig/environments/production.rbに設定します</p>
+
+<p>```</p>
+
+<h1>config.action_dispatch.x_sendfile_header = "X-Sendfile" # for apache</h1>
+
+<h1>config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for nginx</h1>
+
+<p>```</p>
+
+<p>既に存在しているアプリケーションのアップグレード時等に、production環境以外のX-Sendfileに対応していない環境化にこの設定をコピペしないように注意してください。</p>
+
+<h2>キャッシュ</h2>
+
+<p>Sprocketsはdeveloment、production環境でRailsのデフォルトキャッシュストアを利用します。</p>
+
+<p>デフォルトstore以外を指定出来る事が今後の課題です。</p>
+
+<h2>Gemsを利用したAssetsの追加</h2>
+
+<p>AssetsはGemsの形式でも外部ソースを取り込めます。</p>
+
+<p>jquery-rails gem等が良い例です。一般的なJSライブラリを取り込めます。このgemにはRails::Engineが継承されたクラスを含んでいて、中に含まれているapp/assetsやlib/assets、vendor/assets等のディレクトをSprocketsの検索パスとして追加されます。</p>
+
+<p>以上。あと、3.1以前からのアップデートの方法等載っていました。興味のある人は原文を参照してみてください。</p>
+]]></content>
+  </entry>
+  
+</feed>

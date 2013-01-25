@@ -1,0 +1,321 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Ruby 2.0 キーワード引数 - web-k.log</title>
+  <meta name="author" content="Team web-k">
+
+  
+  <meta name="description" content="Ruby 2.0.0の主な機能のうちのひとつ「キーワード引数」の挙動について。 キーワード引数はメソッドのそれぞれの引数にその意味を示すキーワードを付与し、キーワードを通じて引数を渡せる機能です。 1
+2
+3
+4
+5
+6
+7
+8
+9
+def my_method(str: &quot;hoge& &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://web-k.github.com/blog/2013/01/17/ruby-keyword-arguments/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="web-k.log" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35251356-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">web-k.log</a></h1>
+  
+    <h2>RubyやWebをメインに技術情報をのせていきます</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS"><span class="text">RSS</span></a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:web-k.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Ruby 2.0 キーワード引数</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-17T15:00:00+09:00" pubdate data-updated="true">Jan 17<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Ruby 2.0.0の主な機能のうちのひとつ「キーワード引数」の挙動について。</p>
+
+<p>キーワード引数はメソッドのそれぞれの引数にその意味を示すキーワードを付与し、キーワードを通じて引数を渡せる機能です。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="n">str</span><span class="p">:</span> <span class="s2">&quot;hoge&quot;</span><span class="p">,</span> <span class="n">num</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>  <span class="o">[</span><span class="n">str</span><span class="p">,</span> <span class="n">num</span><span class="o">]</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># 実行結果</span>
+</span><span class='line'><span class="n">my_method</span> <span class="c1"># =&gt; [&quot;hoge&quot;, 1]</span>
+</span><span class='line'><span class="n">my_method</span><span class="p">(</span><span class="n">str</span><span class="p">:</span> <span class="s2">&quot;fuga&quot;</span><span class="p">)</span> <span class="c1"># =&gt; [&quot;fuga&quot;, 1]</span>
+</span><span class='line'><span class="n">my_method</span><span class="p">(</span><span class="n">num</span><span class="p">:</span> <span class="mi">2</span><span class="p">)</span> <span class="c1"># =&gt; [&quot;hoge&quot;, 2]</span>
+</span><span class='line'><span class="n">my_method</span><span class="p">(</span><span class="n">strrr</span><span class="p">:</span> <span class="s2">&quot;huga&quot;</span><span class="p">)</span> <span class="c1"># =&gt; ArgumentError: unknown keyword: strrr</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>実行時キーワード省略でデフォルト値が利用され、キーワード指定すると指定したものだけ値が書き換えられる。
+引数全てを渡さなくてもよいというのも嬉しい。
+定義されていないキーワードを指定すると当然ながらエラーとなる。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">aizawa1126</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-17T15:00:00+09:00" pubdate data-updated="true">Jan 17<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ruby/'>ruby</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://web-k.github.com/blog/2013/01/17/ruby-keyword-arguments/" data-via="" data-counturl="http://web-k.github.com/blog/2013/01/17/ruby-keyword-arguments/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/01/09/assets-pipeline/" title="Previous Post: Assets Pipeline">&laquo; Assets Pipeline</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/01/17/ruby-prepend/" title="Next Post: Module#prepend">Module#prepend &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/01/22/rails-i18n/">Rails Internationalization (I18n) APIについて</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/21/ruby-refinements/">refinements</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/17/ruby-percent-i/">%i: シンボルの配列のリテラル</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/17/ruby-prepend/">Module#prepend</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/17/ruby-keyword-arguments/">Ruby 2.0 キーワード引数</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/09/assets-pipeline/">Assets Pipeline</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/19/ruby-require-load/">Rubyのrequire/load/autoload/include/extendについて</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/18/rails-routes/">Rails3 のroutes.rb</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/18/ruby-lazy/">enumerable::lazyをちょっとだけ</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/12/webstorage/">Web Storageの使い方</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list"><li><a href='/blog/categories/actionscript'>ActionScript (1)</a></li><li><a href='/blog/categories/android'>Android (1)</a></li><li><a href='/blog/categories/assets'>assets (1)</a></li><li><a href='/blog/categories/capybara'>capybara (1)</a></li><li><a href='/blog/categories/capybara-webkit'>capybara-webkit (1)</a></li><li><a href='/blog/categories/css3'>CSS3 (1)</a></li><li><a href='/blog/categories/cucumber'>Cucumber (1)</a></li><li><a href='/blog/categories/fabrication'>Fabrication (2)</a></li><li><a href='/blog/categories/git'>git (1)</a></li><li><a href='/blog/categories/html5'>HTML5 (1)</a></li><li><a href='/blog/categories/i18n'>i18n (1)</a></li><li><a href='/blog/categories/rails'>Rails (2)</a></li><li><a href='/blog/categories/rails-i18n'>Rails,i18n (1)</a></li><li><a href='/blog/categories/rspec'>RSpec (4)</a></li><li><a href='/blog/categories/ruby'>ruby (4)</a></li><li><a href='/blog/categories/ruby'>Ruby (7)</a></li></ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Team web-k -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'web-k';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://web-k.github.com/blog/2013/01/17/ruby-keyword-arguments/';
+        var disqus_url = 'http://web-k.github.com/blog/2013/01/17/ruby-keyword-arguments/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

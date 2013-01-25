@@ -1,0 +1,704 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Rails Internationalization (I18n) APIについて - web-k.log</title>
+  <meta name="author" content="Team web-k">
+
+  
+  <meta name="description" content="Ruby on Rails Guides: Rails Internationalization (I18n) API を自己解釈しながら翻訳していきます。
+この記事は3章までの内容になります。 はじめに I18n(internationalization) Gem はRails2. &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://web-k.github.com/blog/2013/01/22/rails-i18n/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="web-k.log" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35251356-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">web-k.log</a></h1>
+  
+    <h2>RubyやWebをメインに技術情報をのせていきます</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS"><span class="text">RSS</span></a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:web-k.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Rails Internationalization (I18n) APIについて</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-22T09:36:00+09:00" pubdate data-updated="true">Jan 22<span>nd</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><a href="http://guides.rubyonrails.org/i18n.html">Ruby on Rails Guides: Rails Internationalization (I18n) API</a> を自己解釈しながら翻訳していきます。
+この記事は3章までの内容になります。</p>
+
+<h2>はじめに</h2>
+
+<p>I18n(internationalization) Gem はRails2.2から提供されており、多言語をサポートしたアプリケーションを提供するためのフレームワークである。
+「国際化(I18n:internationalization)」を行うとは、全ての文字を抽象化し、日付や通貨などロケール(地域や言語)によるものをアプリケーションの外に出すことである。
+「地域化(L10n:localization)」を行うとは、それらアプリケーションの外に出したものに対して、翻訳やフォーマットを提供することである。</p>
+
+<p>I18n化するために必要なこと</p>
+
+<ul>
+<li>I18nのサポートを確保すること</li>
+<li>辞書ファイルの場所をRailsに教えること</li>
+<li>ロケールの設定/選択の仕方をRailsに教えること</li>
+</ul>
+
+
+<p>L10n化するために必要なこと</p>
+
+<ul>
+<li>Railsのデフォルトロケールの補完を行うこと
+
+<ul>
+<li>例）日付/時間フォーマット、月の名前など</li>
+</ul>
+</li>
+<li>アプリケーション中に辞書のキーに相当する抽象化された文字列を設定すること
+
+<ul>
+<li>例）フラッシュメッセージやView内の静的な文字列など</li>
+</ul>
+</li>
+<li>どこかに翻訳結果の辞書を保存しておくこと</li>
+</ul>
+
+
+<h2>公開 I18n API</h2>
+
+<p>最も重要なAPIが以下の2つ</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">translate</span> <span class="c1"># テキストの翻訳</span>
+</span><span class='line'><span class="n">localize</span>  <span class="c1"># 日付/時間をロケールに合わせたフォーマットに変換</span>
+</span><span class='line'><span class="no">I18n</span><span class="o">.</span><span class="n">t</span> <span class="s1">&#39;store.title&#39;</span><span class="err">　</span><span class="c1">#translateをtに短縮したもの</span>
+</span><span class='line'><span class="no">I18n</span><span class="o">.</span><span class="n">l</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span><span class="err">　</span>   <span class="err">　</span><span class="c1">#localizeをlに短縮したもの</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Railsアプリケーションの初期化方法</h2>
+
+<p>Railsのデフォルトではconfig/localesフォルダにある.rbと.ymlファイルを自動でロードする。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">en</span><span class="p">:</span>
+</span><span class='line'>  <span class="n">hello</span><span class="p">:</span> <span class="s2">&quot;hello world&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>このサンプルの場合は、:enロケールだった場合は「hello」というキーを「hello world」という文字列にマップする。</p>
+
+<p>デフォルトのappllcation.rbファイルに辞書の追加の仕方やデフォルトロケールの設定の仕方がコメントアウトで載っている。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.</span>
+</span><span class='line'><span class="c1"># config.i18n.load_path += Dir[Rails.root.join(&#39;my&#39;, &#39;locales&#39;, &#39;*.{rb,yml}&#39;).to_s]</span>
+</span><span class='line'><span class="c1"># config.i18n.default_locale = :de</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>load_pathは辞書ファイルを自動ロードするための設定でRuby配列のパスになっている。
+default_localeがデフォルトのロケール設定になる。無指定のときは英語がデフォルトロケールになる。</p>
+
+<h3>ロケールの設定と渡し方</h3>
+
+<p>複数のロケールを使う場合リクエスト中にロケール設定の仕方が必要になる。
+ここで注意したいのは、sessionやcookieでロケールを保存して選択してはいけないことである。
+ロケールはURLの一部に含めるべきで、URLを友人に送ったときは同じページで同じコンテンツで表示させるべきである。
+RESTfulのアプローチでいけばこのルールから外れるべきではない。</p>
+
+<p>簡単なロケールの設定の仕方は、ApplicationControllerのbefore_filterに以下のように書き、
+URLのクエリとしてlocaleを渡す(例:http://localhost:3000?locale=de)方法である。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">before_filter</span> <span class="ss">:set_locale</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">set_locale</span>
+</span><span class='line'>  <span class="no">I18n</span><span class="o">.</span><span class="n">locale</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:locale</span><span class="o">]</span> <span class="o">||</span> <span class="no">I18n</span><span class="o">.</span><span class="n">default_locale</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ドメイン名からロケールを設定</h3>
+
+<p>www.example.com なら英語、www.example.esならスペインのロケールというようにドメイン名でロケールを分ける。
+トップレベルでロケールを設定すると以下のような利点がある。</p>
+
+<ul>
+<li>ロケールがURLに含まれるのが明らかであること</li>
+<li>人々が直感的にコンテンツの言語を理解できること</li>
+<li>簡単な構成</li>
+<li>サーチエンジンが異なる言語のコンテンツは異なるドメインのリンクとして扱うことを期待できること</li>
+</ul>
+
+
+<p>ApplicationController以下のように記述すると実現できる。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">before_filter</span> <span class="ss">:set_locale</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">set_locale</span>
+</span><span class='line'>  <span class="no">I18n</span><span class="o">.</span><span class="n">locale</span> <span class="o">=</span> <span class="n">extract_locale_from_tld</span> <span class="o">||</span> <span class="no">I18n</span><span class="o">.</span><span class="n">default_locale</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="c1"># Get locale from top-level domain or return nil if such locale is not available</span>
+</span><span class='line'><span class="c1"># You have to put something like:</span>
+</span><span class='line'><span class="c1">#   127.0.0.1 application.com</span>
+</span><span class='line'><span class="c1">#   127.0.0.1 application.it</span>
+</span><span class='line'><span class="c1">#   127.0.0.1 application.pl</span>
+</span><span class='line'><span class="c1"># in your /etc/hosts file to try this out locally</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">extract_locale_from_tld</span>
+</span><span class='line'>  <span class="n">parsed_locale</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">host</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">last</span>
+</span><span class='line'>  <span class="no">I18n</span><span class="o">.</span><span class="n">available_locales</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">parsed_locale</span><span class="o">.</span><span class="n">to_sym</span><span class="p">)</span> <span class="p">?</span> <span class="n">parsed_locale</span>  <span class="p">:</span> <span class="kp">nil</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>サブドメインに設定する場合は</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># Get locale code from request subdomain (like http://it.application.local:3000)</span>
+</span><span class='line'><span class="c1"># You have to put something like:</span>
+</span><span class='line'><span class="c1">#   127.0.0.1 gr.application.local</span>
+</span><span class='line'><span class="c1"># in your /etc/hosts file to try this out locally</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">extract_locale_from_subdomain</span>
+</span><span class='line'>  <span class="n">parsed_locale</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">subdomains</span><span class="o">.</span><span class="n">first</span>
+</span><span class='line'>  <span class="no">I18n</span><span class="o">.</span><span class="n">available_locales</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">parsed_locale</span><span class="o">.</span><span class="n">to_sym</span><span class="p">)</span> <span class="p">?</span> <span class="n">parsed_locale</span> <span class="p">:</span> <span class="kp">nil</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>available_localesには定義済みのロケールリストが保存されている。</p>
+
+<p>以下はロケールを切り替えるリンクの方法の例、APP_CONFIG[:deutsch_website_url]には「http://www.application.de」のような値が保存されている。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">link_to</span><span class="p">(</span><span class="s2">&quot;Deutsch&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">APP_CONFIG</span><span class="o">[</span><span class="ss">:deutsch_website_url</span><span class="o">]</span><span class="si">}#{</span><span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="o">[</span><span class="s1">&#39;REQUEST_URI&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>URLパラメータからロケールを設定</h3>
+
+<p>URLにロケールを含めるのは最も一般的な方法である。
+先の例のparamsからロケールを設定する場合、全てのリクエストに　link_to( books_url(:locale => I18n.locale)))　のようなロケールを含めるのは大変であるので、
+ApplicationController#default_url_optionsメソッドをオーバーライドする。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># app/controllers/application_controller.rb</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">default_url_options</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">{})</span>
+</span><span class='line'>  <span class="n">logger</span><span class="o">.</span><span class="n">debug</span> <span class="s2">&quot;default_url_options is passed options: </span><span class="si">#{</span><span class="n">options</span><span class="o">.</span><span class="n">inspect</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+</span><span class='line'>  <span class="p">{</span> <span class="ss">:locale</span> <span class="o">=&gt;</span> <span class="no">I18n</span><span class="o">.</span><span class="n">locale</span> <span class="p">}</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これはurl_forメソッドのデフォルト設定をオーバーライドしているので、url_forメソッドを使ったもの(root_path/routesファイルのリソースパス)全てに自動でクエリがつくようになる。</p>
+
+<p>www.example.com/en/booksのようなURLでロケールを設定する場合は、routesファイルで以下のようにpath_prefix付ける。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># config/routes.rb</span>
+</span><span class='line'><span class="n">scope</span> <span class="s2">&quot;/:locale&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">resources</span> <span class="ss">:books</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>クライアント情報からロケールを設定</h3>
+
+<ul>
+<li>Accept-Languageを使う方法</li>
+</ul>
+
+
+<p>ブラウザなどに含まれているHTTPヘッダーを使う</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">set_locale</span>
+</span><span class='line'>  <span class="n">logger</span><span class="o">.</span><span class="n">debug</span> <span class="s2">&quot;* Accept-Language: </span><span class="si">#{</span><span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="o">[</span><span class="s1">&#39;HTTP_ACCEPT_LANGUAGE&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'>  <span class="no">I18n</span><span class="o">.</span><span class="n">locale</span> <span class="o">=</span> <span class="n">extract_locale_from_accept_language_header</span>
+</span><span class='line'>  <span class="n">logger</span><span class="o">.</span><span class="n">debug</span> <span class="s2">&quot;* Locale set to &#39;</span><span class="si">#{</span><span class="no">I18n</span><span class="o">.</span><span class="n">locale</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="kp">private</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">extract_locale_from_accept_language_header</span>
+</span><span class='line'>  <span class="n">request</span><span class="o">.</span><span class="n">env</span><span class="o">[</span><span class="s1">&#39;HTTP_ACCEPT_LANGUAGE&#39;</span><span class="o">].</span><span class="n">scan</span><span class="p">(</span><span class="sr">/^[a-z]{2}/</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>GeoIPなどのデータベースを使う方法</li>
+</ul>
+
+
+<p>クライアントのIPアドレスから地域の情報をマッピングしてロケールを決める。
+GeoIP Lite Countryデータベースを使うと、IPアドレスから国/地域/市などを返してくれる。</p>
+
+<ul>
+<li>ユーザプロファイルからとる方法</li>
+</ul>
+
+
+<p>ユーザがアプリケーション内でロケールを設定できるようにして、データベースに保存する。</p>
+
+<h2>アプリケーションの国際化</h2>
+
+<p>以上で、Ruby on RailsアプリケーションのI18nサポートの初期化が終わった。
+次にL10n化を行う。
+つまり、全てのロケール固有のパーツを抽象化することと、その翻訳を用意することである。</p>
+
+<h3>翻訳を追加</h3>
+
+<p>Railsの「t」ヘルパーをキーと一緒に使って以下のように書ける。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># app/controllers/home_controller.rb</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">HomeController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">index</span>
+</span><span class='line'>    <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">(</span><span class="ss">:hello_flash</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="c1"># app/views/home/index.html.erb</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;&lt;</span><span class="sx">%=t :hello_world %&gt;&lt;/h1&gt;</span>
+</span><span class='line'><span class="sx">&lt;p&gt;&lt;%=</span> <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="sx">%&gt;&lt;/p&gt;</span>
+</span><span class='line'><span class="c1"># config/locales/en.yml</span>
+</span><span class='line'><span class="n">en</span><span class="p">:</span>
+</span><span class='line'>  <span class="n">hello_world</span><span class="p">:</span> <span class="no">Hello</span> <span class="n">world!</span>
+</span><span class='line'>  <span class="n">hello_flash</span><span class="p">:</span> <span class="no">Hello</span> <span class="n">flash!</span>
+</span><span class='line'><span class="c1"># config/locales/pirate.yml</span>
+</span><span class='line'><span class="n">pirate</span><span class="p">:</span>
+</span><span class='line'>  <span class="n">hello_world</span><span class="p">:</span> <span class="no">Ahoy</span> <span class="no">World</span>
+</span><span class='line'>  <span class="n">hello_flash</span><span class="p">:</span> <span class="no">Ahoy</span> <span class="no">Flash</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>キーに該当する辞書ファイルが見つからない場合は <span class="translation_missing"> のようなタグがHTMLに入る。
+辞書ファイルを追加する場合は、サーバの再起動が必要である。
+辞書ファイルにはYAMLまたはRubyファイルが使われるが、Rails開発者の中ではYAMLが推奨されている。
+しかし、YAMLはスペースや特殊文字に弱く、アプリケーションがロードに失敗することもある。
+Rubyファイルは最初のリクエストでアプリケーションがクラッシュするので、間違いがわかりやすい。</p>
+
+<h3>変数を渡して翻訳</h3>
+
+<p>以下のようにしてViewから辞書ファイルに変数を渡せる。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># app/views/home/index.html.erb</span>
+</span><span class='line'><span class="o">&lt;</span><span class="sx">%=t &#39;greet_username&#39;, :user =</span><span class="o">&gt;</span> <span class="s2">&quot;Bill&quot;</span><span class="p">,</span> <span class="ss">:message</span> <span class="o">=&gt;</span> <span class="s2">&quot;Goodbye&quot;</span> <span class="o">%&gt;</span>
+</span><span class='line'><span class="c1"># config/locales/en.yml</span>
+</span><span class='line'><span class="n">en</span><span class="p">:</span>
+</span><span class='line'>  <span class="n">greet_username</span><span class="p">:</span> <span class="s2">&quot;%{message}, %{user}!&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>日時フォーマットの追加</h3>
+
+<p>時間フォーマットをl10n化するときはRailsメソッドの「l」ヘルパーを使って、Timeオブジェクトを渡す。
+ヘルパーには :format オプションも渡せる。無指定の場合は:defaultフォーマットが使用される。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># app/views/home/index.html.erb</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;&lt;</span><span class="sx">%= l Time.now, :format =</span><span class="o">&gt;</span> <span class="ss">:short</span> <span class="sx">%&gt;&lt;/p&gt;</span>
+</span><span class='line'><span class="c1"># config/locales/pirate.yml</span>
+</span><span class='line'><span class="n">pirate</span><span class="p">:</span>
+</span><span class='line'>  <span class="n">time</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">formats</span><span class="p">:</span>
+</span><span class='line'>      <span class="n">short</span><span class="p">:</span> <span class="s2">&quot;arrrround %H&#39;ish&quot;</span><span class="err">　</span><span class="c1"># %Hは24時間制の時</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>辞書ファイルは以下で提供されているので、Gemで使うなり、config/localesにファイルを手動で置くなりして利用すると良い。
+rails-i18n repository at Github(https://github.com/svenfuchs/rails-i18n/tree/master/rails/locale)</p>
+
+<h3>L10n化したView</h3>
+
+<p>Rails2.3からロケールによるテンプレート自動選択してくれるになった。
+app/views/books/index.html.erbテンプレートを用意し、同階層にindex.es.html.erbファイルを置くと、
+esロケールではesのerbファイルを参照し、デフォルトはindex.html.erbファイルが参照される。</p>
+
+<h3>組織化された辞書ファイル</h3>
+
+<p>1つのロケールに対して、1つの辞書ファイルだと、増えたときに管理するのが難しくなる。
+よって、以下のように階層化するなどして管理するとよい。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>|-defaults
+</span><span class='line'>|---es.rb
+</span><span class='line'>|---en.rb
+</span><span class='line'>|-models
+</span><span class='line'>|---book
+</span><span class='line'>|-----es.rb
+</span><span class='line'>|-----en.rb
+</span><span class='line'>|-views
+</span><span class='line'>|---defaults
+</span><span class='line'>|-----es.rb
+</span><span class='line'>|-----en.rb
+</span><span class='line'>|---books
+</span><span class='line'>|-----es.rb
+</span><span class='line'>|-----en.rb
+</span><span class='line'>|---users
+</span><span class='line'>|-----es.rb
+</span><span class='line'>|-----en.rb
+</span><span class='line'>|---navigation
+</span><span class='line'>|-----es.rb
+</span><span class='line'>|-----en.rb</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これはモデルとビュー内のモデル属性とデフォルトで分けた例である。
+このようにネストした場合は、辞書ファイルがデフォルト設定ではロードされなくなるので、以下のように
+書かなければならない。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># config/application.rb</span>
+</span><span class='line'>  <span class="n">config</span><span class="o">.</span><span class="n">i18n</span><span class="o">.</span><span class="n">load_path</span> <span class="o">+=</span> <span class="no">Dir</span><span class="o">[</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;config&#39;</span><span class="p">,</span> <span class="s1">&#39;locales&#39;</span><span class="p">,</span> <span class="s1">&#39;**&#39;</span><span class="p">,</span> <span class="s1">&#39;*.{rb,yml}&#39;</span><span class="p">)</span><span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>参考</h2>
+
+<ul>
+<li><a href="http://guides.rubyonrails.org/i18n.html#the-public-i18n-api">Ruby on Rails Guides: Rails Internationalization (I18n) API</a></li>
+<li><a href="http://d.hatena.ne.jp/willnet/20100430/1272618929">Rails 3 の I18n について - おもしろWEBサービス開発日記</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">ntth</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-22T09:36:00+09:00" pubdate data-updated="true">Jan 22<span>nd</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/rails-i18n/'>Rails,i18n</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://web-k.github.com/blog/2013/01/22/rails-i18n/" data-via="" data-counturl="http://web-k.github.com/blog/2013/01/22/rails-i18n/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/01/21/ruby-refinements/" title="Previous Post: refinements">&laquo; refinements</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/01/22/rails-i18n/">Rails Internationalization (I18n) APIについて</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/21/ruby-refinements/">refinements</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/17/ruby-percent-i/">%i: シンボルの配列のリテラル</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/17/ruby-prepend/">Module#prepend</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/17/ruby-keyword-arguments/">Ruby 2.0 キーワード引数</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/09/assets-pipeline/">Assets Pipeline</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/19/ruby-require-load/">Rubyのrequire/load/autoload/include/extendについて</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/18/rails-routes/">Rails3 のroutes.rb</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/18/ruby-lazy/">enumerable::lazyをちょっとだけ</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/12/webstorage/">Web Storageの使い方</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list"><li><a href='/blog/categories/actionscript'>ActionScript (1)</a></li><li><a href='/blog/categories/android'>Android (1)</a></li><li><a href='/blog/categories/assets'>assets (1)</a></li><li><a href='/blog/categories/capybara'>capybara (1)</a></li><li><a href='/blog/categories/capybara-webkit'>capybara-webkit (1)</a></li><li><a href='/blog/categories/css3'>CSS3 (1)</a></li><li><a href='/blog/categories/cucumber'>Cucumber (1)</a></li><li><a href='/blog/categories/fabrication'>Fabrication (2)</a></li><li><a href='/blog/categories/git'>git (1)</a></li><li><a href='/blog/categories/html5'>HTML5 (1)</a></li><li><a href='/blog/categories/i18n'>i18n (1)</a></li><li><a href='/blog/categories/rails'>Rails (2)</a></li><li><a href='/blog/categories/rails-i18n'>Rails,i18n (1)</a></li><li><a href='/blog/categories/rspec'>RSpec (4)</a></li><li><a href='/blog/categories/ruby'>ruby (4)</a></li><li><a href='/blog/categories/ruby'>Ruby (7)</a></li></ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Team web-k -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'web-k';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://web-k.github.com/blog/2013/01/22/rails-i18n/';
+        var disqus_url = 'http://web-k.github.com/blog/2013/01/22/rails-i18n/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
