@@ -70,10 +70,12 @@ twitter_show_replies: false
 twitter_follow_button: true
 twitter_show_follower_count: false
 twitter_tweet_button: true
+twitter_tweet_button_lang: ja
 
 # Google +1
-google_plus_one: false
+google_plus_one: true
 google_plus_one_size: medium
+google_plus_one_lang: ja
 
 # Google Plus Profile
 # Hidden: No visible button, just add author information to search results
@@ -97,3 +99,4 @@ google_analytics_tracking_id: UA-35251356-1
 
 # Facebook Like
 facebook_like: true
+facebook_lang: ja_JP
