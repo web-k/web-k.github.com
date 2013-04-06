@@ -1,0 +1,405 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Gitコマンドまとめ(2)～rebase/cherry-pick/revert/etc...～ - web-k.log</title>
+  <meta name="author" content="Team web-k">
+
+  
+  <meta name="description" content="前回のGitコマンドまとめはローカルリポジトリ単独での利用やgithubで自分のリモートリポジトリだけで利用する場合等でもよく利用できそうなコマンドをまとめました。今回は複数人で平行開発する場合等でマスターリモートリポジトリを共有している際等に頻繁に利用するgit rebaseを中心に、 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://web-k.github.com/blog/2013/03/18/git2/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="web-k.log" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35251356-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">web-k.log</a></h1>
+  
+    <h2>RubyやWebをメインに技術情報をのせていきます</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS"><span class="text">RSS</span></a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:web-k.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Gitコマンドまとめ(2)～rebase/cherry-pick/revert/etc...～</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-18T22:10:00+09:00" pubdate data-updated="true">Mar 18<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><a href="/blog/2012/11/08/git">前回のGitコマンドまとめ</a>はローカルリポジトリ単独での利用やgithubで自分のリモートリポジトリだけで利用する場合等でもよく利用できそうなコマンドをまとめました。今回は複数人で平行開発する場合等でマスターリモートリポジトリを共有している際等に頻繁に利用するgit rebaseを中心に、使えそうなコマンドを紹介していきます。</p>
+
+<h3>コミット(ブランチ)を編集する: git rebase</h3>
+
+<p>複数人で利用するリモートブランチを扱う場合、masterブランチのみで開発を行うことは実質不可能となり、topicブランチやfeatureブランチ等、何かしらブランチを作成して品質を確保した上でメインブランチにPull Requestを行って反映するようなやり方をすることが多くなります。その際にメインブランチではコミットが頻繁に行われたりすると派生ブランチは古いバージョンのソースからブランチが切られていたりして、最新コミットに追従出来ていない状態においちることがあります。</p>
+
+<p>Gitには平行開発を安全に、派生ブランチを健全に運用していくためのいくつかのコマンドがあり、その代表の1つとしてrebaseがあります。rebaseは単純に説明すると「既にコミット済みのものを再編集する」ものですが、最新コミットへのブランチの追従やコメントの付け替え、複数のコミットをまとめたり出来ます。</p>
+
+<p>細かい使い方、ブランチの順番等を思い出す時はヘルプを参照するとブランチの図入りで例が載っているのでおすすめです：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git help rebase </span></code></pre></td></tr></table></div></figure>
+
+
+<p>派生したブランチ(topic)にて開発していた場合に、メインブランチ(master)の開発が進み最新コミットが入り込んだ場合に追従し、最新コミットからのブランチから枝分かれするよう追従させる場合は以下を利用します</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git rebase master  # topicブランチにてcheckoutしている状態でrebaseする</span></code></pre></td></tr></table></div></figure>
+
+
+<p>また、rebaseではありませんが、既にtopicブランチ自体も複数人で共有している場合等、ブランチにあるコミットを変更したくない(できない)場合にはmergeすることでも追従可能なので、ケースバイケースで使い分けます</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git merge master   # 既存のコミットに追加する形でtopicブランチにマージコミットができる</span></code></pre></td></tr></table></div></figure>
+
+
+<p>rebaseを行うと枝元の古いコミットから順に最新コミットへの追従が行われていきますが、途中のコミットにてコンフリクトが発生する場合があります。コンフリクトが発生したコミットはリベース中の状態(無名ブランチ)となってコンフリクトの解消を手動で行うようにrebaseが中断します。そのときの対応コマンドは以下になります：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git rebase --continue # コンフリクトを手動で編集して解消出来た場合に修正を反映してコミットし、rebaseを再開する
+</span><span class='line'>$ git rebase --abort    # コンフリクト解消を止めて、rebase前の元の状態に戻す
+</span><span class='line'>$ git rebase --skip     # コンフリクトしたコミットを無視してrebaseを再開する</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ブランチの派生元を別ブランチに差し替えたい場合は&#8211;ontoオプションを利用します</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git rebase --onto master next topic # nextブランチから派生しているtopicブランチをmasterブランチの最新コミットから派生するブランチにrebaseする</span></code></pre></td></tr></table></div></figure>
+
+
+<p>過去のコミット編集を個別に行う場合は-iオプションを使います</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git rebase -i HEAD~3 # チェックアウト中の過去3コミットについて個別に操作内容を指定する</span></code></pre></td></tr></table></div></figure>
+
+
+<p>コミットログと操作内容が書かれた文章がエディタで開かれる(最初はすべてpickが指定)ので、操作したいコミットを編集します。以下の操作がおこなえます</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pick         コミット内容は編集せずそのまま反映
+</span><span class='line'>reword       コミットメッセージだけ編集する
+</span><span class='line'>edit         コミットを編集する
+</span><span class='line'>squash       一つ前のコミットと統合する(コミットログは残る)
+</span><span class='line'>fixup        一つ前のコミットと統合する(コミットログは統合先のもののみ残り、fixupコミットログは破棄される)
+</span><span class='line'>行を削除      コミットを削除する
+</span><span class='line'>行を入れ替え  コミット順を入れ替える</span></code></pre></td></tr></table></div></figure>
+
+
+<p>操作内容が決まったら編集を保存し、エディタを閉じるとrebaseが操作リストにしたがって行われます。</p>
+
+<h3>コミットした内容を取り消す: git revert</h3>
+
+<p>git resetを用いてもコミット内容は取り消せますが、痕跡も残らない強力なものなので、内容を取り消したという履歴を残すバージョン管理システムとして自然な取り消しを行いたい場合はrevertを用います</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ get revert HEAD~5                        # HEADから5つ前のコミットを取り消す
+</span><span class='line'>$ git revert ':/Commit Comment'            # 「Commit Comment」というコミットログのコミットを取り消す
+</span><span class='line'>$ git revert ':/Commit Comment' --no-edit  # 「Revert 'Commit Comment'」という定形文をコミットログに利用する
+</span><span class='line'>$ git revert -n HEAD~4                     # HEADから4つ前のコミットを取り消すが、コミットはせずに編集を続ける</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>特定のコミットをブランチに取り込む: git cherry-pick</h3>
+
+<p>pull-requestの一部の修正のみ取り込みたい場合や他のブランチから一部必要な機能が含まれているコミットのみを取り込みたい場合にcherry-pickを用います</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git cherry-pick daf980923     # コミットdaf980923をチェックアウトブランチに取り込む
+</span><span class='line'>$ git cherry-pick -x jfa0032a2  # コミットjfa0032a2を元のコミット情報をコミットログに残した状態でブランチに取り込む</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>バグが入り込んだ位置を特定する: git bisect</h3>
+
+<p>コミットリストの二分検索により確認を行っていき効率的にバグ混入箇所を特定します。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git bisect start           # バグ特定開始
+</span><span class='line'>$ git bisect bad             # バグが混入しているコミットを指定
+</span><span class='line'>$ git bisect good daf980923  # コミットdaf980923はビルド(テスト)成功していることを知らせる</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上記のコマンドを実行すると二分検索が始まり、中間のコミットがチェックアウトされる。後はビルド(テスト)を行って、</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git bisect good  # ビルド(テスト)成功
+</span><span class='line'>$ git bisect bad   # ビルド(テスト)失敗</span></code></pre></td></tr></table></div></figure>
+
+
+<p>を繰り替えして最後に失敗したコミットがバグ混入箇所と特定できる。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git bisect reset  # バグ特定を終了し、元に戻す</span></code></pre></td></tr></table></div></figure>
+
+
+<p>他にもsubmoduleコマンド等色々有るが利用ケースが今のところないので割愛します。新しい有用なコマンド等が見つかった場合に続きを書きます。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">toshi3221</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-18T22:10:00+09:00" pubdate data-updated="true">Mar 18<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/git/'>git</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://web-k.github.com/blog/2013/03/18/git2/" data-via="" data-counturl="http://web-k.github.com/blog/2013/03/18/git2/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button"
+      data-hatena-bookmark-layout="standard"
+      data-hatena-bookmark-url="http://web-k.github.com/blog/2013/03/18/git2/">
+    <img src="http://b.st-hatena.com/images/entry-button/button-only.gif"
+        alt="このエントリーをはてなブックマークに追加" width="20" height="20"
+        style="border: none">
+  </a>
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/01/22/rails-i18n/" title="Previous Post: Rails Internationalization (I18n) APIについて">&laquo; Rails Internationalization (I18n) APIについて</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/03/18/git2/">Gitコマンドまとめ(2)～rebase/cherry-pick/revert/etc...～</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/22/rails-i18n/">Rails Internationalization (I18n) APIについて</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/21/ruby-refinements/">refinements</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/17/ruby-percent-i/">%i: シンボルの配列のリテラル</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/17/ruby-prepend/">Module#prepend</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/17/ruby-keyword-arguments/">Ruby 2.0 キーワード引数</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/09/assets-pipeline/">Assets Pipeline</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/19/ruby-require-load/">Rubyのrequire/load/autoload/include/extendについて</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/18/rails-routes/">Rails3 のroutes.rb</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/18/ruby-lazy/">enumerable::lazyをちょっとだけ</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Categories</h1>
+    <ul id="category-list"><li><a href='/blog/categories/actionscript'>ActionScript (1)</a></li><li><a href='/blog/categories/android'>Android (1)</a></li><li><a href='/blog/categories/assets'>assets (1)</a></li><li><a href='/blog/categories/capybara'>capybara (1)</a></li><li><a href='/blog/categories/capybara-webkit'>capybara-webkit (1)</a></li><li><a href='/blog/categories/css3'>CSS3 (1)</a></li><li><a href='/blog/categories/cucumber'>Cucumber (1)</a></li><li><a href='/blog/categories/fabrication'>Fabrication (2)</a></li><li><a href='/blog/categories/git'>git (2)</a></li><li><a href='/blog/categories/html5'>HTML5 (1)</a></li><li><a href='/blog/categories/i18n'>i18n (1)</a></li><li><a href='/blog/categories/rails'>Rails (2)</a></li><li><a href='/blog/categories/rails-i18n'>Rails,i18n (1)</a></li><li><a href='/blog/categories/rspec'>RSpec (4)</a></li><li><a href='/blog/categories/ruby'>Ruby (7)</a></li><li><a href='/blog/categories/ruby'>ruby (4)</a></li></ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Team web-k -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'web-k';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://web-k.github.com/blog/2013/03/18/git2/';
+        var disqus_url = 'http://web-k.github.com/blog/2013/03/18/git2/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+<script>
+(function(w,d){
+    var c,e=d.createDocumentFragment(),f=d.getElementsByTagName("script")[0],
+    a=function(a,b){if(!d.getElementById(b)){c=d.createElement("script");
+    c.src=a;c.id=b||null;c.async=true;e.appendChild(c);}};
+
+    w.___gcfg={lang:"ja"};
+    a("https://apis.google.com/js/plusone.js");
+
+
+    a("//platform.twitter.com/widgets.js");
+
+
+    a("//connect.facebook.net/ja_JP/all.js#xfbml=1","facebook-jssdk");
+
+    a("//b.st-hatena.com/js/bookmark_button_wo_al.js");
+    f.parentNode.insertBefore(e,f);
+})(this,document);
+</script>
+
+
+</body>
+</html>

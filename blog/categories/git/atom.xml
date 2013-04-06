@@ -4,7 +4,7 @@
   <title><![CDATA[Category: git | web-k.log]]></title>
   <link href="http://web-k.github.com/blog/categories/git/atom.xml" rel="self"/>
   <link href="http://web-k.github.com/"/>
-  <updated>2013-01-25T11:49:22+09:00</updated>
+  <updated>2013-04-06T17:16:08+09:00</updated>
   <id>http://web-k.github.com/</id>
   <author>
     <name><![CDATA[Team web-k]]></name>
@@ -12,6 +12,118 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Gitコマンドまとめ(2)～rebase/cherry-pick/revert/etc...～]]></title>
+    <link href="http://web-k.github.com/blog/2013/03/18/git2/"/>
+    <updated>2013-03-18T22:10:00+09:00</updated>
+    <id>http://web-k.github.com/blog/2013/03/18/git2</id>
+    <content type="html"><![CDATA[<p><a href="/blog/2012/11/08/git">前回のGitコマンドまとめ</a>はローカルリポジトリ単独での利用やgithubで自分のリモートリポジトリだけで利用する場合等でもよく利用できそうなコマンドをまとめました。今回は複数人で平行開発する場合等でマスターリモートリポジトリを共有している際等に頻繁に利用するgit rebaseを中心に、使えそうなコマンドを紹介していきます。</p>
+
+<h3>コミット(ブランチ)を編集する: git rebase</h3>
+
+<p>複数人で利用するリモートブランチを扱う場合、masterブランチのみで開発を行うことは実質不可能となり、topicブランチやfeatureブランチ等、何かしらブランチを作成して品質を確保した上でメインブランチにPull Requestを行って反映するようなやり方をすることが多くなります。その際にメインブランチではコミットが頻繁に行われたりすると派生ブランチは古いバージョンのソースからブランチが切られていたりして、最新コミットに追従出来ていない状態においちることがあります。</p>
+
+<p>Gitには平行開発を安全に、派生ブランチを健全に運用していくためのいくつかのコマンドがあり、その代表の1つとしてrebaseがあります。rebaseは単純に説明すると「既にコミット済みのものを再編集する」ものですが、最新コミットへのブランチの追従やコメントの付け替え、複数のコミットをまとめたり出来ます。</p>
+
+<p>細かい使い方、ブランチの順番等を思い出す時はヘルプを参照するとブランチの図入りで例が載っているのでおすすめです：</p>
+
+<p><code>
+$ git help rebase
+</code></p>
+
+<p>派生したブランチ(topic)にて開発していた場合に、メインブランチ(master)の開発が進み最新コミットが入り込んだ場合に追従し、最新コミットからのブランチから枝分かれするよう追従させる場合は以下を利用します</p>
+
+<p><code>
+$ git rebase master  # topicブランチにてcheckoutしている状態でrebaseする
+</code></p>
+
+<p>また、rebaseではありませんが、既にtopicブランチ自体も複数人で共有している場合等、ブランチにあるコミットを変更したくない(できない)場合にはmergeすることでも追従可能なので、ケースバイケースで使い分けます</p>
+
+<p><code>
+$ git merge master   # 既存のコミットに追加する形でtopicブランチにマージコミットができる
+</code></p>
+
+<p>rebaseを行うと枝元の古いコミットから順に最新コミットへの追従が行われていきますが、途中のコミットにてコンフリクトが発生する場合があります。コンフリクトが発生したコミットはリベース中の状態(無名ブランチ)となってコンフリクトの解消を手動で行うようにrebaseが中断します。そのときの対応コマンドは以下になります：</p>
+
+<p><code>
+$ git rebase --continue # コンフリクトを手動で編集して解消出来た場合に修正を反映してコミットし、rebaseを再開する
+$ git rebase --abort    # コンフリクト解消を止めて、rebase前の元の状態に戻す
+$ git rebase --skip     # コンフリクトしたコミットを無視してrebaseを再開する
+</code></p>
+
+<p>ブランチの派生元を別ブランチに差し替えたい場合は--ontoオプションを利用します</p>
+
+<p><code>
+$ git rebase --onto master next topic # nextブランチから派生しているtopicブランチをmasterブランチの最新コミットから派生するブランチにrebaseする
+</code></p>
+
+<p>過去のコミット編集を個別に行う場合は-iオプションを使います</p>
+
+<p><code>
+$ git rebase -i HEAD~3 # チェックアウト中の過去3コミットについて個別に操作内容を指定する
+</code></p>
+
+<p>コミットログと操作内容が書かれた文章がエディタで開かれる(最初はすべてpickが指定)ので、操作したいコミットを編集します。以下の操作がおこなえます</p>
+
+<p><code>
+pick         コミット内容は編集せずそのまま反映
+reword       コミットメッセージだけ編集する
+edit         コミットを編集する
+squash       一つ前のコミットと統合する(コミットログは残る)
+fixup        一つ前のコミットと統合する(コミットログは統合先のもののみ残り、fixupコミットログは破棄される)
+行を削除      コミットを削除する
+行を入れ替え  コミット順を入れ替える
+</code></p>
+
+<p>操作内容が決まったら編集を保存し、エディタを閉じるとrebaseが操作リストにしたがって行われます。</p>
+
+<h3>コミットした内容を取り消す: git revert</h3>
+
+<p>git resetを用いてもコミット内容は取り消せますが、痕跡も残らない強力なものなので、内容を取り消したという履歴を残すバージョン管理システムとして自然な取り消しを行いたい場合はrevertを用います</p>
+
+<p><code>
+$ get revert HEAD~5                        # HEADから5つ前のコミットを取り消す
+$ git revert ':/Commit Comment'            # 「Commit Comment」というコミットログのコミットを取り消す
+$ git revert ':/Commit Comment' --no-edit  # 「Revert 'Commit Comment'」という定形文をコミットログに利用する
+$ git revert -n HEAD~4                     # HEADから4つ前のコミットを取り消すが、コミットはせずに編集を続ける
+</code></p>
+
+<h3>特定のコミットをブランチに取り込む: git cherry-pick</h3>
+
+<p>pull-requestの一部の修正のみ取り込みたい場合や他のブランチから一部必要な機能が含まれているコミットのみを取り込みたい場合にcherry-pickを用います</p>
+
+<p><code>
+$ git cherry-pick daf980923     # コミットdaf980923をチェックアウトブランチに取り込む
+$ git cherry-pick -x jfa0032a2  # コミットjfa0032a2を元のコミット情報をコミットログに残した状態でブランチに取り込む
+</code></p>
+
+<h3>バグが入り込んだ位置を特定する: git bisect</h3>
+
+<p>コミットリストの二分検索により確認を行っていき効率的にバグ混入箇所を特定します。</p>
+
+<p><code>
+$ git bisect start           # バグ特定開始
+$ git bisect bad             # バグが混入しているコミットを指定
+$ git bisect good daf980923  # コミットdaf980923はビルド(テスト)成功していることを知らせる
+</code></p>
+
+<p>上記のコマンドを実行すると二分検索が始まり、中間のコミットがチェックアウトされる。後はビルド(テスト)を行って、</p>
+
+<p><code>
+$ git bisect good  # ビルド(テスト)成功
+$ git bisect bad   # ビルド(テスト)失敗
+</code></p>
+
+<p>を繰り替えして最後に失敗したコミットがバグ混入箇所と特定できる。</p>
+
+<p><code>
+$ git bisect reset  # バグ特定を終了し、元に戻す
+</code></p>
+
+<p>他にもsubmoduleコマンド等色々有るが利用ケースが今のところないので割愛します。新しい有用なコマンド等が見つかった場合に続きを書きます。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[gitでよく使う21コマンドまとめ]]></title>
